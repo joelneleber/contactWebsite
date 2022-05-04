@@ -8,12 +8,8 @@ item1.X-ABLabel:personal
 item2.EMAIL;type=INTERNET:jan1024@wildcats.unh.edu
 item2.X-ABLabel:school
 TEL;type=IPHONE;type=CELL;type=VOICE;type=pref:2032313912
-item3.ADR;type=pref:;;83 Main Street\n9432 Granite State Station;Durham;NH;03824;United States
-item3.X-ABLabel:school
-item4.ADR;type=home:;;1809 Little Meadow Road;Guilford;CT;06437;United States
-item4.X-ABADR:us
-item5.URL;type=pref:joelneleber.com
-item5.X-ABLabel:personal
+item3.URL;type=pref:joelneleber.com
+item3.X-ABLabel:personal
 URL;type=Work:spaitr.com
 BDAY:2000-02-29
 PHOTO;ENCODING=b;TYPE=JPEG:/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXhpZgAATU0AKgAA

@@ -1,0 +1,37 @@
+JOEY'S COMMAND CENTER — ASSET SOURCES
+
+The room, cockpit, furniture, CNC, lab instruments, printer, control panels,
+keyboard, woodworking details, foliage, and most props were modeled for this scene.
+The display graphics are original procedural illustrations, not captures of live software.
+The approved concept-reference.png is the generated design target, not the render background.
+
+The following assets are distributed under CC0 by Poly Haven:
+https://polyhaven.com/license
+
+Wood Table Worn
+  Photography: Dimitrios Savva. Processing: Rico Cilliers.
+  https://polyhaven.com/a/wood_table_worn
+  Used: 2K diffuse, roughness, OpenGL normal map on workbenches and selected wooden surfaces.
+
+Forest Slope
+  Andreas Mischok.
+  https://polyhaven.com/a/forest_slope
+  Used: 2K HDR environment outside the windows; also sampled in the lamp relief material.
+
+Hand Plane No4
+  Satyaki Mandal.
+  https://polyhaven.com/a/hand_plane_no4
+  Used: editable model and 1K texture set; positioned on the left bench.
+
+Pliers
+  PierreB3D.
+  https://polyhaven.com/a/pliers
+  Used: editable model and 1K texture set; positioned on the electronics mat.
+
+Flathead Screwdriver
+  Dylan Detwiller.
+  https://polyhaven.com/a/flathead_screwdriver
+  Used: editable model and 1K texture set; positioned on the left bench.
+
+All external textures used by the final scene are packed into the .blend file.
+API metadata snapshots and downloaded source assets are retained under assets/.

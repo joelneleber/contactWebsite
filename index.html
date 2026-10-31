@@ -1,20 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<!-- https://drive.google.com/drive/folders/114HljooWODaeludykU03VbYCfRwCYtn9?usp=sharing -->
-<head>
-    <meta charset="UTF-8">
-    <title>Joey Neleber</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="">
-    <style>
-    </style>
-    <script src=""></script>
-</head>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#171d1b"><title>Joey’s command center</title><link rel="stylesheet" href="entry.css?v=20"><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><script src="entry.js?v=20" defer></script></head><body data-default-view="workshop">
+<section id="entry" aria-label="Welcome"><div class="entry-inner"><p class="eyebrow">HEY, I'M JOEY.</p><h1>Welcome to my little world.</h1><p>Software engineer. Tinkerer. Usually making something.<br>Pull up a stool and have a look around.</p><div class="entry-choices"><button id="enter-workshop">Explore the 3D workshop ↗</button><a class="entry-secondary" href="portfolio.html">Prefer a simple project browser? ↗</a></div><small id="entry-note">Explore the room, open a project, and see what’s on the workbench.</small><a class="entry-contact" href="contact.html">Say hello ↗</a></div></section>
+<div id="world" aria-label="Joey’s interactive command center"></div><div class="room-shade" aria-hidden="true"></div>
 
-<body>
-    <div class="">
-        <a href="./contact.html">Contact me!</a>
-    </div>
-</body>
-
-</html>
+<div id="loading" role="status"><p class="eyebrow">COME ON IN</p><h1>Pull up a stool.</h1><p id="load-message">Opening the command center…</p><div class="load-track"><span id="load-progress"></span></div><a class="loading-alternative" href="portfolio.html">Skip the download · browse the lightweight site ↗</a></div>
+<section id="welcome"><p class="eyebrow">HEY, I’M JOEY.</p><p class="welcome-story">Software engineer. Tinkerer. Usually making something.<br>Welcome to my little world—pull up a stool and have a look around.</p><h1>Make something worth sharing.</h1></section>
+<div id="markers" aria-label="Clickable workstations"><button data-view="wood" data-point="-2.5,1.8,-0.2"><span>01</span>Woodshop <b>↗</b></button><button data-view="computer" data-point="0,2.25,-1.52"><span>02</span>My computer <b>↗</b></button><button data-view="lab" data-point="2.5,1.9,-0.2"><span>03</span>Electronics lab <b>↗</b></button><button data-view="printer" data-context="lab" data-point="3.05,1.8,3.1">Printed projects <b>↗</b></button><button data-view="lamp" data-context="wood" data-point="-3.13,1.42,.35">The wedding lamp <b>↗</b></button><button data-view="book" data-context="wood" data-point="-2.65,1.18,2.35">Woodshop projects <b>↗</b></button><button data-view="sign" data-context="wood" data-point="-3.52,2.35,4.45">The wedding sign <b>↗</b></button><button data-view="cnc" data-context="wood" data-point="-2.57,2,-.4">CNC projects <b>↗</b></button><button data-view="books" data-context="lab" data-point="3.6,3.05,3.05">Books &amp; ideas <b>↗</b></button><button data-view="scope" data-context="lab" data-point="2.12,1.51,-.734">Electronics &amp; sensors <b>↗</b></button></div>
+<div id="bench-markers"><!-- buttons are moved into the shared projection layer below --></div><div class="location-label" id="location" role="status">A room for all the things I make.</div>
+<nav class="room-nav" aria-label="Explore the room"><span class="nav-label">EXPLORE</span><button data-view="room" aria-pressed="true">Room</button><button data-view="wood" aria-pressed="false">Woodshop</button><button data-view="computer" aria-pressed="false">Software</button><button data-view="lab" aria-pressed="false">Electronics</button><a class="nav-contact" href="contact.html">Contact ↗</a><button id="room-settings" aria-label="Room settings" aria-expanded="false" aria-controls="room-settings-panel"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m9 3-.7 2.3-2 .9-2.2-.6-2 3.4 1.6 1.7v2.6L2.1 15l2 3.4 2.2-.6 2 .9L9 21h4l.7-2.3 2-.9 2.2.6 2-3.4-1.6-1.7v-2.6L19.9 9l-2-3.4-2.2.6-2-.9L13 3z"/><circle cx="11" cy="12" r="3"/></svg></button></nav>
+<section id="room-settings-panel" aria-label="Room settings" hidden><p>Room settings</p><a class="simple-view-link" href="portfolio.html">Switch to lightweight site ↗</a><button id="motion" aria-pressed="true">Motion on</button></section>
+<div class="room-footnote"><span id="hint">Choose a workstation button to explore</span><span>JOEY’S WORKSPACE</span></div>
+<section id="computer" hidden aria-label="Interactive project desktop"><div id="desktop">
+<div class="desktop-menubar"><strong><span class="os-mark">jn</span> joey / workspace</strong><span class="desktop-context">Software & experiments</span><button id="leave-computer" data-view="room" aria-label="Leave the computer">← Back to the workshop</button></div>
+<div class="desktop-body"><aside class="desktop-sidebar"><p>WORKSPACE</p><button data-filter="all" aria-pressed="true">Programs <span></span></button><button data-filter="recycle" aria-pressed="false">Recycle Bin <span class="recycle-count"></span></button><div class="sidebar-note">Built, tested,<br>and tinkered with.</div></aside><main class="desktop-files"><div class="files-toolbar"><div><h2 id="folder-title">All programs</h2><p id="program-count" role="status"></p></div><label class="program-search"><span aria-hidden="true">⌕</span><input id="program-search" type="search" placeholder="Find a project or technology…" aria-label="Search programs"></label></div><div id="program-grid" aria-label="Project programs"></div></main></div>
+<div id="windows"></div><footer class="desktop-taskbar"><button id="show-desktop" title="Minimize all project windows">▦ <span>Programs</span></button><div id="running-apps" aria-label="Open programs"></div><span class="desktop-presence"><i></i> Always something in the works</span></footer>
+</div></section>
+<aside id="zone-panel" hidden aria-label="Workstation stories"><button class="panel-close" aria-label="Close workstation story">×</button><div id="zone-content"></div></aside>
+<noscript><style>#enter-workshop{display:none}</style><div class="no-js">Explore Joey’s projects in the <a href="portfolio.html">lightweight site</a>.</div></noscript>
+</body></html>

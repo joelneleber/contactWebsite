@@ -106,6 +106,23 @@
   </section>
 </main>
 
+<dialog class="viewer" aria-labelledby="v-title">
+  <div class="v-media">
+    <div class="v-stage">
+      <img class="v-bg" alt="" aria-hidden="true">
+      <img class="v-img" alt="">
+      <button class="v-step v-prev" data-step="-1" aria-label="Previous image">←</button>
+      <button class="v-step v-next" data-step="1" aria-label="Next image">→</button>
+    </div>
+    <div class="v-bar"><p class="v-cap"></p><span class="v-count"></span></div>
+    <div class="v-strip" aria-label="All images"></div>
+  </div>
+  <div class="v-info">
+    <button class="v-close" aria-label="Close project">×</button>
+    <div class="v-body"></div>
+  </div>
+</dialog>
+
 <footer class="foot">
   <p class="foot-line">Make something worth sharing.</p>
   <nav aria-label="Footer">

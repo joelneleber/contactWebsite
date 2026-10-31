@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f1714">
+<meta name="description" content="Joey Neleber — software engineer, tinkerer and maker. Walk the workshop in 2D: software, woodworking and electronics, no 3D download.">
+<title>The workshop, in 2D · Joey Neleber</title>
+<link rel="preload" as="image" href="assets/cockpit/room-2d.webp" fetchpriority="high">
+<link rel="stylesheet" href="workshop.css?v=1">
+<script src="workshop.js?v=1" defer></script>
+</head>
+<body>
+<a class="skip" href="#index">Skip to projects</a>
+
+<header class="top">
+  <a class="brand" href="workshop.html"><i>jn</i><span>Joey Neleber<small>Code, craft &amp; curiosity</small></span></a>
+  <nav aria-label="Main">
+    <a href="#index">Projects</a>
+    <a href="contact.html">Contact</a>
+    <a class="nav-3d" href="index.html?mode=3d">Open in 3D <span aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main>
+  <section class="hello">
+    <p class="eyebrow">HEY, I’M JOEY.</p>
+    <h1>Pull up a stool.<br><em>There’s always something in the works.</em></h1>
+    <p class="lede">Software engineer. Tinkerer. Usually making something. This is my workshop, flattened into 2D so it loads in a blink. Pick a station to look around.</p>
+  </section>
+
+  <section class="room" aria-label="The workshop">
+    <div class="tabs" role="tablist" aria-label="Workshop stations">
+      <button role="tab" data-zone="room" aria-selected="true">Whole room</button>
+      <button role="tab" data-zone="wood" aria-selected="false"><b>01</b> Woodshop</button>
+      <button role="tab" data-zone="computer" aria-selected="false"><b>02</b> Computer</button>
+      <button role="tab" data-zone="lab" aria-selected="false"><b>03</b> Electronics</button>
+    </div>
+
+    <div class="room-body">
+      <div class="stage" data-zone="room">
+        <div class="scene">
+          <img class="scene-img" src="assets/cockpit/room-2d.webp" alt="Joey’s workshop: a woodshop bench with a CNC on the left, a desk with three monitors in the middle, and an electronics bench with instruments and parts drawers on the right." width="1600" height="900" fetchpriority="high">
+          <button class="pin pin-zone" data-zone="wood" style="--x:20%;--y:44%"><b>01</b><span>Woodshop</span></button>
+          <button class="pin pin-zone" data-zone="computer" style="--x:50%;--y:36%"><b>02</b><span>My computer</span></button>
+          <button class="pin pin-zone" data-zone="lab" style="--x:76%;--y:50%"><b>03</b><span>Electronics lab</span></button>
+          <button class="pin pin-spot" data-in="wood" data-spot="cnc" style="--x:20%;--y:38%"><span>CNC projects</span></button>
+          <button class="pin pin-spot" data-in="wood" data-spot="lamp" style="--x:6%;--y:58%"><span>The wedding lamp</span></button>
+          <button class="pin pin-spot" data-in="computer" data-spot="monitor" style="--x:50%;--y:32%"><span>Open the desktop</span></button>
+          <button class="pin pin-spot" data-in="lab" data-spot="scope" style="--x:74%;--y:46%"><span>Signals &amp; sensors</span></button>
+          <button class="pin pin-spot" data-in="lab" data-spot="printer" style="--x:89%;--y:44%"><span>Printed projects</span></button>
+        </div>
+        <button class="back" data-zone="room" hidden>← Whole room</button>
+        <p class="stage-hint" aria-hidden="true">Tap a numbered station</p>
+      </div>
+
+      <aside class="panel" aria-live="polite">
+        <p class="eyebrow" data-k>A ROOM FOR ALL THE THINGS I MAKE</p>
+        <h2 data-t>Three benches, one room.</h2>
+        <p data-x>Wood on the left, code in the middle, circuits on the right. Every station holds real projects—pick one to step closer.</p>
+        <ol class="panel-list" data-l></ol>
+        <a class="panel-more" href="#index" data-m>Browse all 23 projects ↓</a>
+      </aside>
+    </div>
+  </section>
+
+  <section id="index" class="index" aria-labelledby="index-h">
+    <div class="index-head">
+      <div>
+        <p class="eyebrow">THE INDEX</p>
+        <h2 id="index-h">Everything on the benches.</h2>
+      </div>
+      <div class="chips" role="group" aria-label="Filter projects">
+        <button data-filter="all" aria-pressed="true">All <sup>23</sup></button>
+        <button data-filter="computer" aria-pressed="false">Software <sup>15</sup></button>
+        <button data-filter="wood" aria-pressed="false">Woodshop <sup>5</sup></button>
+        <button data-filter="lab" aria-pressed="false">Electronics <sup>3</sup></button>
+      </div>
+    </div>
+    <ul class="grid">
+<li class="p is-featured" data-zone="computer" data-spots="monitor"><a href="read/avaron.html"><span class="p-media"><img src="assets/covers/avaron-1.webp" alt="" loading="lazy" decoding="async" width="800" height="480"><span class="p-flag">Start here</span></span><span class="p-zone">Software</span><h3>AVARON</h3><p>Body-aware training intelligence for athletes and teams.</p><ul class="tags"><li>Flutter / Dart</li><li>NestJS / TypeScript</li><li>PostgreSQL</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p is-featured" data-zone="computer" data-spots="monitor"><a href="read/amazon.html"><span class="p-media"><img src="assets/covers/amazon-0.webp" alt="" loading="lazy" decoding="async" width="800" height="480"><span class="p-flag">Start here</span></span><span class="p-zone">Software</span><h3>Amazon Business Compare</h3><p>Product/deal processing, restrictions checks and dashboard workflows.</p><ul class="tags"><li>Python</li><li>processing pipeline</li><li>dashboard templates</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p is-featured" data-zone="computer" data-spots="monitor"><a href="read/leads.html"><span class="p-media"><img src="assets/covers/leads-0.webp" alt="" loading="lazy" decoding="async" width="800" height="480"><span class="p-flag">Start here</span></span><span class="p-zone">Software</span><h3>LeadsByMail</h3><p>Geospatial house visualization and direct-mail production tooling.</p><ul class="tags"><li>Python</li><li>ModernGL</li><li>Trimesh</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p is-featured" data-zone="computer" data-spots="monitor"><a href="read/hirebolt.html"><span class="p-media"><img src="assets/covers/hirebolt-0.webp" alt="" loading="lazy" decoding="async" width="800" height="480"><span class="p-flag">Start here</span></span><span class="p-zone">Software</span><h3>Hiregrove</h3><p>Job discovery, matching, resume preparation and application review.</p><ul class="tags"><li>Python / FastAPI</li><li>PostgreSQL</li><li>React / Vite</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p is-featured" data-zone="computer" data-spots="monitor"><a href="read/cockfights.html"><span class="p-media"><img src="assets/covers/cockfights-0.webp" alt="" loading="lazy" decoding="async" width="800" height="480"><span class="p-flag">Start here</span></span><span class="p-zone">Software</span><h3>Cockfights Online</h3><p>Third-person bird fighting game with movement, combat and online modes.</p><ul class="tags"><li>Unity</li><li>C#</li><li>Blender export tooling</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/reelforge.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-reelforge-execution.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>ReelForge + AVARON reels</h3><p>Turn trend formats into original scripts, briefs and staged video edits.</p><ul class="tags"><li>Python</li><li>FFmpeg / ffprobe</li><li>schema-driven briefs</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/videos.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-videos-frame.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>AVARON canvas video toolkit</h3><p>Code-drawn animated shorts, character staging, browser playback and export.</p><ul class="tags"><li>HTML canvas</li><li>JavaScript</li><li>procedural drawing/audio</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/hueprint.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-hueprint-upload.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>HuePrint</h3><p>Scanned blueprints toward interactive 3D residential models.</p><ul class="tags"><li>React</li><li>TypeScript</li><li>React Three Fiber</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/umiviz.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-umiviz-chrome.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>UmiViz</h3><p>Embeddable 3D wheel-rim viewer with finish selection.</p><ul class="tags"><li>Three.js</li><li>OBJLoader</li><li>OrbitControls</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/zommie.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-zommie-preview.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>ZommieBiz</h3><p>Discover businesses, assess existing websites and generate website previews.</p><ul class="tags"><li>Next.js</li><li>TypeScript</li><li>Prisma</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/defuzz.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-defuzz-popup.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>Airbnb Defuzz</h3><p>Match listing signals to candidate public property records.</p><ul class="tags"><li>Chrome extension</li><li>JavaScript</li><li>Python / Flask</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/navier.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-navier-clm-comparison.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>Navier–Stokes numerical lab</h3><p>Explore model equations, fluid simulation and dual-geometry diagnostics.</p><ul class="tags"><li>Python</li><li>NumPy</li><li>spectral solvers</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/desktop.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-desktop-heartbeat-source.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>Earlier SPAITR desktop collection app</h3><p>Collect BLE sensor sessions and annotate/extract lacrosse shots.</p><ul class="tags"><li>Python</li><li>PyQt6</li><li>Bleak</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/maps.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-maps-popup.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>Google Maps Business Copier</h3><p>Copy visible business listing fields from a Maps panel.</p><ul class="tags"><li>JavaScript</li><li>DOM extraction</li><li>browser extension</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="computer" data-spots="monitor"><a href="read/cs770.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-cs770-intersection-evidence.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Software</span><h3>CS-770 graphics assignments</h3><p>Graphics exercises with camera and lighting source.</p><ul class="tags"><li>C++</li><li>OpenGL</li><li>GLFW</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="wood" data-spots="lamp printer"><a href="read/lamp.html"><span class="p-media"><img src="assets/optimized/assets-lamp-lit.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Woodshop</span><h3>Wedding lithophane lamp</h3><p>A personalized wedding gift combining photographic panels, wood and light.</p><ul class="tags"><li>Wooden top/base</li><li>photographic lithophane panels</li><li>personalized engraving</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="wood" data-spots="cnc"><a href="read/sign.html"><span class="p-media"><img src="assets/optimized/assets-wedding-sign.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Woodshop</span><h3>The wedding welcome sign</h3><p>One of my most diverse builds: a wedding welcome sign that brought CNC design, laser cutting, staining, tiny glue-ups and mounting together.</p><ul class="tags"><li>CNC design</li><li>Laser cutting</li><li>Staining</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="wood" data-spots=""><a href="read/mirror.html"><span class="p-media"><img src="assets/optimized/assets-mirror.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Woodshop</span><h3>Geometric wooden mirror</h3><p>A geometric mirror combining wood and reflective material.</p><ul class="tags"><li>Woodworking</li><li>geometric design</li><li>mirror</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="wood" data-spots=""><a href="read/woodarchive.html"><span class="p-media"><img src="assets/optimized/assets-cornhole.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Woodshop</span><h3>Objects for gatherings</h3><p>Cutting boards, custom cornhole boards, giant stacking game and mountain-shaped table numbers.</p><ul class="tags"><li>Woodworking</li><li>functional objects</li><li>personalized design</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="wood" data-spots="cnc printer"><a href="read/fabrication.html"><span class="p-media"><img src="assets/optimized/assets-cnc.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Woodshop</span><h3>CNC, shop and vehicle builds</h3><p>CNC/engraving work, workshop furniture/storage and vehicle interiors.</p><ul class="tags"><li>CNC / engraving</li><li>woodworking</li><li>fabrication</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="lab" data-spots="printer scope"><a href="read/sensor.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-sensor-layout.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Electronics</span><h3>AVARON R2 sensor prototype</h3><p>Revived motion-recording sensor hardware, alongside the earlier lacrosse hardware work.</p><ul class="tags"><li>KiCad 9</li><li>C / Zephyr</li><li>nRF52840</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="lab" data-spots="scope"><a href="read/neuro.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-neuro-acquisition-source.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Electronics</span><h3>NeuroCode / early sensor experiments</h3><p>IMU logging, Bluetooth transmission and button experiments.</p><ul class="tags"><li>Arduino / C++</li><li>MPU6050</li><li>Bluetooth</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+<li class="p" data-zone="lab" data-spots="scope"><a href="read/learning.html"><span class="p-media"><img src="assets/optimized/assets-stories-media-learning-evidence.webp" alt="" loading="lazy" decoding="async" width="800" height="480"></span><span class="p-zone">Electronics</span><h3>Electronics learning bench</h3><p>Practice basic digital input/output with PlatformIO.</p><ul class="tags"><li>Arduino</li><li>PlatformIO</li><li>C++</li></ul><span class="p-go" aria-hidden="true">↗</span></a></li>
+    </ul>
+    <p class="bin"><a href="archive.html">Peek in the Recycle Bin</a> — six older experiments that didn’t make the benches.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p class="foot-line">Make something worth sharing.</p>
+  <nav aria-label="Footer">
+    <a href="contact.html">Say hello</a>
+    <a href="index.html?mode=3d">Walk the 3D workshop ↗</a>
+  </nav>
+  <small>2D workshop · about 0.2 MB before you scroll · images load as you browse</small>
+</footer>
+</body>
+</html>

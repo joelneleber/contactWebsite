@@ -2,3 +2,15 @@
 @media(max-width:650px){header,main,footer{padding:22px}header{align-items:flex-start;flex-direction:column;gap:15px}header nav{gap:18px;font-size:12px}.brand span{font-size:11px}.cards{grid-template-columns:1fr}.card,.card.featured{padding:24px;min-height:0}.intro{padding:40px 0}.intro p{font-size:17px}.categories{gap:16px}.card.featured h3{font-size:28px}.lede{font-size:18px}h2{font-size:30px}}
 
 .card{overflow:hidden}.card .app-cover,.card .project-preview{width:calc(100% + 56px);margin:-28px -28px 26px;flex-shrink:0}.card.featured .app-cover{width:calc(100% + 70px);margin:-35px -35px 26px}.card .project-preview{display:block;height:220px;object-fit:cover;background:#10221b}.card.featured{padding-top:35px}@media(max-width:650px){.card .app-cover,.card.featured .app-cover,.card .project-preview{width:calc(100% + 48px);margin:-24px -24px 24px}.card.featured{padding-top:24px}}
+
+/* Images inside the writeups */
+.inline-figure{margin:32px 0 8px;max-width:960px}
+.inline-figure img{border-radius:12px;border:1px solid #b5c2a62d;max-height:640px}
+.inline-figure figcaption{margin-top:10px;font-size:14px;color:#b4c3b6;line-height:1.5;max-width:76ch}
+.lead-figure{margin-top:36px}
+.lead-figure img{max-height:720px}
+.figure-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.figure-grid .inline-figure{margin:0}
+.figure-grid .inline-figure img{aspect-ratio:4/3;object-fit:cover;max-height:none}
+.inline-figure img{width:auto;max-width:100%;background:none}
+.figure-grid .inline-figure img{width:100%}

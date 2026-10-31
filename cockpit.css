@@ -137,3 +137,19 @@ body[data-view="book"] .room-nav{display:none!important}
 .cover-avaron .cover-caption{display:none}
 .cover-hirebolt .browser-screen{height:190px;width:85%}
 @media(max-width:900px){.cover-hirebolt .browser-screen{height:150px}}
+
+/* Workstation markers as workshop tags: dark enamel, brass edge, amber status LED. */
+body #markers button{min-height:0;padding:8px 13px 8px 11px;border-radius:6px;border:1px solid #e3c99b59;background:linear-gradient(180deg,#1b2b24f0,#111c17f0);color:#f3e6c8;
+ font:600 11px/1.2 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 1px 0 #ffffff14 inset,0 6px 18px #0009,0 0 0 1px #0006;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+body #markers button:before{width:6px;height:6px;margin-right:9px;background:#ffbf5a;box-shadow:0 0 6px #ffb347,0 0 0 3px #ffb34722;animation:led 3.2s ease-in-out infinite}
+body #markers button b{width:auto;height:auto;margin-left:10px;background:none;color:#d9bd86;font-size:12px;font-weight:400;letter-spacing:0}
+body #markers button:after{display:none}
+body #markers button:hover,body #markers button:focus-visible{background:linear-gradient(180deg,#26392f,#16241e);border-color:#e9cf9c;color:#fff6df;box-shadow:0 1px 0 #ffffff1f inset,0 0 0 1px #e9cf9c40,0 10px 26px #000b;transform:translate(-50%,calc(-50% - 2px))}
+body #markers button:hover b,body #markers button:focus-visible b{color:#ffd88f}
+@keyframes led{0%,100%{opacity:1}50%{opacity:.55}}
+#marker-leaders path{stroke:#e8d2a0;stroke-width:1;opacity:.55;filter:none}
+#marker-leaders circle{fill:#ffbf5a;stroke:#1a2a22;stroke-width:1.5}
+@media(max-width:900px){body #markers button{padding:7px 10px 7px 9px;font-size:10px;letter-spacing:.08em}}
+/* Station lists show a preview of each project. */
+.zone-card.has-thumb{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.zone-thumb{width:96px;height:68px;object-fit:cover;border-radius:8px;background:#d9d6c4;box-shadow:0 1px 0 #fff8 inset,0 2px 8px #2a3a2a26}

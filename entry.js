@@ -27,7 +27,7 @@ const BLUEPRINT='BLMBhAPBA+gCAAAEGACzAq8BAAAEGACzAq8BAAAEMAyjAnEAAARDZKMCAAsABER
   polys=[];while(k<bytes.length){const count=next(),o=new Float32Array(count*3);let x=0,y=0,z=0;for(let i=0;i<count;i++){x+=next();y+=next();z+=next();o[i*3]=x/50;o[i*3+1]=y/50;o[i*3+2]=z/50;}
    o.monitor=true;for(let i=0;i<o.length;i+=3)if(Math.abs(o[i])>1.25||o[i+1]<1.3||o[i+1]>2.75||o[i+2]<-1.8||o[i+2]>-1.3){o.monitor=false;break;}polys.push(o);}}catch(e){polys=null;}
  // Mirrors cockpit.js: destination('room') + frameStation() for the current viewport.
- function cameraFor(w,h){const aspect=w/h,mobile=w<=900,t=[0,1.45,-1.2],p0=[0,2.68,5.1];const phone=mobile&&h>w;const k=mobile?1.3:Math.max(1,1.65/aspect);const p=phone?[0,2.35,3.6]:p0.map((v,i)=>t[i]+(v-t[i])*k);if(phone)t[1]=1.55;p[0]=Math.min(3.3,Math.max(-3.25,p[0]));p[2]=Math.min(p[2],7.6);p[1]=Math.min(p[1],3.6);
+ function cameraFor(w,h){const aspect=w/h,mobile=w<=900,t=[0,1.45,-1.2],p0=[0,2.68,5.1];const phone=h>w;/* portrait framing for phones and vertical monitors alike */const k=mobile?1.3:Math.max(1,1.65/aspect);const p=phone?[0,2.35,3.6]:p0.map((v,i)=>t[i]+(v-t[i])*k);if(phone)t[1]=1.55;p[0]=Math.min(3.3,Math.max(-3.25,p[0]));p[2]=Math.min(p[2],7.6);p[1]=Math.min(p[1],3.6);
   const widen=aspect<1.25?Math.min(2.4,1.25/aspect):Math.min(1,1.8/aspect);const fov=phone?72:Math.min(84,2*Math.atan(Math.tan(43.8*Math.PI/360)*widen)*180/Math.PI);const offY=0;
   const zx=p[0]-t[0],zy=p[1]-t[1],zz=p[2]-t[2],zl=Math.hypot(zx,zy,zz),z=[zx/zl,zy/zl,zz/zl];let x=[z[2],0,-z[0]];const xl=Math.hypot(...x);x=x.map(v=>v/xl);const y=[z[1]*x[2]-z[2]*x[1],z[2]*x[0]-z[0]*x[2],z[0]*x[1]-z[1]*x[0]];
   return{p,x,y,z,f:1/Math.tan(fov*Math.PI/360),aspect,offY};}
@@ -78,10 +78,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=35';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=36';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=33');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=34');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

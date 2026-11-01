@@ -354,3 +354,5 @@ body .room-nav #room-help:hover,body .room-nav #room-settings:hover{background:#
 }
 body .room-nav button[data-view] span{font:inherit!important;color:inherit!important}
 .book-zone:focus,.book-zone:focus-visible{outline:none}
+/* The "?" in the dock opens the guide on wider screens, so the gear menu doesn't repeat it there. */
+@media (min-width:601px){#room-settings-panel .help-link{display:none}}

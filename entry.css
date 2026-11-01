@@ -28,3 +28,7 @@ body:not(.workshop-started)>:not(#entry):not(script):not(noscript){display:none!
 .loader-copy{justify-content:flex-start;gap:.4em;padding:2.3em 1.6em 1em}
 .loader-copy .about{font-size:1.05em}
 #loading.loader .load-pct{font-size:2.3em}
+
+/* Auto-starting visitors: show the loading screen from the first paint (entry.js removes this on failure). */
+html.autostart #entry{display:none!important}
+html.autostart body:not(.workshop-started)>#loading.loader{display:flex!important}

@@ -1,3 +1,49 @@
 body:not(.workshop-started)>:not(#entry):not(script):not(noscript){display:none!important}#entry{position:fixed;inset:0;z-index:9999;overflow:auto;display:grid;place-items:center;background:radial-gradient(ellipse at 75% 20%,#294536,#111e19);color:#f6e9c9;padding:30px;font:16px/1.7 system-ui,sans-serif}#entry[hidden]{display:none}.entry-inner{max-width:750px}.entry-inner .eyebrow{font:12px monospace;color:#e4c68f;letter-spacing:3px}.entry-inner h1{font:clamp(40px,7vw,76px)/1.1 Georgia;margin:25px 0}.entry-inner p{color:#c1cdbf;max-width:580px}.entry-choices{display:flex;gap:16px;flex-wrap:wrap;margin:32px 0}.entry-choices a,.entry-choices button{font:600 16px system-ui;border:1px solid #cfceb56b;border-radius:10px;padding:17px 23px;text-decoration:none;background:#f3e6c7;color:#203729;cursor:pointer}.entry-choices a{background:#294235;color:#f3e6c7}.entry-inner small{display:block;color:#acbba9}.entry-inner a:focus-visible,.entry-inner button:focus-visible{outline:3px solid #edc884;outline-offset:5px}.entry-contact{display:inline-block;color:#e4c68f;margin-top:28px}.loading-alternative{display:block;color:#f0d298;margin:18px}.simple-view-link{color:#ebd5a9;padding:10px;display:block;font-size:13px}
 
 .entry-choices{align-items:center}.entry-choices a.entry-secondary{background:none;border:0;padding:10px 0;color:#c1cdbf;font-size:14px;font-weight:400;text-decoration:underline}.entry-choices button{padding:22px 30px;font-size:18px}
+
+/* Loading screen: a hand-drawn Joey waving people in while the 3D room loads. */
+#loading.loader{position:fixed;inset:0;z-index:20;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:clamp(24px,5vw,72px);padding:24px;text-align:left;color:#f4e8cc;background:radial-gradient(ellipse at 38% 55%,#2b3d30 0%,#15211b 55%,#0d1511 100%);backdrop-filter:none;-webkit-backdrop-filter:none;font:16px/1.6 system-ui,sans-serif;animation:loader-in .5s ease-out both}
+#loading.loader[hidden]{display:none}
+.loader-art{position:relative;width:min(340px,42vw);flex:none}
+.loader-art svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 18px 40px #0008)}
+.loader-copy{max-width:380px}
+#loading.loader .eyebrow{font:12px ui-monospace,monospace;letter-spacing:3px;color:#e4c68f;margin:0}
+#loading.loader h1{font:italic 400 clamp(40px,5vw,60px)/1.05 Georgia,serif;margin:10px 0 14px;color:#fff3d8}
+#load-quip{margin:0 0 18px;min-height:1.6em;color:#d8cdb4;font:italic 17px/1.6 Georgia,serif;transition:opacity .35s}
+#load-quip.fading{opacity:0}
+#loading.loader #load-message{margin:10px 0 0;font:11px ui-monospace,monospace;letter-spacing:.5px;color:#9fae9c}
+#loading.loader .loading-alternative{display:inline-block;margin:18px 0 0;color:#e9cd94;font-size:13px}
+.bubble{position:absolute;right:-6%;top:6%;margin:0;padding:8px 14px;border-radius:18px 18px 18px 4px;background:#fff3d8;color:#2a2018;font:italic 600 15px Georgia,serif;box-shadow:0 6px 18px #0006;transform-origin:0 100%;animation:bubble 4.8s ease-in-out infinite}
+/* Tape measure: the blade pulls out as the room downloads. */
+#loading.loader .load-track.tape{position:relative;width:min(300px,100%);height:16px;margin:0 0 0 20px;background:#0000;border-radius:3px}
+#loading.loader .load-track.tape:before{content:"";position:absolute;left:-22px;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#1b1b1b 0 5px,#d33c2c 6px 100%);box-shadow:inset 0 0 0 2px #0004,0 3px 8px #0006;z-index:2}
+#loading.loader #load-progress{position:relative;display:block;height:100%;width:0;min-width:10px;border-radius:2px;background:#f1c548 repeating-linear-gradient(90deg,#2a2013 0 1.5px,#0000 1.5px 10px) bottom/100% 6px no-repeat;box-shadow:inset 0 -1px 0 #b98d1d,0 2px 6px #0005;transition:width .4s cubic-bezier(.2,.8,.2,1)}
+#loading.loader #load-progress:after{content:"";position:absolute;right:-4px;top:-3px;width:5px;height:22px;border-radius:1px;background:#b9bcc0;box-shadow:inset -1px 0 0 #7d8186}
+@media(max-width:720px){#loading.loader{flex-direction:column;text-align:center;gap:6px;padding:20px 18px}.loader-art{width:min(250px,62vw)}.loader-copy{max-width:420px}#loading.loader h1{font-size:38px;margin:6px 0 8px}#loading.loader .load-track.tape{margin:0 auto 0 calc(50% - min(150px,50%) + 20px);width:min(260px,calc(100% - 20px))}.bubble{right:-14%;font-size:13px}}
+@media(max-height:560px){.loader-art{width:min(220px,34vw)}}
+/* Gentle motion; all of it stops for reduced-motion visitors. */
+.loader svg *{transform-box:view-box}
+.loader .wave-arm{transform-origin:212px 202px;animation:wave-arm 2.6s ease-in-out infinite}
+.loader .wave-hand{transform-origin:254px 160px;animation:wave-hand 2.6s ease-in-out infinite}
+.loader .breathe{animation:breathe 4.2s ease-in-out infinite}
+.loader .head{transform-origin:180px 176px;animation:tilt 6s ease-in-out infinite}
+.loader .eyes{transform-origin:180px 133px;animation:blink 5s infinite}
+.loader .steam{animation:steam 2.8s ease-in-out infinite;opacity:0}
+.loader .steam.s2{animation-delay:1.4s}
+.loader .cat-tail{transform-origin:296px 362px;animation:tail 3.4s ease-in-out infinite}
+.loader .door-glow{animation:flicker 7s ease-in-out infinite}
+.loader .motes circle{animation:mote 9s linear infinite}
+.loader .motes circle:nth-child(2){animation-delay:-2s}.loader .motes circle:nth-child(3){animation-delay:-4.5s}.loader .motes circle:nth-child(4){animation-delay:-6s}.loader .motes circle:nth-child(5){animation-delay:-7.5s}
+@keyframes loader-in{from{opacity:0}}
+@keyframes wave-arm{0%,55%,100%{transform:rotate(0)}12%,36%{transform:rotate(-7deg)}24%,46%{transform:rotate(3deg)}}
+@keyframes wave-hand{0%,55%,100%{transform:rotate(0)}10%,30%{transform:rotate(-16deg)}20%,42%{transform:rotate(12deg)}}
+@keyframes breathe{50%{transform:translateY(-1.6px)}}
+@keyframes tilt{0%,100%{transform:rotate(0)}50%{transform:rotate(-2.5deg)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.15)}}
+@keyframes steam{0%{opacity:0;transform:translateY(4px)}30%{opacity:.75}100%{opacity:0;transform:translateY(-14px)}}
+@keyframes tail{0%,100%{transform:rotate(0)}50%{transform:rotate(-9deg)}}
+@keyframes flicker{0%,100%{opacity:1}40%{opacity:.9}43%{opacity:.97}70%{opacity:.88}}
+@keyframes mote{0%{transform:translate(0,0);opacity:0}15%{opacity:.9}100%{transform:translate(14px,-70px);opacity:0}}
+@keyframes bubble{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){#loading.loader *,#loading.loader{animation:none!important}.loader .steam{opacity:.6}}

@@ -18,7 +18,7 @@ const BLUEPRINT='BLMBhAPBA+gCAAAEGACzAq8BAAAEGACzAq8BAAAEMAyjAnEAAARDZKMCAAsABER
 (()=>{const loading=document.getElementById('loading'),canvas=document.getElementById('bp-canvas'),quip=document.getElementById('load-quip'),pct=document.getElementById('load-pct');if(!loading||!canvas)return;
  const ctx=canvas.getContext('2d'),calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
  // Captions rotate every couple of seconds; the first is fixed, the rest shuffle without repeats.
- const lines=['Tiptoeing past the sleeping cats…','Shooing the orange cat off the keyboard…','Asking the dog to scoot off the extension cord…','Bribing the tabby with treats…','Fluffing the dog bed…','Picking cat hair out of the keyboard…','Sweeping up the sawdust…','Zeroing the CNC…','Warming up the soldering iron…','Counting resistors (again)…','Untangling the extension cords…','Topping up the coffee…','Finding you a stool…','Refilling the dog’s water bowl…'];
+ const lines=['Shhh. Kali is asleep under the desk…','“ajsdofhasuidgnsdlkgnasld” — a message from Mango','Kali is twitching under the desk. Big dream.','Mango is sitting on the keyboard again…','Kali’s paws are running. Winning, probably.','“jjjjjjjjjjjjjjjjjjjjjjjj” — Mango, again','Kali’s tail just thumped twice. Very good dream.','Moving Mango off the warm laptop…','Mango knocked a screw off the bench. Finding it…','Kali heard the treat bag. False alarm.','Mango would like to know if you brought snacks','“;;;;;;;;;;;;;;;;l” — Mango has notes','Kali is snoring. It’s fine. It’s cute.','Mango is supervising. Closely.','Sweeping up the sawdust…','Warming up the soldering iron…','Counting resistors (again)…'];
  const deck=[];let lastSwap=0;const nextLine=()=>{if(!deck.length)deck.push(...lines.slice(1).sort(()=>Math.random()-.5));return deck.pop();};
  let polys=null,monitorEnd=.08,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,W=0,H=0,dpr=1;
  // Decode the built-in blueprint (scripts/pack-blueprint.py): per stroke a point count, then
@@ -78,7 +78,7 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=30';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=32';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
   await import('./cockpit.bundle.js?v=30');window.__load?.set('code',1);

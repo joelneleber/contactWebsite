@@ -234,16 +234,21 @@ body:not([data-view="room"]):not([data-view="computer"]) .location-label:before{
 body.screen-hover #screen-hint{opacity:1;transform:translate(14px,18px) scale(1)}
 body:not([data-view="room"]):not([data-view="wood"]):not([data-view="lab"]) #screen-hint{display:none}
 
-/* First-visit guide (v30): replaces the welcome until dismissed; the "?" in the bar reopens it. */
-#coach{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);z-index:8;width:min(560px,calc(100% - 28px));padding:20px 22px 18px;border-radius:18px;background:linear-gradient(160deg,#16231ef2,#101a16f5);border:1px solid #e4cf9c40;box-shadow:0 24px 70px #000a;color:#f3e8cf;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:coach-in .5s cubic-bezier(.2,.75,.2,1) both}
+/* First-visit guide (v31): a headline, three scannable steps, and the button. */
+#coach{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);z-index:8;width:min(760px,calc(100% - 28px));padding:22px 22px 18px;border-radius:20px;background:linear-gradient(160deg,#17251ff4,#0f1914f7);border:1px solid #e4cf9c3d;box-shadow:0 30px 80px -10px #000c,inset 0 1px 0 #ffffff0d;color:#f3e8cf;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);animation:coach-in .5s cubic-bezier(.2,.75,.2,1) both;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 #coach[hidden]{display:none}
-#coach .eyebrow{margin:0 0 12px;font:600 11px/1.2 ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase;color:#dcbc7f}
-#coach ol{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:10px}
-#coach li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;font:15px/1.5 system-ui,sans-serif;color:#d6dccf}
-#coach li i{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#f0b85026;color:#ffd38a;font:700 13px/1 ui-monospace,monospace;font-style:normal;box-shadow:0 0 0 1px #f0b85055}
-#coach li b{color:#fff3d8;font-weight:600}
-#coach .narrow{display:none}
-#coach-done{min-height:44px;padding:0 18px;border:0;border-radius:11px;background:linear-gradient(180deg,#f7ecd2,#ead9b4);color:#1f2c25;font:600 14px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 20px -10px #000}
+#coach header h2{margin:0 0 16px;font:400 24px/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.01em;color:#fff3d8}
+#coach .steps{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#coach .steps li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:14px;border-radius:14px;background:#ffffff07;border:1px solid #ffffff10}
+#coach .steps i{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#f0b8501f;color:#ffd38a;box-shadow:inset 0 0 0 1px #f0b85040}
+#coach .steps i svg{width:20px;height:20px}
+#coach .steps b{display:block;margin:1px 0 3px;font-size:14.5px;font-weight:650;color:#fff3d8;letter-spacing:.005em}
+#coach .steps span{font-size:13.5px;line-height:1.45;color:#b9c3b3}
+#coach footer{display:flex;align-items:center;justify-content:space-between;gap:16px}
+#coach .coach-note{font-size:12.5px;color:#8f9c8d}
+#coach kbd{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:5px;border:1px solid #e4cf9c55;background:#ffffff0a;color:#e4c68f;font:700 11px/1 ui-monospace,monospace}
+#coach .narrow,#coach .steps b.narrow{display:none}
+#coach-done{flex:none;min-height:44px;padding:0 18px;border:0;border-radius:11px;background:linear-gradient(180deg,#f7ecd2,#ead9b4);color:#1f2c25;font:600 14px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 20px -10px #000}
 #coach-done:hover{filter:brightness(1.04)}
 body.coaching #welcome{display:none}
 body.coaching #markers button{animation:coach-pulse 1.8s ease-in-out infinite}
@@ -251,7 +256,17 @@ body.coaching #screen-hint{display:none}
 .room-nav #room-help{min-width:34px;padding:0 10px;font:700 14px/1 ui-monospace,monospace;color:#e4c68f}
 @keyframes coach-in{from{opacity:0;transform:translate(-50%,12px)}}
 @keyframes coach-pulse{0%,100%{box-shadow:0 0 0 0 #ffbf5a00,0 10px 26px #000a}50%{box-shadow:0 0 0 6px #ffbf5a33,0 10px 26px #000a}}
-@media (max-width:900px){#coach{bottom:84px;padding:16px 16px 14px}#coach li{font-size:14px}#coach .wide{display:none}#coach .narrow{display:inline}}
+@media (max-width:900px){
+ #coach{bottom:84px;padding:18px 16px 14px}
+ #coach header h2{font-size:20px;margin-bottom:12px}
+ #coach .steps{grid-template-columns:1fr;gap:6px;margin-bottom:14px}
+ #coach .steps li{padding:10px 12px;align-items:center}
+ #coach .steps i{width:32px;height:32px}
+ #coach .wide,#coach .steps b.wide{display:none}#coach .narrow{display:inline}#coach .steps b.narrow{display:block}
+ #coach footer{flex-direction:column-reverse;align-items:stretch;gap:10px}
+ #coach-done{width:100%}
+ #coach .coach-note{text-align:center}
+}
 @media (prefers-reduced-motion:reduce){#coach,body.coaching #markers button{animation:none}}
 #room-settings-panel .help-link{display:block;width:100%;margin:0 0 6px;padding:10px;border:0;border-radius:8px;background:#ffffff0d;color:#f3e8cf;font:600 13px/1.2 system-ui,sans-serif;text-align:left;cursor:pointer}
 #room-settings-panel .help-link:hover{background:#ffffff18}

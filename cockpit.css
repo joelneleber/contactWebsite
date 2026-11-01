@@ -226,3 +226,10 @@ body:not([data-view="room"]):not([data-view="computer"]) .location-label:before{
  #desktop .desktop-menubar #leave-computer:before{content:"← Workshop";font-size:13px}
  #desktop .desktop-sidebar button span{margin-left:8px}
 }
+
+/* Hovering the monitor: a workshop tag follows the pointer (v28). */
+#screen-hint{position:fixed;z-index:7;left:0;top:0;pointer-events:none;opacity:0;transform:translate(14px,18px) scale(.96);transform-origin:0 0;transition:opacity .15s,transform .15s;padding:8px 13px 8px 11px;border-radius:6px;border:1px solid #e3c99b59;background:linear-gradient(180deg,#1b2b24f0,#111c17f0);color:#f3e6c8;font:600 11px/1.2 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;box-shadow:0 10px 26px #000a}
+#screen-hint:before{content:"";display:inline-block;width:6px;height:6px;margin-right:9px;border-radius:50%;background:#ffbf5a;box-shadow:0 0 6px #ffb347;vertical-align:1px}
+#screen-hint b{margin-left:10px;color:#d9bd86;font-weight:400}
+body.screen-hover #screen-hint{opacity:1;transform:translate(14px,18px) scale(1)}
+body:not([data-view="room"]):not([data-view="wood"]):not([data-view="lab"]) #screen-hint{display:none}

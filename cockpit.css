@@ -235,7 +235,7 @@ body.screen-hover #screen-hint{opacity:1;transform:translate(14px,18px) scale(1)
 body:not([data-view="room"]):not([data-view="wood"]):not([data-view="lab"]) #screen-hint{display:none}
 
 /* First-visit guide (v31): a headline, three scannable steps, and the button. */
-#coach{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);z-index:8;width:min(760px,calc(100% - 28px));padding:22px 22px 18px;border-radius:20px;background:linear-gradient(160deg,#17251ff4,#0f1914f7);border:1px solid #e4cf9c3d;box-shadow:0 30px 80px -10px #000c,inset 0 1px 0 #ffffff0d;color:#f3e8cf;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);animation:coach-in .5s cubic-bezier(.2,.75,.2,1) both;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+#coach{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);z-index:8;width:min(760px,calc(100% - 28px));padding:22px 22px 18px;border-radius:20px;background:linear-gradient(160deg,#17251ff4,#0f1914f7);border:1px solid #e4cf9c3d;box-shadow:0 30px 80px -10px #000c,inset 0 1px 0 #ffffff0d;color:#f3e8cf;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transform-origin:var(--ox,50%) var(--oy,100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 #coach[hidden]{display:none}
 #coach header h2{margin:0 0 16px;font:400 24px/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.01em;color:#fff3d8}
 #coach .steps{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -254,7 +254,11 @@ body.coaching #welcome{display:none}
 body.coaching #markers button{animation:coach-pulse 1.8s ease-in-out infinite}
 body.coaching #screen-hint{display:none}
 .room-nav #room-help{min-width:34px;padding:0 10px;font:700 14px/1 ui-monospace,monospace;color:#e4c68f}
-@keyframes coach-in{from{opacity:0;transform:translate(-50%,12px)}}
+#coach.enter{animation:coach-pop .5s cubic-bezier(.2,.9,.3,1.12) both}
+#coach.leaving{animation:coach-pop .32s cubic-bezier(.5,0,.75,0) reverse both}
+@keyframes coach-pop{from{opacity:0;transform:translateX(-50%) scale(.06)}35%{opacity:1}to{opacity:1;transform:translateX(-50%) scale(1)}}
+/* A small tail points down at the button the guide came from. */
+#coach:after{content:"";position:absolute;left:var(--tail,50%);bottom:-8px;width:16px;height:16px;margin-left:-8px;transform:rotate(45deg);background:#0f1914;border-right:1px solid #e4cf9c3d;border-bottom:1px solid #e4cf9c3d}
 @keyframes coach-pulse{0%,100%{box-shadow:0 0 0 0 #ffbf5a00,0 10px 26px #000a}50%{box-shadow:0 0 0 6px #ffbf5a33,0 10px 26px #000a}}
 @media (max-width:900px){
  #coach{bottom:84px;padding:18px 16px 14px}
@@ -267,7 +271,7 @@ body.coaching #screen-hint{display:none}
  #coach-done{width:100%}
  #coach .coach-note{text-align:center}
 }
-@media (prefers-reduced-motion:reduce){#coach,body.coaching #markers button{animation:none}}
+@media (prefers-reduced-motion:reduce){#coach,#coach.enter,#coach.leaving,body.coaching #markers button{animation:none}}
 #room-settings-panel .help-link{display:block;width:100%;margin:0 0 6px;padding:10px;border:0;border-radius:8px;background:#ffffff0d;color:#f3e8cf;font:600 13px/1.2 system-ui,sans-serif;text-align:left;cursor:pointer}
 #room-settings-panel .help-link:hover{background:#ffffff18}
 @media (max-width:600px){.room-nav #room-help{display:none}}

@@ -371,3 +371,41 @@ body[data-view="computer"] .corner-tools,body.reading .corner-tools,body.desktop
 /* The guide's tail points at the corner "?" when it comes from above. */
 #coach.tail-up:after{bottom:auto;top:-8px;transform:rotate(225deg)}
 #coach.no-tail:after{display:none}
+
+/* Chapter navigation (v40): progress line, sticky side contents when there's room, chapter bar when not. */
+.chapter-host{container-type:inline-size;--cn-brass:#e4c68f;--cn-line:#e4cf9c26}
+.chapter-progress{position:sticky;top:var(--chapter-top,0);z-index:6;height:3px;margin:0 0 -3px;background:#e4cf9c14;pointer-events:none}
+.chapter-progress span{display:block;height:100%;background:linear-gradient(90deg,#c99a4e,#ffd38a);transform-origin:0 50%;transform:scaleX(0);transition:transform .12s linear}
+.chapter-bar{position:sticky;top:calc(var(--chapter-top,0px) + 3px);z-index:5;display:none;align-items:center;gap:6px;margin:0 0 8px;padding:8px 10px;background:linear-gradient(180deg,#131e19f7,#131e19e8);border-bottom:1px solid var(--cn-line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.chapter-bar .cb-step{flex:none;width:36px;height:36px;border:1px solid #e4cf9c33;border-radius:10px;background:#ffffff08;color:var(--cn-brass);font:600 20px/1 Georgia,serif;cursor:pointer}
+.chapter-bar .cb-step:disabled{opacity:.3;cursor:default}
+.chapter-bar .cb-current{flex:1;min-width:0;display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border:0;border-radius:10px;background:#ffffff0a;color:#f3e8cf;text-align:left;cursor:pointer;font:500 14px/1.2 system-ui,sans-serif}
+.chapter-bar .cb-current small{flex:none;font:600 11px/1 ui-monospace,monospace;color:var(--cn-brass);letter-spacing:.04em}
+.chapter-bar .cb-current span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chapter-bar .cb-current i{font-style:normal;color:#a7b4a5;font-size:11px}
+.chapter-bar .cb-list{position:absolute;left:10px;right:10px;top:calc(100% + 4px);max-height:min(60vh,420px);overflow:auto;margin:0;padding:6px;list-style:none;border-radius:14px;border:1px solid #e4cf9c33;background:#111b17fa;box-shadow:0 20px 50px #000c}
+.chapter-bar .cb-list[hidden]{display:none}
+.chapter-layout{display:block}
+.chapter-toc{display:none}
+.chapter-toc ol,.chapter-bar .cb-list{list-style:none}
+.chapter-toc ol{margin:0;padding:0}
+.chapter-toc p{margin:0 0 10px;font:600 11px/1 ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--cn-brass)}
+[data-ci]{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:baseline;width:100%;padding:7px 10px;border:0;border-radius:9px;background:none;color:#b9c3b3;text-align:left;cursor:pointer;font:14px/1.35 system-ui,-apple-system,sans-serif;transition:background .15s,color .15s}
+[data-ci] small{font:600 11px/1 ui-monospace,monospace;color:#8c998a}
+[data-ci]:hover{background:#ffffff0a;color:#f3e8cf}
+[data-ci].on{background:#e4c68f1c;color:#fff3d8;box-shadow:inset 2px 0 0 #ffbf5a}
+[data-ci].on small{color:#ffd38a}
+.chapter-top{margin-top:12px;padding:8px 10px;border:0;border-radius:9px;background:none;color:#a7b4a5;font:600 12.5px/1 system-ui,sans-serif;cursor:pointer}
+.chapter-top:hover{color:#fff3d8;background:#ffffff0a}
+/* The old in-article contents block is replaced by this navigation. */
+.chapter-host .case-contents,.chapter-host nav.contents{display:none}
+@container (min-width:980px){
+ .chapter-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:36px;align-items:start}
+ .chapter-toc{display:block;position:sticky;top:calc(var(--chapter-top,0px) + 24px);max-height:calc(100vh - var(--chapter-top,0px) - 220px);overflow:auto;padding:4px 0 12px;margin-top:8px}
+ .chapter-host .reader{margin:0}
+}
+@container (max-width:979px){.chapter-bar{display:flex}}
+#zone-panel.project-focus .chapter-layout{padding:0 28px 0 24px}
+#zone-panel.project-focus .chapter-layout .reader{padding-left:0;padding-right:12px}
+#zone-panel.project-focus .reader-bar{background:#131e19!important;border-bottom:1px solid #e4cf9c1f}
+@media (max-width:900px){#zone-panel.project-focus .chapter-layout{padding:0}#zone-panel.project-focus .chapter-layout .reader{padding:12px 18px 48px}}

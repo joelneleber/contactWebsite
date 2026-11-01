@@ -153,3 +153,48 @@ body #markers button:hover b,body #markers button:focus-visible b{color:#ffd88f}
 /* Station lists show a preview of each project. */
 .zone-card.has-thumb{display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
 .zone-thumb{width:96px;height:68px;object-fit:cover;border-radius:8px;background:#d9d6c4;box-shadow:0 1px 0 #fff8 inset,0 2px 8px #2a3a2a26}
+
+/* HUD refresh (v22): station panels match the dark tags and bottom nav.
+   Desktop: a docked dark-glass side panel. Phones: a bottom sheet with a grab handle. */
+#zone-panel:not(.project-book){--hud-ink:#f3e8cf;--hud-muted:#b7c2b3;--hud-faint:#8f9c8d;--hud-brass:#dcbc7f;--hud-line:#e4cf9c26;
+ background:linear-gradient(160deg,#16231ef2,#101a16f5);color:var(--hud-ink);border:1px solid #e4cf9c33;border-radius:16px;
+ box-shadow:0 24px 70px #000a,inset 0 1px 0 #ffffff0d;backdrop-filter:blur(16px) saturate(1.1);-webkit-backdrop-filter:blur(16px) saturate(1.1);
+ top:24px;bottom:110px;padding:30px 26px 26px;scrollbar-color:#e4cf9c40 transparent}
+#zone-panel:not(.project-book) .panel-close{color:var(--hud-muted);width:36px;height:36px;border-radius:50%;right:14px;top:14px;font-size:20px;line-height:1;transition:background .15s}
+#zone-panel:not(.project-book) .panel-close:hover,#zone-panel:not(.project-book) .panel-close:focus-visible{background:#ffffff14;color:var(--hud-ink)}
+#zone-panel:not(.project-book) .zone-kicker{color:var(--hud-brass);letter-spacing:2px}
+#zone-panel:not(.project-book) .zone-title{color:#fff3d8}
+#zone-panel:not(.project-book) .zone-description,#zone-panel:not(.project-book) .story-copy,#zone-panel:not(.project-book) .project-showcase .purpose,#zone-panel:not(.project-book) .showcase-notes p{color:var(--hud-muted)}
+#zone-panel:not(.project-book) .zone-card{color:var(--hud-ink);border-top-color:var(--hud-line);border-radius:10px;padding:16px 10px;margin:0 -10px;width:calc(100% + 20px);transition:background .15s}
+#zone-panel:not(.project-book) .zone-card:hover,#zone-panel:not(.project-book) .zone-card:focus-visible{background:#ffffff0d;outline:none}
+#zone-panel:not(.project-book) .zone-card strong{color:#f6ead0}
+#zone-panel:not(.project-book) .zone-card small{color:var(--hud-faint)}
+#zone-panel:not(.project-book) .zone-thumb{background:#22302a;box-shadow:0 0 0 1px #e4cf9c22,0 4px 12px #0006}
+#zone-panel:not(.project-book) .zone-back{color:var(--hud-brass);font:600 12px system-ui}
+#zone-panel:not(.project-book) .zone-photo{border-radius:10px}
+#zone-panel:not(.project-book) .project-kind{color:var(--hud-brass)}
+#zone-panel:not(.project-book) h2,#zone-panel:not(.project-book) h3{color:#fff3d8}
+#zone-panel:not(.project-book) .project-source{color:var(--hud-brass);border-color:#b59c70}
+#zone-panel:not(.project-book) details,#zone-panel:not(.project-book) figcaption,#zone-panel:not(.project-book) .showcase-gallery figcaption{color:var(--hud-faint)!important}
+#zone-panel:not(.project-book) .showcase-image{background:#0c1512}
+#zone-panel:not(.project-book) .showcase-notes{border-top-color:var(--hud-line)}
+#zone-panel:not(.project-book) .gallery-toolbar button{color:var(--hud-ink);border-color:#e4cf9c40}
+#zone-panel:not(.project-book) .gallery-thumbnails button[aria-pressed="true"]{border-color:var(--hud-brass)}
+#zone-panel:not(.project-book) .reading-list li{border-top-color:var(--hud-line)}
+#zone-panel:not(.project-book) .reading-number,#zone-panel:not(.project-book) .reading-list small{color:var(--hud-brass)}
+#zone-panel:not(.project-book) .project-tech span{color:var(--hud-muted);border-color:#e4cf9c33}
+/* Headings get programmatic focus for screen readers; don't draw a ring around them. */
+#zone-panel [tabindex="-1"]:focus,#zone-content h2:focus{outline:none}
+/* Where am I: a small context pill at the top of each station view. */
+body:not([data-view="room"]):not([data-view="computer"]) .location-label{display:block;position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:5;max-width:min(560px,calc(100vw - 32px));padding:9px 16px 9px 30px;border-radius:999px;background:#121d19e6;border:1px solid #e4cf9c33;color:#f1e3c2;font:600 10px/1.2 ui-monospace,monospace;letter-spacing:1.6px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 8px 24px #0007;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+body:not([data-view="room"]):not([data-view="computer"]) .location-label:before{content:"";position:absolute;left:13px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#f0b850;box-shadow:0 0 8px #f0b850}
+@media(min-width:901px){body:has(#zone-panel:not([hidden]):not(.project-book):not(.project-focus)) .location-label{left:calc((100vw - min(410px,36vw) - 24px)/2)}}
+@media(max-width:900px){
+ #zone-panel:not(.project-book):not(.project-focus){left:8px;right:8px;top:auto;bottom:84px;width:auto;max-height:min(58dvh,560px);border-radius:22px;padding:30px 20px 18px}
+ #zone-panel:not(.project-book):not(.project-focus):before{content:"";position:sticky;display:block;top:-18px;margin:-18px auto 12px;width:38px;height:4px;border-radius:2px;background:#e4cf9c4d}
+ #zone-panel:not(.project-book) .zone-title{font-size:28px;margin:8px 0 10px}
+ #zone-panel:not(.project-book) .zone-card.has-thumb{grid-template-columns:78px 1fr;gap:12px}
+ #zone-panel:not(.project-book) .zone-thumb{width:78px;height:58px}
+ #zone-panel:not(.project-book) .zone-card strong{font-size:18px}
+ body:not([data-view="room"]):not([data-view="computer"]) .location-label{top:14px;font-size:9px;letter-spacing:1.2px}
+}

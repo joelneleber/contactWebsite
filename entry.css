@@ -18,8 +18,13 @@ body:not(.workshop-started)>:not(#entry):not(script):not(noscript){display:none!
 .loader-copy .status{margin:0;font:italic .85em Georgia,serif;color:#cfc3a8}
 #load-quip{transition:opacity .35s}
 #load-quip.fading{opacity:0}
-#loading.loader .load-pct{font:normal .78em ui-monospace,monospace;color:#9fae9c;margin-left:.6em}
+#loading.loader .load-pct{margin:.15em 0 0;font:600 2.6em/1 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:-.02em;color:#f3e6c8;font-variant-numeric:tabular-nums}
+#loading.loader .load-pct small{font-size:.45em;margin-left:.1em;color:#e4c68f}
 #loading.loader #load-message{margin:0;font:.62em ui-monospace,monospace;color:#7f8c7d}
 #loading.loader .loading-alternative{position:absolute;left:50%;bottom:max(18px,3vh);transform:translateX(-50%);margin:0;padding:8px 14px;border-radius:999px;background:#0b120fcc;color:#e9cd94;font-size:13px;white-space:nowrap}
 @keyframes loader-in{from{opacity:0}}
 @media(prefers-reduced-motion:reduce){#loading.loader{animation:none;transition:none}#load-quip{transition:none}}
+/* Text sits below the screen's title bar and never under it. */
+.loader-copy{justify-content:flex-start;gap:.4em;padding:2.3em 1.6em 1em}
+.loader-copy .about{font-size:1.05em}
+#loading.loader .load-pct{font-size:2.3em}

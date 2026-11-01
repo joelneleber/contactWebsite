@@ -16,8 +16,10 @@ window.__load=(()=>{const done={};let finished=null,shown=0,stepStart=performanc
 // delta-encoded polylines, back to front) projected with the same camera the room view uses.
 (()=>{const loading=document.getElementById('loading'),canvas=document.getElementById('bp-canvas'),quip=document.getElementById('load-quip'),pct=document.getElementById('load-pct');if(!loading||!canvas)return;
  const ctx=canvas.getContext('2d'),calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
- const lines=['Sketching the room…','Drawing the benches…','Setting out the tools…','Inking the details…'];
- let polys=null,monitorEnd=.08,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,stage=-1,W=0,H=0,dpr=1;
+ // Captions rotate every couple of seconds; the first is fixed, the rest shuffle without repeats.
+ const lines=['Tiptoeing past the sleeping cats…','Shooing the orange cat off the keyboard…','Asking the dog to scoot off the extension cord…','Bribing the tabby with treats…','Fluffing the dog bed…','Picking cat hair out of the keyboard…','Sweeping up the sawdust…','Zeroing the CNC…','Warming up the soldering iron…','Counting resistors (again)…','Untangling the extension cords…','Topping up the coffee…','Finding you a stool…','Refilling the dog’s water bowl…'];
+ const deck=[];let lastSwap=0;const nextLine=()=>{if(!deck.length)deck.push(...lines.slice(1).sort(()=>Math.random()-.5));return deck.pop();};
+ let polys=null,monitorEnd=.08,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,W=0,H=0,dpr=1;
  fetch('assets/cockpit/blueprint-room.json').then(r=>r.ok?r.json():null).then(d=>{if(!d)return;polys=d.map(l=>{const o=new Float32Array(l.length);let x=l[0],y=l[1],z=l[2];for(let i=0;i<l.length;i+=3){if(i){x+=l[i];y+=l[i+1];z+=l[i+2];}o[i]=x/100;o[i+1]=y/100;o[i+2]=z/100;}o.monitor=true;for(let i=0;i<o.length;i+=3)if(Math.abs(o[i])>1.25||o[i+1]<1.3||o[i+1]>2.75||o[i+2]<-1.8||o[i+2]>-1.3){o.monitor=false;break;}return o;});layout();}).catch(()=>{});
  // Mirrors cockpit.js: destination('room') + frameStation() for the current viewport.
  function cameraFor(w,h){const aspect=w/h,mobile=w<=900,t=[0,1.45,-1.2],p0=[0,2.68,5.1];const phone=mobile&&h>w;const k=mobile?1.3:Math.max(1,1.65/aspect);const p=phone?[0,2.35,3.6]:p0.map((v,i)=>t[i]+(v-t[i])*k);if(phone)t[1]=1.55;p[0]=Math.min(3.3,Math.max(-3.25,p[0]));p[2]=Math.min(p[2],7.6);p[1]=Math.min(p[1],3.6);
@@ -45,7 +47,7 @@ window.__load=(()=>{const done={};let finished=null,shown=0,stepStart=performanc
   ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(cache,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);
   // the stroke being drawn right now, with a warm pen tip
   const s=screen[cachedUpTo];if(s&&p<1){style(ctx);const tip=stroke(ctx,s,goal-s.start);ctx.globalAlpha=1;ctx.fillStyle='#f0b850';ctx.shadowColor='#f0b850';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(tip[0],tip[1],2.6,0,7);ctx.fill();ctx.shadowBlur=0;}}
- function caption(p){loading.querySelector('.loader-copy')?.classList.toggle('on',p>=Math.min(.12,monitorEnd*.6)||!polys);pct&&(pct.textContent=Math.round(p*100));const st=Math.min(3,Math.floor(p*4));if(st!==stage&&quip){stage=st;quip.classList.add('fading');setTimeout(()=>{quip.textContent=lines[st];quip.classList.remove('fading');},300);}}
+ function caption(p){loading.querySelector('.loader-copy')?.classList.toggle('on',p>=Math.min(.12,monitorEnd*.6)||!polys);pct&&(pct.textContent=Math.round(p*100));const now=performance.now();if(!lastSwap)lastSwap=now;if(quip&&!calm&&now-lastSwap>2400&&p<.99){lastSwap=now;quip.classList.add('fading');setTimeout(()=>{quip.textContent=nextLine();quip.classList.remove('fading');},300);}}
  addEventListener('resize',layout);layout();
  let finishing=false;
  window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();
@@ -72,22 +74,9 @@ button.addEventListener('click',startWorkshop);
 const connection=navigator.connection;
 if(connection?.saveData||['slow-2g','2g'].includes(connection?.effectiveType))document.getElementById('entry-note').textContent='On a slow connection? Browse projects to keep downloads small. Photos are optional.';
 const explicit3D=new URLSearchParams(location.search).get('mode')==='3d';
-// ?loader-preview plays the loading screen on a simulated 12-second download, without loading the room.
+// ?loader-preview plays the loading screen on a simulated 12-second download on a loop, without loading the room.
 const loaderPreview=new URLSearchParams(location.search).has('loader-preview');
-if(loaderPreview){document.body.classList.add('workshop-started');entry.hidden=true;const t0=performance.now();const steps=[['css',.02],['data',.06],['code',.18],['room',.9],['setup',1]];let last=0;const run=()=>{const k=(performance.now()-t0)/12000;for(const [step,end] of steps){const start=last;last=end;window.__load.set(step,Math.max(0,Math.min(1,(k-start)/(end-start))));}last=0;if(k<1)requestAnimationFrame(run);else window.__loadDone?.();};run();}
+if(loaderPreview){document.body.classList.add('workshop-started');entry.hidden=true;const t0=performance.now();const steps=[['css',.02],['data',.06],['code',.18],['room',.9],['setup',1]];let last=0;const run=()=>{const k=(performance.now()-t0)/12000;for(const [step,end] of steps){const start=last;last=end;window.__load.set(step,Math.max(0,Math.min(1,(k-start)/(end-start))));}last=0;if(k<1)requestAnimationFrame(run);else setTimeout(()=>location.reload(),2500);};run();}
 const saveData=connection?.saveData||['slow-2g','2g'].includes(connection?.effectiveType);
 if(!loaderPreview&&(explicit3D||(document.body.dataset.defaultView==='workshop'&&!saveData)))startWorkshop();
 
-// Loading screen: the blueprint draws itself in step with the download.
-// Before the room model starts reporting progress, a slow creep keeps the pen moving.
-(()=>{const loading=document.getElementById('loading'),bar=document.getElementById('load-progress'),quip=document.getElementById('load-quip'),pct=document.getElementById('load-pct'),pen=loading?.querySelector('.bp-pen');if(!loading||!bar||!pen)return;
- const strokes=[...loading.querySelectorAll('.bp-draw > *')].map(el=>{const l=el.getTotalLength();el.style.strokeDasharray=l;el.style.strokeDashoffset=l;return{el,l};});
- const lines=['Sketching the room…','Drawing the benches…','Hanging the lamps…','Inking the details…'];
- const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;let shown=0,start=0,stage=-1;
- function draw(p){const n=strokes.length;strokes.forEach((s,i)=>{const k=Math.max(0,Math.min(1,p*n-i));s.el.style.strokeDashoffset=s.l*(1-k);if(k>0&&k<1){const pt=s.el.getPointAtLength(s.l*k);pen.setAttribute('cx',pt.x);pen.setAttribute('cy',pt.y);}});pen.style.opacity=p<.999?1:0;pct.textContent=Math.round(p*100);
-  const st=Math.min(3,Math.floor(p*4));if(st!==stage){stage=st;quip.classList.add('fading');setTimeout(()=>{quip.textContent=lines[st];quip.classList.remove('fading');},300);}}
- function tick(t){if(!document.body.classList.contains('workshop-started')||loading.hidden){start=0;requestAnimationFrame(tick);return;}
-  start||=t;const real=(parseFloat(bar.style.width)||0)/100,creep=.3*(1-Math.exp(-(t-start)/5000)),target=Math.max(real,creep);
-  shown=calm?target:shown+(target-shown)*.06;draw(shown);requestAnimationFrame(tick);}
- requestAnimationFrame(tick);
-})();

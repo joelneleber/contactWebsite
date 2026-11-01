@@ -275,3 +275,82 @@ body.coaching #screen-hint{display:none}
 #room-settings-panel .help-link{display:block;width:100%;margin:0 0 6px;padding:10px;border:0;border-radius:8px;background:#ffffff0d;color:#f3e8cf;font:600 13px/1.2 system-ui,sans-serif;text-align:left;cursor:pointer}
 #room-settings-panel .help-link:hover{background:#ffffff18}
 @media (max-width:600px){.room-nav #room-help{display:none}}
+
+/* Reading sheet (v34): an opened project takes most of the screen over a dimmed room. */
+body.reading #world:after{content:"";position:fixed;inset:0;background:#070d0acc;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:1}
+body.reading #markers,body.reading .location-label,body.reading #welcome{display:none!important}
+#zone-panel.project-focus:not(.project-book){left:50%;right:auto;top:20px;bottom:96px;width:min(1000px,calc(100vw - 40px));max-height:none;transform:translateX(-50%);padding:0;border-radius:20px;background:linear-gradient(180deg,#131e19fa,#0f1814fa);z-index:15;scroll-padding-top:64px}
+#zone-panel.project-focus:not(.project-book):before{display:none}
+#zone-panel.project-focus .panel-close{display:none}
+#zone-panel.project-focus .reader-actions{display:flex;align-items:center;gap:14px}
+#zone-panel.project-focus .reader-close{width:36px;height:36px;border:0;border-radius:50%;background:#ffffff0d;color:#e8e2cf;font-size:22px;line-height:1;cursor:pointer}
+#zone-panel.project-focus .reader-close:hover{background:#ffffff1c;color:#fff3d8}
+#zone-panel.project-focus .reader-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px 12px 24px;background:linear-gradient(180deg,#131e19 70%,#131e1900);}
+#zone-panel.project-focus .zone-back{padding:8px 12px;border-radius:9px;background:#ffffff0a;color:#e4c68f;font:600 13px/1 system-ui,sans-serif}
+#zone-panel.project-focus .zone-back:hover{background:#ffffff14}
+#zone-panel.project-focus .reader-page{font:600 13px/1 system-ui,sans-serif;color:#b9c3b3;text-decoration:none}
+#zone-panel.project-focus .reader-page:hover{color:#fff3d8}
+#zone-panel.project-focus .reader{padding:18px 40px 64px}
+#zone-panel.project-focus .reader-loading{color:#a7b4a5}
+@media (max-width:900px){
+ #zone-panel.project-focus:not(.project-book){left:6px;right:6px;top:6px;bottom:78px;width:auto;transform:none;border-radius:16px}
+  #zone-panel.project-focus .reader-bar{padding:10px 10px 10px 12px}
+ #zone-panel.project-focus .reader-page{display:none}
+ #zone-panel.project-focus .reader{padding:12px 18px 48px}
+}
+
+/* The book as its own control (v35): page halves turn the page, arrows sit beside the book,
+   "Read about this project" sits on the page, and a slim pill shows where you are. */
+#book-ui{position:fixed;inset:0;z-index:9;pointer-events:none;--bx:30vw;--by:25vh;--bw:40vw;--bh:40vh}
+#book-ui[hidden]{display:none}
+#book-ui>*{pointer-events:auto;opacity:0;transition:opacity .35s}
+#book-ui.ready>*{opacity:1}
+.book-zone{position:fixed;top:var(--by);height:var(--bh);width:calc(var(--bw)/2);border:0;background:none;padding:0;cursor:pointer}
+.book-zone.prev{left:var(--bx);cursor:w-resize}
+.book-zone.next{left:calc(var(--bx) + var(--bw)/2);cursor:e-resize}
+.book-zone:after{content:"";position:absolute;inset:0;opacity:0;transition:opacity .2s;pointer-events:none}
+.book-zone.next:after{background:linear-gradient(225deg,#fff7e035 0,#fff7e012 9%,transparent 22%)}
+.book-zone.prev:after{background:linear-gradient(135deg,#fff7e035 0,#fff7e012 9%,transparent 22%)}
+.book-zone:not(:disabled):hover:after{opacity:1}
+.book-zone:disabled{cursor:default}
+.book-arrow{position:fixed;top:calc(var(--by) + var(--bh)/2 - 30px);width:60px;height:60px;border-radius:50%;display:grid;place-items:center;border:1px solid #e3c99b66;background:linear-gradient(180deg,#1d2c25f2,#121c18f2);color:#ffd38a;cursor:pointer;box-shadow:0 12px 30px #000a;transition:transform .15s,background .15s,opacity .35s}
+.book-arrow svg{width:26px;height:26px}
+.book-arrow.prev{left:max(12px,calc(var(--bx) - 80px))}
+.book-arrow.next{left:min(calc(100vw - 72px),calc(var(--bx) + var(--bw) + 20px))}
+.book-arrow:not(:disabled):hover{transform:scale(1.07);background:linear-gradient(180deg,#2a3c33,#16241e)}
+.book-arrow:disabled,#book-ui.ready .book-arrow:disabled{opacity:.25;cursor:default}
+.book-explore{position:fixed;left:calc(var(--bx) + var(--bw)*.75);top:calc(var(--by) + var(--bh) - 58px);transform:translateX(-50%);padding:11px 16px;border:0;border-radius:11px;background:linear-gradient(180deg,#f7ecd2,#ead9b4);color:#1f2c25;font:600 14px/1 system-ui,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px -8px #000c}
+.book-explore:hover{filter:brightness(1.05)}
+.book-pill{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:8px 8px 8px 16px;border-radius:999px;border:1px solid #e4cf9c33;background:#111b17ee;color:#e8e2cf;font:500 13.5px/1 system-ui,sans-serif;box-shadow:0 12px 30px #0009;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);white-space:nowrap;max-width:calc(100vw - 24px)}
+.book-dots{display:flex;gap:6px}
+.book-dots i{width:7px;height:7px;border-radius:50%;background:#e4cf9c40}
+.book-dots i.on{background:#ffbf5a;box-shadow:0 0 8px #ffb347}
+.book-title{overflow:hidden;text-overflow:ellipsis}
+.book-close{padding:8px 13px;border:0;border-radius:999px;background:#ffffff12;color:#f3e8cf;font:600 13px/1 system-ui,sans-serif;cursor:pointer}
+.book-close:hover{background:#ffffff22}
+body[data-view="book"] .room-nav{display:none!important}
+@media (max-width:900px){.book-arrow{width:48px;height:48px;top:calc(var(--by) + var(--bh) + 14px)}.book-arrow.prev{left:calc(50% - 64px)}.book-arrow.next{left:calc(50% + 16px)}.book-explore{left:50%;top:calc(var(--by) + var(--bh) + 76px)}.book-pill{bottom:14px}}
+
+/* The dock (v35): each station gets a line icon over its name; the current one wears an amber light. */
+body .room-nav,body[data-view] .room-nav{gap:2px!important;padding:6px!important;border-radius:20px!important;border:1px solid #e4cf9c3a!important;background:linear-gradient(180deg,#1b2a23f2,#0f1814f7)!important;box-shadow:0 18px 44px -12px #000d,inset 0 1px 0 #ffffff12!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);align-items:stretch}
+body .room-nav .nav-label{display:none!important}
+body .room-nav button[data-view],body .room-nav .nav-contact{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:78px;min-height:58px!important;padding:8px 10px 10px!important;border-radius:14px!important;background:none!important;color:#c3cbbd!important;font:600 12px/1 system-ui,-apple-system,sans-serif!important;letter-spacing:.01em;text-decoration:none;transition:background .15s,color .15s,transform .15s;border-left:0!important;margin:0!important}
+body .room-nav .dock-ico{width:21px;height:21px;color:#d9c7a0;transition:color .15s,transform .15s}
+body .room-nav button[data-view]:hover,body .room-nav .nav-contact:hover{background:#ffffff0d!important;color:#fff3d8!important}
+body .room-nav button[data-view]:hover .dock-ico,body .room-nav .nav-contact:hover .dock-ico{transform:translateY(-2px);color:#ffd38a}
+body .room-nav button[data-view][aria-pressed="true"]{background:linear-gradient(180deg,#ffffff16,#ffffff08)!important;color:#fff3d8!important;box-shadow:inset 0 1px 0 #ffffff14,0 0 0 1px #e4cf9c2e}
+body .room-nav button[data-view][aria-pressed="true"] .dock-ico{color:#ffd38a}
+body .room-nav button[data-view][aria-pressed="true"]:after{content:"";position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#ffbf5a;box-shadow:0 0 8px #ffb347}
+body .room-nav .nav-contact{margin-left:6px!important}
+body .room-nav .nav-contact:before{content:"";position:absolute;left:-4px;top:12px;bottom:12px;width:1px;background:#e4cf9c26}
+body .room-nav #room-help,body .room-nav #room-settings{align-self:center;min-width:38px!important;height:38px;padding:0!important;border-radius:12px!important;color:#cdbf9c!important}
+body .room-nav #room-help:hover,body .room-nav #room-settings:hover{background:#ffffff10!important;color:#fff3d8!important}
+@media (max-width:900px){
+ body .room-nav,body[data-view] .room-nav{left:8px!important;right:8px!important;transform:none!important;max-width:none!important;justify-content:space-between;padding:5px!important}
+ body .room-nav button[data-view],body .room-nav .nav-contact{flex:1;min-width:0;min-height:52px!important;padding:7px 2px 9px!important;font-size:10.5px!important;gap:4px}
+ body .room-nav .dock-ico{width:19px;height:19px}
+ body .room-nav .nav-contact{margin-left:4px!important}
+ body .room-nav #room-settings{min-width:34px!important}
+}
+body .room-nav button[data-view] span{font:inherit!important;color:inherit!important}
+.book-zone:focus,.book-zone:focus-visible{outline:none}

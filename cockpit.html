@@ -1,76 +1,12 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#171d1b"><title>Joey’s command center</title><link rel="stylesheet" href="entry.css?v=23"><script>/* Phones and small tablets get the lightweight site; ?mode=3d still opens the room. */if(!/[?&]mode=3d\b/.test(location.search)&&matchMedia('(max-width: 900px), (pointer: coarse) and (max-width: 1180px)').matches)location.replace('portfolio.html');</script><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><script src="entry.js?v=23" defer></script></head><body data-default-view="workshop">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#171d1b"><title>Joey’s command center</title><link rel="stylesheet" href="entry.css?v=25"><script>/* Phones and small tablets get the lightweight site; ?mode=3d still opens the room. */if(!/[?&]mode=3d\b/.test(location.search)&&matchMedia('(max-width: 900px), (pointer: coarse) and (max-width: 1180px)').matches)location.replace('portfolio.html');</script><script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script><script src="entry.js?v=25" defer></script></head><body data-default-view="workshop">
 <section id="entry" aria-label="Welcome"><div class="entry-inner"><p class="eyebrow">HEY, I'M JOEY.</p><h1>Welcome to my little world.</h1><p>Software engineer. Tinkerer. Usually making something.<br>Pull up a stool and have a look around.</p><div class="entry-choices"><button id="enter-workshop">Explore the 3D workshop ↗</button><a class="entry-secondary" href="portfolio.html">Prefer a simple project browser? ↗</a></div><small id="entry-note">Explore the room, open a project, and see what’s on the workbench.</small><a class="entry-contact" href="contact.html">Say hello ↗</a></div></section>
 <div id="world" aria-label="Joey’s interactive command center"></div><div class="room-shade" aria-hidden="true"></div>
 
 <div id="loading" class="loader" role="status" aria-live="polite">
-<div class="loader-art" aria-hidden="true"><svg viewBox="0 0 360 380">
-<defs>
- <filter id="sketch" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence id="sketch-noise" type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="1"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter>
- <radialGradient id="glow" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#ffd896" stop-opacity=".95"/><stop offset=".55" stop-color="#c98a45" stop-opacity=".55"/><stop offset="1" stop-color="#3b2a1a" stop-opacity="0"/></radialGradient>
- <linearGradient id="spill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd896" stop-opacity=".35"/><stop offset="1" stop-color="#ffd896" stop-opacity="0"/></linearGradient>
-</defs>
-<g filter="url(#sketch)" stroke="#1a1410" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
- <rect x="78" y="34" width="204" height="334" rx="3" fill="#2a1d14"/>
- <rect x="78" y="34" width="204" height="334" rx="3" fill="url(#glow)" class="door-glow" stroke="none"/>
- <g stroke="#6b4a2c" stroke-width="2" opacity=".55" fill="none"><circle cx="104" cy="80" r="2"/><circle cx="124" cy="80" r="2"/><circle cx="104" cy="100" r="2"/><circle cx="124" cy="100" r="2"/><circle cx="244" cy="96" r="2"/><circle cx="262" cy="96" r="2"/><circle cx="244" cy="116" r="2"/><circle cx="262" cy="116" r="2"/><path d="M98 120h40M238 136h36"/></g>
- <path d="M238 34v20" stroke="#3a2a18" stroke-width="2"/>
- <path class="lamp" d="M238 54 l12 18 h-24 z" fill="#f0b850" stroke="#3a2a18" stroke-width="2.5"/>
- <rect x="70" y="26" width="220" height="344" rx="4" fill="none" stroke="#7a5534" stroke-width="10"/>
- <rect x="70" y="26" width="220" height="344" rx="4" fill="none" stroke-width="3"/>
- <path d="M78 34 L36 18 L36 382 L78 368 Z" fill="#5a3d24"/>
- <path d="M46 40v316M60 46v304" stroke="#3e2a18" stroke-width="2" fill="none"/>
- <circle cx="68" cy="210" r="4" fill="#d6b37a" stroke-width="2"/>
- <path d="M90 370 L40 380 H330 L270 370 Z" fill="url(#spill)" stroke="none"/>
- <path d="M0 370 H360" stroke="#3a2c20" stroke-width="3"/>
- <!-- legs and shoes -->
- <path d="M160 290 L157 360 M200 290 L203 360" stroke="#2d3540" stroke-width="22" fill="none"/>
- <path d="M140 368 q2-12 18-12 h10 q6 0 6 12 z M190 368 q0-12 8-12 h10 q16 0 18 12 z" fill="#3b2a20"/>
- <g class="breathe">
-  <!-- left arm with a mug -->
-  <path d="M146 202 C128 224 118 250 124 274" fill="none" stroke="#33415f" stroke-width="20"/>
-  <!-- torso: navy henley -->
-  <path d="M142 196 Q180 182 218 196 L214 298 Q180 304 146 298 Z" fill="#33415f"/>
-  <path d="M168 190 q12 10 24 0" fill="none" stroke-width="2.5"/>
-  <path d="M180 194 V238" stroke="#d9d2c2" stroke-width="7"/><path d="M176 194 V238 M184 194 V238" stroke-width="1.6" fill="none"/>
-  <circle cx="180" cy="208" r="2" fill="#f4efe4" stroke-width="1.2"/><circle cx="180" cy="222" r="2" fill="#f4efe4" stroke-width="1.2"/>
-  <path d="M152 232 q6 30 2 60 M208 232 q-6 30 -2 60" stroke="#26314a" stroke-width="2" fill="none" opacity=".7"/>
-  <g class="mug"><rect x="100" y="266" width="28" height="30" rx="4" fill="#e7dcc6"/><path d="M128 274 q10 0 10 9 q0 9 -10 9" fill="none" stroke-width="3"/><circle cx="124" cy="282" r="9" fill="#f1c7a5"/>
-   <path class="steam s1" d="M108 258 q-6 -10 0 -18 q6 -8 0 -16" fill="none" stroke="#efe3cb" stroke-width="2.5"/>
-   <path class="steam s2" d="M119 258 q6 -10 0 -18 q-6 -8 0 -16" fill="none" stroke="#efe3cb" stroke-width="2.5"/></g>
-  <!-- neck and head -->
-  <path d="M170 168 V194 Q180 200 190 194 V168" fill="#efc3a0"/>
-  <g class="head">
-   <ellipse cx="151" cy="138" rx="7" ry="11" fill="#efc3a0"/><ellipse cx="209" cy="138" rx="7" ry="11" fill="#efc3a0"/>
-   <path d="M152 120 Q150 170 180 178 Q210 170 208 120 Q206 88 180 86 Q154 88 152 120 Z" fill="#f4cba8"/>
-   <path d="M150 124 Q146 92 170 84 Q196 74 210 96 Q214 108 210 124 Q206 104 192 100 Q176 96 164 104 Q154 110 150 124 Z" fill="#d7a868"/>
-   <path d="M160 100 Q176 84 200 92 M166 108 Q182 92 204 102 M172 96 Q186 86 198 88" fill="none" stroke="#a87a42" stroke-width="2"/>
-   <path d="M158 124 q8 -5 15 -1 M187 123 q8 -4 15 1" fill="none" stroke="#b98a52" stroke-width="2.5"/>
-   <g class="eyes"><path d="M160 135 q6 -6 12 0 M188 135 q6 -6 12 0" fill="none" stroke-width="3"/></g>
-   <path d="M179 137 q-3 10 1 14" fill="none" stroke="#c48a68" stroke-width="2"/>
-   <path d="M164 155 Q180 173 196 155 Q180 161 164 155 Z" fill="#fff8ee" stroke-width="2.5"/>
-   <ellipse cx="160" cy="153" rx="6" ry="3.5" fill="#f0a08a" opacity=".45" stroke="none"/><ellipse cx="200" cy="153" rx="6" ry="3.5" fill="#f0a08a" opacity=".45" stroke="none"/>
-  </g>
-  <!-- right arm, waving -->
-  <g class="wave-arm">
-   <path d="M212 202 C234 198 246 184 252 160" fill="none" stroke="#33415f" stroke-width="20"/>
-   <g class="wave-hand"><path d="M252 162 L257 132" stroke="#33415f" stroke-width="17" fill="none"/>
-    <path d="M249 130 q-3 -16 3 -24 q3 -4 6 0 l1 12 l2 -18 q3 -5 7 0 l0 18 l3 -14 q4 -4 7 1 l-2 18 l4 -8 q4 -2 5 3 q-2 14 -10 22 q-10 8 -22 0 z" fill="#f4cba8" stroke-width="2.5"/></g>
-  </g>
- </g>
- <!-- orange cat at his feet -->
- <g class="cat">
-  <path class="cat-tail" d="M296 362 q24 -2 22 -26 q-1 -12 -10 -12" fill="none" stroke="#d98a3c" stroke-width="9"/>
-  <path d="M244 368 q-4 -40 22 -50 l-4 -16 l12 10 q8 -2 16 0 l12 -10 l-4 16 q20 12 18 50 z" fill="#e39a4c"/>
-  <path d="M262 334 q4 3 8 0 M282 334 q4 3 8 0" fill="none" stroke-width="2.5"/>
-  <path d="M272 342 l4 3 l4 -3" fill="none" stroke-width="2"/>
-  <path d="M256 352 q8 -4 12 2 M286 352 q8 -6 12 0" fill="none" stroke="#b9682a" stroke-width="2.5"/>
- </g>
-</g>
-<g class="motes" fill="#ffe2a8"><circle cx="110" cy="200" r="1.8"/><circle cx="250" cy="230" r="1.4"/><circle cx="130" cy="120" r="1.2"/><circle cx="232" cy="170" r="1.6"/><circle cx="200" cy="262" r="1.2"/></g>
-</svg><p class="bubble">Come on in!</p></div>
-<div class="loader-copy"><p class="eyebrow">COME ON IN</p><h1>Pull up a stool.</h1><p id="load-quip">Sweeping up the sawdust…</p>
-<div class="load-track tape" aria-hidden="true"><span id="load-progress"></span></div><p id="load-message">Opening the command center…</p><a class="loading-alternative" href="portfolio.html">Skip the download · browse the lightweight site ↗</a></div>
+<canvas id="bp-canvas" aria-hidden="true"></canvas>
+<div class="loader-copy"><p class="eyebrow">COME ON IN</p><h1>Pull up a stool.</h1><p id="load-quip">Sketching the room…</p><p class="load-pct"><span id="load-pct">0</span>%</p>
+<div class="load-track" hidden><span id="load-progress"></span></div><p id="load-message">Opening the command center…</p><a class="loading-alternative" href="portfolio.html">Skip the download · browse the lightweight site ↗</a></div>
 </div>
 <section id="welcome"><p class="eyebrow">HEY, I’M JOEY.</p><p class="welcome-story">Software engineer. Tinkerer. Usually making something.<br>Welcome to my little world—pull up a stool and have a look around.</p><h1>Make something worth sharing.</h1></section>
 <div id="markers" aria-label="Clickable workstations"><button data-view="wood" data-point="-2.5,1.8,-0.2"><span>01</span>Woodshop <b>↗</b></button><button data-view="computer" data-point="0,2.25,-1.52"><span>02</span>My computer <b>↗</b></button><button data-view="lab" data-point="2.5,1.9,-0.2"><span>03</span>Electronics lab <b>↗</b></button><button data-view="printer" data-context="lab" data-point="3.05,1.8,3.1">Printed projects <b>↗</b></button><button data-view="lamp" data-context="wood" data-point="-3.13,1.42,.35">The wedding lamp <b>↗</b></button><button data-view="book" data-context="wood" data-point="-2.65,1.18,2.35">Woodshop projects <b>↗</b></button><button data-view="sign" data-context="wood" data-point="-3.52,2.35,4.45">The wedding sign <b>↗</b></button><button data-view="cnc" data-context="wood" data-point="-2.57,2,-.4">CNC projects <b>↗</b></button><button data-view="books" data-context="lab" data-point="3.6,3.05,3.05">Books &amp; ideas <b>↗</b></button><button data-view="scope" data-context="lab" data-point="2.12,1.51,-.734">Electronics &amp; sensors <b>↗</b></button></div>

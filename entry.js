@@ -1,6 +1,6 @@
 // One progress figure for the whole load, weighted by what each step really downloads
 // (compressed sizes): styles, project data, the 3D code, the room model, then scene setup.
-const loadSteps=[['css',.005],['data',.04],['code',.1],['room',.775],['setup',.08]];
+const loadSteps=[['css',.005],['data',.035],['code',.09],['room',.62],['setup',.25]];
 window.__load=(()=>{const done={};let finished=null,shown=0,stepStart=performance.now(),current='css';
  const actual=()=>loadSteps.reduce((sum,[k,w])=>sum+w*(done[k]||0),0);
  return{
@@ -56,7 +56,9 @@ const BLUEPRINT='BLMBhAPBA+gCAAAEGACzAq8BAAAEGACzAq8BAAAEMAyjAnEAAARDZKMCAAsABER
  addEventListener('resize',layout);layout();
  let finishing=false;const pace={last:0,start:0,speed:0,prevF:0,recent:0};
  window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();
-  const t0=performance.now();const wait=()=>{if(window.__load.shown>=.999||performance.now()-t0>1100){loading.classList.add('done');setTimeout(()=>{loading.hidden=true;loading.classList.remove('done');},calm?0:950);}else requestAnimationFrame(wait);};wait();};
+  // Let the percentage and drawing finish, then fade; tell the room once the loader is gone.
+  const t0=performance.now();const wait=()=>{if(window.__load.shown>=.999||performance.now()-t0>900){loading.classList.add('done');setTimeout(()=>{loading.hidden=true;loading.classList.remove('done');window.__load._resolve?.();},calm?0:950);}else requestAnimationFrame(wait);};wait();};
+ let lastDrawn=-1;
  function tick(now){requestAnimationFrame(tick);if(loading.hidden||!document.body.classList.contains('workshop-started'))return;
   const L=window.__load,f=L.target(now),dt=Math.min(.1,(now-(pace.last||now))/1000);pace.last=now;pace.start||=now;let v=L.shown;
   if(dt>0)pace.recent+=((f-pace.prevF)/dt-pace.recent)*Math.min(1,dt/2);pace.prevF=f;
@@ -64,8 +66,8 @@ const BLUEPRINT='BLMBhAPBA+gCAAAEGACzAq8BAAAEGACzAq8BAAAEMAyjAnEAAARDZKMCAAsABER
    // Real speed (overall average, or the recent speed once the model streams) gives a time-left estimate; the shown figure glides
    // toward 100% at the pace that lands there when the download does, never far ahead of reality.
    const elapsed=Math.max(.25,(now-pace.start)/1000),rate=Math.max(f/elapsed,pace.recent*.85),left=rate>0?(1-f)/rate:30,want=(1-v)/Math.max(.3,left);
-   pace.speed+=(want-pace.speed)*Math.min(1,dt*3);v=Math.min(v+Math.max(0,pace.speed)*dt,f+.06,.99);}
-  if(finishing&&1-v<.003)v=1;L.shown=Math.max(L.shown,v);draw(L.shown);caption(L.shown);}
+   pace.speed+=(want-pace.speed)*Math.min(1,dt*3);v=Math.min(v+Math.max(0,pace.speed)*dt,f+.02,.99);}
+  if(finishing&&1-v<.003)v=1;L.shown=Math.max(L.shown,v);if(L.shown!==lastDrawn){lastDrawn=L.shown;draw(L.shown);}caption(L.shown);}
  requestAnimationFrame(tick);
 })();
 
@@ -76,10 +78,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=26';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=28';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=26');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=28');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

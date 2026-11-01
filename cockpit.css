@@ -356,3 +356,18 @@ body .room-nav button[data-view] span{font:inherit!important;color:inherit!impor
 .book-zone:focus,.book-zone:focus-visible{outline:none}
 /* The "?" in the dock opens the guide on wider screens, so the gear menu doesn't repeat it there. */
 @media (min-width:601px){#room-settings-panel .help-link{display:none}}
+
+/* Help and settings live in the top-right corner (v38), so the dock only holds places to go. */
+.corner-tools{position:fixed;top:16px;right:16px;z-index:9;display:flex;gap:8px}
+.corner-tools button{display:grid!important;place-items:center;width:42px!important;height:42px!important;min-width:0!important;padding:0!important;border-radius:50%!important;border:1px solid #e4cf9c3a!important;background:linear-gradient(180deg,#1b2a23ee,#0f1814f2)!important;color:#e4c68f!important;font:700 15px/1 ui-monospace,monospace!important;box-shadow:0 8px 22px -8px #000c;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;transition:transform .15s,background .15s}
+.corner-tools button:hover{transform:translateY(-1px);background:linear-gradient(180deg,#26372f,#16241e)!important;color:#fff3d8!important}
+.corner-tools button svg{width:19px;height:19px}
+.corner-tools #room-settings[aria-expanded="true"]{background:#ffffff1a!important;color:#fff3d8!important}
+body[data-view="computer"] .corner-tools,body.reading .corner-tools,body.desktop-full .corner-tools{display:none}
+#room-settings-panel,#room-settings-panel[style]{top:68px!important;right:16px!important;bottom:auto!important;left:auto!important;transform:none!important;width:230px}
+#room-settings-panel .help-link{display:none!important}
+@media (max-width:600px){.corner-tools{top:10px;right:10px;gap:6px}.corner-tools button{width:38px!important;height:38px!important}#room-settings-panel,#room-settings-panel[style]{top:56px!important;right:10px!important}
+ body:not([data-view="room"]):not([data-view="computer"]) .location-label{max-width:calc(100vw - 120px);left:calc(50% - 44px)}}
+/* The guide's tail points at the corner "?" when it comes from above. */
+#coach.tail-up:after{bottom:auto;top:-8px;transform:rotate(225deg)}
+#coach.no-tail:after{display:none}

@@ -32,3 +32,5 @@ body:not(.workshop-started)>:not(#entry):not(script):not(noscript){display:none!
 /* Auto-starting visitors: show the loading screen from the first paint (entry.js removes this on failure). */
 html.autostart #entry{display:none!important}
 html.autostart body:not(.workshop-started)>#loading.loader{display:flex!important}
+#loading.loader .howto{margin:.2em 0 0;font:.62em/1.4 ui-monospace,monospace;color:#c9b88f;letter-spacing:.02em}
+#loading.loader .howto .narrow{display:none}@media(max-width:900px){#loading.loader .howto .wide{display:none}#loading.loader .howto .narrow{display:inline}}

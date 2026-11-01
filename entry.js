@@ -17,16 +17,23 @@ window.__load=(()=>{const done={};let finished=null,shown=0,stepStart=performanc
 (()=>{const loading=document.getElementById('loading'),canvas=document.getElementById('bp-canvas'),quip=document.getElementById('load-quip'),pct=document.getElementById('load-pct');if(!loading||!canvas)return;
  const ctx=canvas.getContext('2d'),calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const lines=['Sketching the room…','Drawing the benches…','Setting out the tools…','Inking the details…'];
- let polys=null,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,stage=-1,W=0,H=0,dpr=1;
- fetch('assets/cockpit/blueprint-room.json').then(r=>r.ok?r.json():null).then(d=>{if(!d)return;polys=d.map(l=>{const o=new Float32Array(l.length);let x=l[0],y=l[1],z=l[2];for(let i=0;i<l.length;i+=3){if(i){x+=l[i];y+=l[i+1];z+=l[i+2];}o[i]=x/100;o[i+1]=y/100;o[i+2]=z/100;}return o;});layout();}).catch(()=>{});
+ let polys=null,monitorEnd=.08,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,stage=-1,W=0,H=0,dpr=1;
+ fetch('assets/cockpit/blueprint-room.json').then(r=>r.ok?r.json():null).then(d=>{if(!d)return;polys=d.map(l=>{const o=new Float32Array(l.length);let x=l[0],y=l[1],z=l[2];for(let i=0;i<l.length;i+=3){if(i){x+=l[i];y+=l[i+1];z+=l[i+2];}o[i]=x/100;o[i+1]=y/100;o[i+2]=z/100;}o.monitor=true;for(let i=0;i<o.length;i+=3)if(Math.abs(o[i])>1.25||o[i+1]<1.3||o[i+1]>2.75||o[i+2]<-1.8||o[i+2]>-1.3){o.monitor=false;break;}return o;});layout();}).catch(()=>{});
  // Mirrors cockpit.js: destination('room') + frameStation() for the current viewport.
- function cameraFor(w,h){const aspect=w/h,mobile=w<=900,t=[0,1.45,-1.2],p0=[0,2.68,5.1];const k=mobile?1.3:Math.max(1,1.65/aspect);const p=p0.map((v,i)=>t[i]+(v-t[i])*k);if(mobile&&h>w)t[1]-=.3;p[0]=Math.min(3.3,Math.max(-3.25,p[0]));p[2]=Math.min(p[2],7.6);p[1]=Math.min(p[1],3.6);
-  const widen=aspect<1.25?Math.min(2.4,1.25/aspect):Math.min(1,1.8/aspect);const fov=Math.min(84,2*Math.atan(Math.tan(43.8*Math.PI/360)*widen)*180/Math.PI);const offY=mobile&&aspect<.8?h*.17:0;
+ function cameraFor(w,h){const aspect=w/h,mobile=w<=900,t=[0,1.45,-1.2],p0=[0,2.68,5.1];const phone=mobile&&h>w;const k=mobile?1.3:Math.max(1,1.65/aspect);const p=phone?[0,2.35,3.6]:p0.map((v,i)=>t[i]+(v-t[i])*k);if(phone)t[1]=1.55;p[0]=Math.min(3.3,Math.max(-3.25,p[0]));p[2]=Math.min(p[2],7.6);p[1]=Math.min(p[1],3.6);
+  const widen=aspect<1.25?Math.min(2.4,1.25/aspect):Math.min(1,1.8/aspect);const fov=phone?72:Math.min(84,2*Math.atan(Math.tan(43.8*Math.PI/360)*widen)*180/Math.PI);const offY=0;
   const zx=p[0]-t[0],zy=p[1]-t[1],zz=p[2]-t[2],zl=Math.hypot(zx,zy,zz),z=[zx/zl,zy/zl,zz/zl];let x=[z[2],0,-z[0]];const xl=Math.hypot(...x);x=x.map(v=>v/xl);const y=[z[1]*x[2]-z[2]*x[1],z[2]*x[0]-z[0]*x[2],z[0]*x[1]-z[1]*x[0]];
   return{p,x,y,z,f:1/Math.tan(fov*Math.PI/360),aspect,offY};}
- function layout(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;if(!polys)return;const c=cameraFor(W,H);screen=[];total=0;
-  for(const pl of polys){const pts=[];let len=0,prev=null,ok=true;for(let i=0;i<pl.length;i+=3){const dx=pl[i]-c.p[0],dy=pl[i+1]-c.p[1],dz=pl[i+2]-c.p[2];const zc=-(dx*c.z[0]+dy*c.z[1]+dz*c.z[2]);if(zc<.05){ok=false;break;}const sx=((dx*c.x[0]+dy*c.x[1]+dz*c.x[2])/zc*c.f/c.aspect+1)/2*W,sy=(1-(dx*c.y[0]+dy*c.y[1]+dz*c.y[2])/zc*c.f)/2*H-c.offY;if(prev)len+=Math.hypot(sx-prev[0],sy-prev[1]);prev=[sx,sy];pts.push(sx,sy);}
-   if(ok&&pts.length>=4){screen.push({pts,len,start:total});total+=len;}}
+ function project(c,x,y,z){const dx=x-c.p[0],dy=y-c.p[1],dz=z-c.p[2];const zc=-(dx*c.z[0]+dy*c.z[1]+dz*c.z[2]);return [((dx*c.x[0]+dy*c.x[1]+dz*c.x[2])/zc*c.f/c.aspect+1)/2*W,(1-(dx*c.y[0]+dy*c.y[1]+dz*c.y[2])/zc*c.f)/2*H-c.offY];}
+ // The main monitor's screen (cockpit.js screenPosition): the welcome and status sit on it.
+ function placeCopy(c){const copy=loading.querySelector('.loader-copy');if(!copy)return null;const a=project(c,-1.075,2.63,-1.548),b=project(c,1.075,1.41,-1.548);const r={x:a[0],y:a[1],w:b[0]-a[0],h:b[1]-a[1]};
+  copy.style.setProperty('--sx',r.x+'px');copy.style.setProperty('--sy',r.y+'px');copy.style.setProperty('--sw',r.w+'px');copy.style.setProperty('--sh',r.h+'px');copy.style.setProperty('--fs',Math.max(7,Math.min(17,r.w/27))+'px');return r;}
+ function layout(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;const c=cameraFor(W,H);const r=placeCopy(c);if(!polys)return;screen=[];total=0;
+  // The monitor is drawn first: its screen outline, then every stroke that belongs to the monitors.
+  if(r){const box=[r.x,r.y,r.x+r.w,r.y,r.x+r.w,r.y+r.h,r.x,r.y+r.h,r.x,r.y];screen.push({pts:box,len:2*(r.w+r.h),start:0});total=2*(r.w+r.h);}
+  const first=[],rest=[];for(const pl of polys){const pts=[];let len=0,prev=null,ok=true;for(let i=0;i<pl.length;i+=3){const dx=pl[i]-c.p[0],dy=pl[i+1]-c.p[1],dz=pl[i+2]-c.p[2];const zc=-(dx*c.z[0]+dy*c.z[1]+dz*c.z[2]);if(zc<.05){ok=false;break;}const sx=((dx*c.x[0]+dy*c.x[1]+dz*c.x[2])/zc*c.f/c.aspect+1)/2*W,sy=(1-(dx*c.y[0]+dy*c.y[1]+dz*c.y[2])/zc*c.f)/2*H-c.offY;if(prev)len+=Math.hypot(sx-prev[0],sy-prev[1]);prev=[sx,sy];pts.push(sx,sy);}
+   if(ok&&pts.length>=4)(pl.monitor?first:rest).push({pts,len});}
+  for(const s of [...first,...rest]){s.start=total;screen.push(s);total+=s.len;}monitorEnd=(first.reduce((a,s)=>a+s.len,0)+(r?2*(r.w+r.h):0))/Math.max(1,total);
   cache=document.createElement('canvas');cache.width=canvas.width;cache.height=canvas.height;cacheCtx=cache.getContext('2d');cacheCtx.scale(dpr,dpr);style(cacheCtx);cachedUpTo=0;cachedLen=0;}
  function style(g){g.strokeStyle='#e9d6a8';g.globalAlpha=.62;g.lineWidth=.9;g.lineCap='round';g.lineJoin='round';}
  function stroke(g,s,upto){const P=s.pts;g.beginPath();g.moveTo(P[0],P[1]);let run=0,tip=[P[0],P[1]];for(let i=2;i<P.length;i+=2){const seg=Math.hypot(P[i]-P[i-2],P[i+1]-P[i-1]);if(run+seg>=upto){const k=seg?(upto-run)/seg:1;tip=[P[i-2]+(P[i]-P[i-2])*k,P[i-1]+(P[i+1]-P[i-1])*k];g.lineTo(...tip);g.stroke();return tip;}run+=seg;g.lineTo(P[i],P[i+1]);tip=[P[i],P[i+1]];}g.stroke();return tip;}
@@ -38,7 +45,7 @@ window.__load=(()=>{const done={};let finished=null,shown=0,stepStart=performanc
   ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(cache,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);
   // the stroke being drawn right now, with a warm pen tip
   const s=screen[cachedUpTo];if(s&&p<1){style(ctx);const tip=stroke(ctx,s,goal-s.start);ctx.globalAlpha=1;ctx.fillStyle='#f0b850';ctx.shadowColor='#f0b850';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(tip[0],tip[1],2.6,0,7);ctx.fill();ctx.shadowBlur=0;}}
- function caption(p){pct&&(pct.textContent=Math.round(p*100));const st=Math.min(3,Math.floor(p*4));if(st!==stage&&quip){stage=st;quip.classList.add('fading');setTimeout(()=>{quip.textContent=lines[st];quip.classList.remove('fading');},300);}}
+ function caption(p){loading.querySelector('.loader-copy')?.classList.toggle('on',p>=Math.min(.12,monitorEnd*.6)||!polys);pct&&(pct.textContent=Math.round(p*100));const st=Math.min(3,Math.floor(p*4));if(st!==stage&&quip){stage=st;quip.classList.add('fading');setTimeout(()=>{quip.textContent=lines[st];quip.classList.remove('fading');},300);}}
  addEventListener('resize',layout);layout();
  let finishing=false;
  window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();
@@ -55,10 +62,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=24';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=25';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=24');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=25');window.__load?.set('code',1);
  }catch(error){document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

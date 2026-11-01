@@ -198,3 +198,31 @@ body:not([data-view="room"]):not([data-view="computer"]) .location-label:before{
  #zone-panel:not(.project-book) .zone-card strong{font-size:18px}
  body:not([data-view="room"]):not([data-view="computer"]) .location-label{top:14px;font-size:9px;letter-spacing:1.2px}
 }
+
+/* Phones held upright (v25): the bottom nav already names the three stations, so the room
+   tags step aside; the welcome is a short caption over the floor; the project sheet leaves the
+   top of the screen for the bench it describes. */
+@media (max-width:900px) and (orientation:portrait){
+ body[data-view="room"] #markers{display:none}
+ #welcome{bottom:84px;padding:10px 14px;width:calc(100% - 24px)}
+ #welcome .welcome-story{display:none}
+ #welcome h1{font-size:25px;margin:6px 0 0}
+ #welcome .eyebrow{font-size:10px}
+ #zone-panel:not(.project-book):not(.project-focus){max-height:min(52dvh,460px)}
+ html,body{overscroll-behavior:none}
+ #world{height:100dvh}
+}
+@media (max-width:900px) and (orientation:portrait){
+ /* Software desk on phones: the sidebar becomes a slim tab row so projects get the full width. */
+ #desktop .desktop-body{display:flex!important;flex-direction:column!important;grid-template-columns:none!important}
+ #desktop .desktop-sidebar{display:flex!important;flex-direction:row!important;align-items:center;gap:6px;width:auto!important;min-width:0!important;padding:8px 12px!important;border-right:0!important;border-bottom:1px solid #ffffff14;overflow-x:auto}
+ #desktop .desktop-sidebar>p,#desktop .sidebar-note{display:none!important}
+ #desktop .desktop-sidebar button{flex:none;width:auto!important;margin:0!important;padding:8px 12px!important;border-radius:999px!important}
+ #desktop .desktop-files{flex:1;min-height:0}
+ #desktop .desktop-menubar #leave-computer{padding:6px 10px;font-size:12px;white-space:nowrap}
+}
+@media (max-width:900px) and (orientation:portrait){
+ #desktop .desktop-menubar #leave-computer{font-size:0!important}
+ #desktop .desktop-menubar #leave-computer:before{content:"← Workshop";font-size:13px}
+ #desktop .desktop-sidebar button span{margin-left:8px}
+}

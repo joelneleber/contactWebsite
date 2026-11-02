@@ -129,7 +129,7 @@ async function openProject(id,{fromBook=false}={}){
  const project=byId.get(id),photos=project?.photos||storyData.get(id)?.screenshots||[];
  if(photos.length&&!art.querySelector('img')){const gallery=document.createElement('div');gallery.className='reader-photos';gallery.innerHTML=photos.map((f,i)=>`<figure><img src="${esc(f.src)}" alt="${esc(f.caption||project.name)}" loading="${i?'lazy':'eager'}"><figcaption>${esc(f.caption||'')}</figcaption></figure>`).join('');const intro=art.querySelector('.lede,.purpose');if(intro)intro.after(gallery);else art.prepend(gallery);}
  art.querySelectorAll('a[href$="-photos.html"]').forEach(a=>a.remove());
- const leadPhoto=art.querySelector('.reader-photos figure');
+ const leadPhoto=art.querySelector('.lead-figure, .reader-photos figure, :scope > figure');
  const hero=document.createElement('header');hero.className='reader-hero';const intro=document.createElement('div');intro.className='reader-intro';
  for(const child of [...art.children]){if(child.matches('section,.reader-photos,.deep-chapter'))break;if(child.matches('h1,h2,.eyebrow,.lede,.purpose,.tags,.project-kind'))intro.append(child);}
  const tags=art.querySelector(':scope > .tags');if(tags)intro.append(tags);hero.append(intro);if(leadPhoto)hero.append(leadPhoto);if(intro.children.length)art.prepend(hero);

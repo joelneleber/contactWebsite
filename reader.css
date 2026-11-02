@@ -1,3 +1,43 @@
+/* Project writeups: one reading style for the lightweight pages and the 3D room's reading sheet.
+   Comfortable measure, larger body text, clear hierarchy, and photos that use the full column. */
+.reader{--r-ink:#fff3d8;--r-text:#dde2d6;--r-muted:#a7b4a5;--r-brass:#e4c68f;--r-line:#e4cf9c24;
+ max-width:740px;margin:0 auto;color:var(--r-text);font:18px/1.75 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.reader>*:first-child{margin-top:0}
+.reader .eyebrow{display:block;margin:0 0 14px;font:600 12px/1.2 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--r-brass)}
+.reader h1{margin:0 0 16px;font:400 clamp(34px,4.6vw,54px)/1.07 Georgia,"Times New Roman",serif;letter-spacing:-.018em;color:var(--r-ink)}
+.reader .lede{margin:0 0 20px;max-width:34em;font-size:clamp(19px,1.9vw,22px);line-height:1.55;color:#ece7d6}
+.reader .tags{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.reader .tags span{padding:6px 11px;border-radius:999px;border:1px solid #e4cf9c38;background:#ffffff07;color:#d8cba9;font:500 12.5px/1.2 ui-monospace,"SF Mono",Menlo,monospace}
+.reader .chapter{margin:40px 0 0;padding:36px 0 0;border-top:1px solid var(--r-line);scroll-margin-top:72px}
+.reader h2{margin:0 0 18px;font:400 clamp(26px,2.8vw,33px)/1.18 Georgia,"Times New Roman",serif;letter-spacing:-.01em;color:var(--r-ink)}
+.reader h3{margin:30px 0 8px;font:650 17.5px/1.35 ui-sans-serif,system-ui,-apple-system,sans-serif;letter-spacing:.003em;color:#f4ecd8}
+.reader h2+h3{margin-top:6px}
+.reader p{margin:0 0 1.05em;max-width:66ch}
+.reader ul,.reader ol{max-width:64ch;margin:0 0 1.05em;padding-left:1.25em}
+.reader li{margin:.35em 0}
+.reader strong{color:var(--r-ink);font-weight:650}
+.reader a{color:var(--r-brass);text-decoration-thickness:1px;text-underline-offset:3px}
+.reader a:hover{color:#ffe0a6}
+.reader figure{margin:30px 0}
+.reader figure img{display:block;width:100%;height:auto;max-height:min(72vh,680px);object-fit:contain;border-radius:14px;border:1px solid var(--r-line);background:#0a120e}
+.reader .lead-figure{margin:28px 0 8px}
+.reader figcaption{margin-top:10px;max-width:66ch;font-size:14px;line-height:1.55;color:var(--r-muted)}
+.reader .figure-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:24px 0}
+.reader .figure-grid figure{margin:0}
+.reader .figure-grid img{aspect-ratio:4/3;object-fit:cover;max-height:none}
+.reader .contents{display:grid;gap:2px;margin:28px 0 8px;padding:12px;border-radius:14px;border:1px solid var(--r-line);background:#ffffff06}
+.reader .contents a{display:block;padding:8px 10px;border-radius:8px;color:#e7e1cf;text-decoration:none;font-size:15px;line-height:1.4}
+.reader .contents a:hover{background:#ffffff0c;color:var(--r-ink)}
+.reader .button{display:inline-flex;align-items:center;gap:8px;margin:28px 0 0;padding:12px 18px;border-radius:11px;background:linear-gradient(180deg,#f7ecd2,#ead9b4);color:#1f2c25;text-decoration:none;font-weight:600;font-size:15px}
+.reader .button:hover{color:#1f2c25;filter:brightness(1.04)}
+@media (max-width:650px){
+ .reader{font-size:17px;line-height:1.7}
+ .reader .chapter{margin-top:30px;padding-top:28px}
+ .reader figure{margin:22px 0}
+ .reader figure img{border-radius:10px}
+}
+
+/* Warm room sheets retain their own palette and layout. */
 /* Shared typography for project sheets injected into the room. */
 body #zone-panel .reader{font:16px/1.75 system-ui,sans-serif;color:#303a2e;max-width:920px;margin:0 auto;padding:28px 32px 70px}
 body #zone-panel .reader h1{font:44px/1.12 Georgia,serif;margin:14px 0 22px}
@@ -14,3 +54,7 @@ body #zone-panel .reader .lede{font-size:19px;line-height:1.6}
 .reader-photos figure:first-child img{height:min(52vh,520px)}
 .reader-photos figcaption{font:12px/1.6 system-ui;margin:8px 0;color:#62684f}
 @media(max-width:700px){body #zone-panel .reader{padding:20px 18px 48px;font-size:15px}body #zone-panel .reader h1{font-size:32px}.reader-photos{grid-template-columns:1fr}.reader-photos img{height:260px}}
+
+body #zone-panel .reader{--r-ink:#303a2e;--r-text:#303a2e;--r-muted:#62684f;--r-brass:#795c32;--r-line:#b8aa8855}
+body #zone-panel .reader h3{color:#303a2e}
+body #zone-panel .reader .lede{color:#62604f}

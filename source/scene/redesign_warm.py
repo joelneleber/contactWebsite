@@ -134,8 +134,15 @@ def cable(name,points,r=.008):
  path=curve.splines.new('BEZIER');path.bezier_points.add(len(points)-1)
  for p,v in zip(path.bezier_points,points):p.co=web_to_blender(v);p.handle_left_type='AUTO';p.handle_right_type='AUTO'
  o=bpy.data.objects.new(name,curve);bpy.context.collection.objects.link(o);o.data.materials.append(CABLE)
-cable('Lab routed solder lead',[(3.03,1.18,1.45),(2.97,1.10,1.69),(2.78,1.10,1.72),(2.74,1.24,1.57)])
-cable('Lab routed scope probe',[(2.87,1.56,-1.11),(2.93,1.25,-.86),(2.98,1.10,-.40),(2.90,1.10,.66),(2.70,1.12,1.02)],.006)
+# Plugged into the station's front socket and the actual rear end of the iron grip.
+box('solder cable socket',(3.08,-1.632,1.18),(.045,.025,.045),BRASS,.005)
+cable('Lab routed solder lead',[(3.08,1.18,1.645),(3.04,1.15,1.77),(2.90,1.13,1.80),(2.77,1.15,1.78),(2.74,1.184,1.685)])
+# Exit the BNC toward the aisle BEFORE dropping past the shelf and parts drawers.
+box('scope probe plug',(2.844,1.11,1.56),(.055,.025,.025),BRASS,.004)
+cable('Lab routed scope probe',[(2.82,1.56,-1.11),(2.70,1.52,-1.11),(2.67,1.20,-1.03),(2.65,1.092,-.80),(2.62,1.12,-.25),(2.58,1.12,.20)],.006)
+# Park the connected insulated probe on the clear part of the mat, with exposed tip.
+box('parked scope probe grip',(2.58,-.29,1.12),(.035,.18,.026),CABLE,.008)
+box('parked scope probe tip',(2.58,-.415,1.12),(.009,.07,.009),BRASS,.002)
 # A dedicated tool tray makes the left bench read as a workstation instead of scattered props.
 box('woodshop tool tray',(-2.89,-1.18,1.092),(.76,.62,.025),OLIVE,.014)
 shift(('PROP ROOT · hand_plane_no4',),(-.43,.025,.12))

@@ -299,7 +299,7 @@ body.reading #markers,body.reading .location-label,body.reading #welcome{display
  #zone-panel.project-focus .reader{padding:12px 18px 48px}
 }
 
-/* The book as its own control (v35): page halves turn the page, arrows sit beside the book,
+/* The book as its own control (v35): page halves turn the page, arrows overlap the page edges,
    "Read about this project" sits on the page, and a slim pill shows where you are. */
 #book-ui{position:fixed;inset:0;z-index:9;pointer-events:none;--bx:30vw;--by:25vh;--bw:40vw;--bh:40vh}
 #book-ui[hidden]{display:none}
@@ -315,8 +315,8 @@ body.reading #markers,body.reading .location-label,body.reading #welcome{display
 .book-zone:disabled{cursor:default}
 .book-arrow{position:fixed;top:calc(var(--by) + var(--bh)/2 - 30px);width:60px;height:60px;border-radius:50%;display:grid;place-items:center;border:1px solid #e3c99b66;background:linear-gradient(180deg,#1d2c25f2,#121c18f2);color:#ffd38a;cursor:pointer;box-shadow:0 12px 30px #000a;transition:transform .15s,background .15s,opacity .35s}
 .book-arrow svg{width:26px;height:26px}
-.book-arrow.prev{left:max(12px,calc(var(--bx) - 80px))}
-.book-arrow.next{left:min(calc(100vw - 72px),calc(var(--bx) + var(--bw) + 20px))}
+.book-arrow.prev{left:max(12px,calc(var(--bx) - 30px))}
+.book-arrow.next{left:min(calc(100vw - 72px),calc(var(--bx) + var(--bw) - 30px))}
 .book-arrow:not(:disabled):hover{transform:scale(1.07);background:linear-gradient(180deg,#2a3c33,#16241e)}
 .book-arrow:disabled,#book-ui.ready .book-arrow:disabled{opacity:.25;cursor:default}
 .book-explore{position:fixed;left:calc(var(--bx) + var(--bw)*.75);top:calc(var(--by) + var(--bh) - 58px);transform:translateX(-50%);padding:11px 16px;border:0;border-radius:11px;background:linear-gradient(180deg,#f7ecd2,#ead9b4);color:#1f2c25;font:600 14px/1 system-ui,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:0 10px 24px -8px #000c}
@@ -329,7 +329,7 @@ body.reading #markers,body.reading .location-label,body.reading #welcome{display
 .book-close{padding:8px 13px;border:0;border-radius:999px;background:#ffffff12;color:#f3e8cf;font:600 13px/1 system-ui,sans-serif;cursor:pointer}
 .book-close:hover{background:#ffffff22}
 body[data-view="book"] .room-nav{display:none!important}
-@media (max-width:900px){.book-arrow{width:48px;height:48px;top:calc(var(--by) + var(--bh) + 14px)}.book-arrow.prev{left:calc(50% - 64px)}.book-arrow.next{left:calc(50% + 16px)}.book-explore{left:50%;top:calc(var(--by) + var(--bh) + 76px)}.book-pill{bottom:14px}}
+@media (max-width:900px){.book-arrow{width:48px;height:48px;top:calc(var(--by) + var(--bh)/2 - 24px)}.book-arrow.prev{left:max(8px,calc(var(--bx) - 24px))}.book-arrow.next{left:min(calc(100vw - 56px),calc(var(--bx) + var(--bw) - 24px))}.book-explore{left:50%;top:calc(var(--by) + var(--bh) + 76px)}.book-pill{bottom:14px}}
 
 /* The dock (v35): each station gets a line icon over its name; the current one wears an amber light. */
 body .room-nav,body[data-view] .room-nav{gap:2px!important;padding:6px!important;border-radius:20px!important;border:1px solid #e4cf9c3a!important;background:linear-gradient(180deg,#1b2a23f2,#0f1814f7)!important;box-shadow:0 18px 44px -12px #000d,inset 0 1px 0 #ffffff12!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);align-items:stretch}

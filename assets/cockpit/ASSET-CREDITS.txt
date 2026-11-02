@@ -42,3 +42,6 @@ Warm workshop exterior upgrade (2026-11-01):
   Native 8192 × 4096 tonemapped JPEG from Poly Haven files API,
   encoded as forest-slope-8k.webp at quality 88 without upscaling.
   Runtime exterior texture is served separately from the GLB.
+  Performance revision: runtime now uses two native-resolution window crops:
+  forest-window-rear.webp (2867 × 1802), forest-window-side.webp (2457 × 2048).
+  Reproduce with source/scripts/crop-exterior.py and the original 8K JPEG.

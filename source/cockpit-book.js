@@ -5,6 +5,7 @@ export function createProjectBook(scene){
  const book=new THREE.Group();book.position.set(-2.65,1.105,2.35);book.rotation.y=Math.PI/2;scene.add(book);
  const W=.88,D=.64,T=.016,PW=.85,PD=.61,PH=.05,BASE=-.011;      // boards, page block, bench contact
  const blockTop=BASE+T+PH,pageW=.84,pageD=.60;
+ book.userData.pageCorners=[[-W/2+.004-pageW,blockTop+.002,-pageD/2],[-W/2+.004-pageW,blockTop+.002,pageD/2],[-W/2+.006+pageW,blockTop+.002,-pageD/2],[-W/2+.006+pageW,blockTop+.002,pageD/2]];
  const texture=(c,srgb=true)=>{const t=new THREE.CanvasTexture(c);if(srgb)t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t;};
  const make=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
 

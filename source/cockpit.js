@@ -175,7 +175,7 @@ const views={
 };
 // GitHub Pages gzips the model, so the response's Content-Length is the compressed size while
 // the loader counts uncompressed bytes. Measure against the real file size instead.
-const ROOM_MODEL_BYTES=1727672;
+const ROOM_MODEL_BYTES=1733840;
 // The loader only fades once the room has drawn itself behind it (see initRoom).
 // Setup timings for diagnosing slow loads: cockpit.stages.
 const stages=[];const stage=n=>stages.push([n,Math.round(performance.now())]);window.__stage=stage;
@@ -360,9 +360,10 @@ function bookUI(){let ui=$('#book-ui');if(ui)return ui;ui=document.createElement
  let sx=null;ui.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')sx=e.clientX;});ui.addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx;sx=null;if(Math.abs(dx)>40){e.preventDefault();turnBook(dx<0?1:-1);}});
  addEventListener('keydown',e=>{if(state.view!=='book'||ui.hidden||e.target.closest?.('input,textarea'))return;if(e.key==='ArrowRight'){turnBook(1);e.preventDefault();}if(e.key==='ArrowLeft'){turnBook(-1);e.preventDefault();}});
  return ui;}
-const bookBox=new THREE.Box3(),bookCorner=new THREE.Vector3();
-function layoutBookUI(){const ui=$('#book-ui');if(!ui||ui.hidden||!details?.bookObject)return;bookBox.setFromObject(details.bookObject);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
- for(let i=0;i<8;i++){bookCorner.set(i&1?bookBox.max.x:bookBox.min.x,i&2?bookBox.max.y:bookBox.min.y,i&4?bookBox.max.z:bookBox.min.z).project(camera);const x=(bookCorner.x+1)/2*innerWidth,y=(1-bookCorner.y)/2*innerHeight;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+const bookCorner=new THREE.Vector3();
+function layoutBookUI(){const ui=$('#book-ui');if(!ui||ui.hidden||!details?.bookObject)return;details.bookObject.updateWorldMatrix(true,false);let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+ for(const corner of details.bookObject.userData.pageCorners){bookCorner.fromArray(corner).applyMatrix4(details.bookObject.matrixWorld).project(camera);const x=(bookCorner.x+1)/2*innerWidth,y=(1-bookCorner.y)/2*innerHeight;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
+
  ui.style.setProperty('--bx',x0+'px');ui.style.setProperty('--by',y0+'px');ui.style.setProperty('--bw',(x1-x0)+'px');ui.style.setProperty('--bh',(y1-y0)+'px');ui.classList.toggle('ready',!details.inspect().bookBusy||ui.classList.contains('ready'));}
 function showBook(animate=false){const entries=bookEntries(),p=entries[bookPage];$('#zone-panel').hidden=true;details?.setBook(true,p,bookPage,entries.length,animate&&state.motion);$('#physical-book-controls')?.remove();
  const ui=bookUI();ui.hidden=false;ui.querySelectorAll('.prev').forEach(b=>b.disabled=bookPage===0);ui.querySelectorAll('.next').forEach(b=>b.disabled=bookPage===entries.length-1);

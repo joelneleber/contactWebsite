@@ -289,14 +289,15 @@ function render(t){
  if(!transition)camera.lookAt(look);details?.update(t,state.motion);renderer.render(scene,camera);projectMarkers();if(state.view==='book')layoutBookUI();if(transition||bootBusy||details?.inspect().bookBusy)requestFrame();
 }
 function desktopTexture(){
- const c=document.createElement('canvas');c.width=1578;c.height=1200;
+ // Capture at the monitor's widescreen aspect, independent of the browser window.
+ const c=document.createElement('canvas');c.width=1920;c.height=1080;
  const snapshot=document.createElement('canvas');snapshot.width=c.width;snapshot.height=c.height;
- const t=new THREE.CanvasTexture(c);t.userData.boot=monitorBoot(c,snapshot,t);if(monitorRevealedAt!==null)t.userData.boot.start(monitorRevealedAt);t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.anisotropy=4;
+ const t=new THREE.CanvasTexture(c);t.userData.boot=monitorBoot(c,snapshot,t);if(monitorRevealedAt!==null)t.userData.boot.start(monitorRevealedAt);t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
  const fallback=new Image();fallback.onload=()=>{if(t.userData.exactDesktop)return;snapshot.getContext('2d').drawImage(fallback,0,0,c.width,c.height);requestFrame();};fallback.src='assets/optimized/assets-cockpit-desktop-first.webp?v=19';
  async function capture(){try{
   await document.fonts.ready;
-  const w=innerWidth,h=innerHeight;
-  const rendered=await html2canvas($('#desktop'),{width:w,height:h,windowWidth:w,windowHeight:h,scale:Math.min(1.5,1578/w),logging:false,backgroundColor:'#16262b',foreignObjectRendering:false,onclone:doc=>{
+  const w=1600,h=900;
+  const rendered=await html2canvas($('#desktop'),{width:w,height:h,windowWidth:w,windowHeight:h,scale:1.2,logging:false,backgroundColor:'#16262b',foreignObjectRendering:false,onclone:doc=>{
    doc.body.classList.add('workshop-started','desktop-full','flat-desktop');
    // html2canvas clones restart CSS entrance animations at opacity zero. Render their final state.
    const still=doc.createElement('style');still.textContent='#desktop *,#desktop *::before,#desktop *::after{animation:none!important;transition:none!important}#desktop .folio-visual,#desktop .folio-project{opacity:1!important;translate:0 0!important}';doc.head.append(still);

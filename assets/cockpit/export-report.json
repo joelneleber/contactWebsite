@@ -1,9 +1,9 @@
 {
-  "source_objects": 822,
+  "source_objects": 813,
   "mesh_groups": 65,
-  "triangles": 198542,
-  "bytes": 17280920,
-  "elapsed_seconds": 10,
+  "triangles": 196754,
+  "bytes": 27722476,
+  "elapsed_seconds": 11,
   "zones": [
     "cnc_gantry",
     "cnc_motion",

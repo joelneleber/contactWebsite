@@ -1,3 +1,4 @@
+import {walnutMaterial} from './cockpit-wood.js';
 import * as THREE from 'three';
 
 // One coherent shell: full-height walls, closed corners and joined window casings.
@@ -5,7 +6,7 @@ export function addRoomShell(scene){
  const plaster=new THREE.MeshStandardMaterial({color:'#a49d8b',roughness:.95});
  const ceiling=new THREE.MeshStandardMaterial({color:'#8f9184',roughness:.95});
  const trim=new THREE.MeshStandardMaterial({color:'#786b52',roughness:.78});
- const oak=new THREE.MeshStandardMaterial({color:'#ac8859',roughness:.78});
+ const oak=walnutMaterial();
  function box(name,x,y,z,w,h,d,mat){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.name=name;m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m;}
  // Side window opening is z=1.72..3.48 and y=1.68..3.02.
  box('Shell left rear',-3.75,1.95,-.73,.16,3.9,4.90,plaster);

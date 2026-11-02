@@ -17,15 +17,14 @@ OLIVE=material('Warm workshop olive cabinetry',(.19,.22,.135))
 PLASTER=material('Warm workshop cream plaster',(.37,.34,.28),rough=.92)
 BRASS=material('Warm workshop satin brass',(.45,.30,.12),.65,.4)
 SAGE=material('Warm workshop sage silicone',(.22,.31,.23),rough=.9)
-OAK=material('Warm workshop natural oak',(.6,.39,.19))
-# Subtle, seamless directional grain. Exporter recognizes the _diff image.
-rng=np.random.default_rng(31);size=512;y,x=np.mgrid[0:size,0:size]/size
-phase=x*2*np.pi*27+.65*np.sin(y*2*np.pi)+.24*np.sin(y*6*np.pi)
-grain=.004*np.sin(phase)+.002*np.sin(phase*3)+rng.normal(0,.003,(size,size))
-pixels=np.ones((size,size,4),dtype=np.float32)
-for c,base in enumerate([.69,.51,.31]):pixels[:,:,c]=base+grain
-im=bpy.data.images.new('warm_oak_diff',width=size,height=size);im.pixels.foreach_set(pixels.ravel());im.pack()
-t=OAK.node_tree.nodes.new('ShaderNodeTexImage');t.image=im;OAK.node_tree.links.new(t.outputs['Color'],OAK.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+# Reuse the live room's scanned timber, tinted toward warm walnut.
+OAK=bpy.data.materials['Scanned worn wood · Poly Haven'].copy()
+OAK.name='Warm workshop walnut grain'
+OAK.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(.67,.49,.35,1)
+for node in OAK.node_tree.nodes:
+ if node.type=='TEX_IMAGE' and node.image and '_diff' in node.image.name:
+  node.image.filepath_raw=str(ROOT.parent.parent/'assets'/'cockpit'/'walnut-grain.jpg')
+  node.image.file_format='JPEG';node.image.save()
 
 def assign(o,m):
  o.data.materials.clear();o.data.materials.append(m)
@@ -120,18 +119,36 @@ def shift(prefixes,delta):
 shift(('CNC ','Spindle carriage','Gantry face rail','Gantry hex fastener','Hold-down bolt','Walnut workpiece'),LAYOUT['cnc']['offset'])
 # Keep stored bits out of the relocated machine footprint; raise its nearest hanging clamp.
 shift(('Drill bit',),(0,0,1.45))
+# Tool wall: aligned chisel rack, separate saw/hammer/square, compact lower clamp bank.
+chisel_slots={0:-1.45,1:-1.25,2:-1.05,3:-.85,7:-.65,8:-.45}
 for o in bpy.context.scene.objects:
- if o.name.endswith('.006') and o.name.startswith(('Long woodworking clamp','Clamp fixed head','Clamp sliding head','Clamp threaded wooden grip')):
-  o.matrix_world=Matrix.Translation(web_to_blender((0,.23,0))) @ o.matrix_world
+ n=o.name
+ if n.startswith(('Wall chisel tang','Wall chisel wooden handle','Toolboard pin')):
+  idx=int(n.rsplit('.',1)[1]) if '.' in n else 0
+  if idx not in chisel_slots:o.hide_render=True;continue
+  old_z=1.42-idx*.245;old_handle_y=2.28+(idx%3)*.11
+  o.matrix_world=Matrix.Translation(web_to_blender((0,2.52-old_handle_y,chisel_slots[idx]-old_z))) @ o.matrix_world
+ if n.startswith(('Long woodworking clamp','Clamp fixed head','Clamp sliding head','Clamp threaded wooden grip')):
+  idx=int(n.rsplit('.',1)[1]) if '.' in n else 0
+  old_z=1.35-idx*.43;new_z=-.50+idx*.20
+  o.matrix_world=Matrix.Translation(web_to_blender((-.12,.05,new_z-old_z))) @ o.matrix_world
+ if n.startswith('Wall tool mounting rail'):o.hide_render=True
+box('chisel rack',(-3.51,1.0,2.45),(.075,1.35,.075),OAK)
+box('clamp rack',(-3.55,-.10,1.93),(.075,1.50,.075),OAK)
+shift(('Claw hammer','Hammer curved claw'),(0,.15,.22))
+shift(('Combination square',),(0,.30,1.03))
+shift(('Hanging hand saw','Saw wooden loop'),(0,0,.735))
+for zz,hh in [(.10,2.55),(.55,2.60),(1.18,2.72)]:
+ box('dedicated tool peg',(-3.46,-zz,hh),(.17,.025,.025),BRASS,.004)
 # Inspection lives toward the back edge; a broad front portion of the mat stays empty.
-shift(('Microscope','PCB ','IC solder','Board capacitor','SMT ','Jumper wire'),(.22,0,.32))
+shift(('Microscope','PCB ','IC solder','Board capacitor','SMT ','Jumper wire'),(-.12,0,.10))
 shift(('Soldering station','Temperature encoder'),(1.17,0,1.61))
 shift(('Iron rest','Soldering iron grip','Soldering iron tip'),(.36,0,1.72))
-shift(('Probe /','Probe grip','Probe holder base'),(.10,0,1.07))
+shift(('Probe /','Probe grip','Probe holder base'),(.10,0,1.88))
 shift(('PROP ROOT · pliers',),(-.50,0,.55))
 # Put occasional-use supplies away; replace the sprawled old leads with routed cables.
 for o in bpy.context.scene.objects:
- if o.name.startswith(('Solder reel','Soldering iron cable','Oscilloscope test lead','Mat small part compartment','Lumber offcut','Steel square','Ruler fine marking','PROP ROOT · flathead_screwdriver')):
+ if o.name.startswith(('Printer filament','Printer spool','Solder reel','Soldering iron cable','Oscilloscope test lead','Mat small part compartment','Lumber offcut','Steel square','Ruler fine marking','PROP ROOT · flathead_screwdriver')):
   o.hide_render=True
   for child in o.children_recursive:child.hide_render=True
 # Keep the iron and scope leads tight to the rear edge of their stations.
@@ -144,12 +161,16 @@ def cable(name,points,r=.008):
 # Plugged into the station's front socket and the actual rear end of the iron grip.
 box('solder cable socket',(3.08,-1.632,1.18),(.045,.025,.045),BRASS,.005)
 cable('Lab routed solder lead',[(3.08,1.18,1.645),(3.04,1.15,1.77),(2.90,1.13,1.80),(2.77,1.15,1.78),(2.74,1.184,1.685)])
-# Exit the BNC toward the aisle BEFORE dropping past the shelf and parts drawers.
-box('scope probe plug',(2.844,1.11,1.56),(.055,.025,.025),BRASS,.004)
-cable('Lab routed scope probe',[(2.82,1.56,-1.11),(2.70,1.52,-1.11),(2.67,1.20,-1.03),(2.65,1.092,-.80),(2.62,1.12,-.25),(2.58,1.12,.20)],.006)
-# Park the connected insulated probe on the clear part of the mat, with exposed tip.
-box('parked scope probe grip',(2.58,-.29,1.12),(.035,.18,.026),CABLE,.008)
-box('parked scope probe tip',(2.58,-.415,1.12),(.009,.07,.009),BRASS,.002)
+# Two scope channels connect to the PCB front-edge test pads under the microscope.
+# Leads travel outside the parts drawers, then rise before crossing the microscope base.
+for channel,(socket_z,pad_z) in enumerate([(-1.11,.78),(-.96,.94)]):
+ box('scope channel plug '+str(channel),(2.844,-socket_z,1.56),(.055,.025,.025),BRASS,.004)
+ cable('Lab connected scope channel '+str(channel),[(2.82,1.56,socket_z),(2.70,1.47,socket_z),(2.67,1.13,-.72+channel*.12),(2.25,1.112,-.38+channel*.10),(1.99-channel*.035,1.112,.30),(1.99-channel*.035,1.16,pad_z),(2.03,1.19,pad_z)],.006)
+ cable('scope insulated probe '+str(channel),[(2.03,1.19,pad_z),(2.09,1.202,pad_z)],.014)
+ cable('scope metal probe tip '+str(channel),[(2.09,1.202,pad_z),(2.15,1.202,pad_z)],.004)
+ bpy.data.objects['scope metal probe tip '+str(channel)].data.materials.clear()
+ bpy.data.objects['scope metal probe tip '+str(channel)].data.materials.append(BRASS)
+ box('PCB scope test pad '+str(channel),(2.15,-pad_z,1.198),(.025,.025,.008),BRASS,.002)
 # A dedicated tool tray makes the left bench read as a workstation instead of scattered props.
 box('woodshop tool tray',(-2.89,-1.18,1.092),(.76,.62,.025),OLIVE,.014)
 shift(('PROP ROOT · hand_plane_no4',),(-.43,.025,.12))

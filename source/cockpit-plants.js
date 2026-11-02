@@ -20,7 +20,7 @@ export function addPlants(scene){
  {const {g,h}=pot('trailing pothos',3.32,3.085,-1.4,.15,.19,'#b6aa8f');for(let i=0;i<4;i++){const pts=[];for(let j=0;j<8;j++){const t=j/7;pts.push([-.08-t*.23,h+.10*Math.sin(t*6)-t*t*.45,(i-1.5)*.07+Math.sin(t*5+i)*.055]);}curve(g,pts,.004);for(let j=1;j<8;j++){const [x,y,z]=pts[j];foliage(g,x,y,z,.12,.13,j*2.4,-1.2,j+i);}}}
  // Compact succulent: thick rosette leaves in a muted clay bowl.
  {const {g,h}=pot('succulent',-3.38,3.085,.65,.12,.12,'#b47c61');for(let i=0;i<17;i++){const a=i*2.4;foliage(g,0,h,0,.09,.13+(i%3)*.035,a,-.6-(i%3)*.35,i);}}
- {const {g,h}=pot('small palm',3.53,2.95,3.83,.10,.15,'#747c68');for(let i=0;i<7;i++){const a=i*2.4;foliage(g,0,h,0,.065,.29,a,-.3-(i%3)*.25,i);}}
+ {const {g,h}=pot('small palm',3.38,3.085,1.50,.10,.15,'#747c68');for(let i=0;i<7;i++){const a=i*2.4;foliage(g,0,h,0,.065,.29,a,-.3-(i%3)*.25,i);}}
  for(const group of scene.children.filter(o=>o.name.startsWith('Plant '))){
   group.updateMatrixWorld(true);const batches=new Map();
   for(const child of [...group.children]){if(!child.isMesh)continue;child.updateMatrix();const geo=child.geometry.index?child.geometry.toNonIndexed():child.geometry.clone();geo.applyMatrix4(child.matrix);const list=batches.get(child.material)||[];list.push(geo);batches.set(child.material,list);group.remove(child);}

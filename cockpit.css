@@ -428,3 +428,125 @@ body[data-view="computer"] .corner-tools,body.reading .corner-tools,body.desktop
  body[data-view="room"] #markers:not([hidden]){display:block}
  body[data-view="room"] #markers>button:not(.software-entry),body[data-view="room"] #marker-leaders{display:none}
 }
+
+/* Warm workshop interface: paper, olive paint, oak and aged brass. */
+:root{--room-paper:#eee4cc;--room-paper-light:#f7f0df;--room-ink:#303a2e;--room-muted:#66664f;--room-olive:#586047;--room-olive-dark:#3c4938;--room-line:#b8aa88;--room-brass:#947143;--room-shadow:0 12px 36px #252a2438}
+body #markers button:not(.software-entry){background:var(--room-paper);border:1px solid var(--room-line);color:var(--room-ink);border-radius:7px;min-height:38px;padding:9px 13px;font:600 13px/1.2 Georgia,serif;letter-spacing:.2px;text-transform:none;box-shadow:0 3px 10px #1c211e35,inset 0 1px #fff8;backdrop-filter:none}
+body #markers button:not(.software-entry):before{width:5px;height:5px;margin-right:8px;background:var(--room-olive);box-shadow:none;animation:none}
+body #markers button:not(.software-entry) b{width:auto;height:auto;display:inline;margin-left:9px;background:none;color:var(--room-brass);font-size:15px}
+body #markers button:not(.software-entry):hover{background:var(--room-paper-light);color:var(--room-olive-dark);box-shadow:0 4px 14px #1c211e50}
+#marker-leaders path{stroke:#b6a37a;stroke-width:1;filter:none}#marker-leaders circle{fill:var(--room-paper);stroke:var(--room-olive);stroke-width:1.5}
+body .location-label{border:1px solid #b8aa8870;border-radius:6px;background:#eee4cce8;color:var(--room-ink);font:500 11px/1.3 Arial,sans-serif;letter-spacing:.8px;box-shadow:0 3px 12px #0002;padding:9px 14px}
+body .location-label:before{display:none}
+body .room-nav,body[data-view] .room-nav{background:#eee4ccf5!important;border:1px solid var(--room-line)!important;border-radius:14px!important;box-shadow:var(--room-shadow)!important;backdrop-filter:blur(8px)}
+body .room-nav button,body .room-nav a{color:var(--room-muted)!important;border-radius:9px!important;text-shadow:none!important}
+body .room-nav button[aria-pressed="true"]{background:var(--room-olive)!important;color:var(--room-paper-light)!important;box-shadow:inset 0 0 0 1px #ffffff16!important}
+body .room-nav button[aria-pressed="true"]:after{display:none!important}
+body .room-nav button:hover,body .room-nav a:hover{background:#d7ccb3!important;color:var(--room-ink)!important}
+body .room-nav svg{color:currentColor!important}
+body .corner-tools button{background:var(--room-paper);color:var(--room-olive-dark);border:1px solid var(--room-line);box-shadow:0 3px 12px #0002}
+body #room-settings-panel,body #coach{background:var(--room-paper-light);color:var(--room-ink);border:1px solid var(--room-line);box-shadow:var(--room-shadow)}
+body #room-settings-panel :is(p,a,button),body #coach :is(h2,p,b,span,li){color:var(--room-ink)}
+body #room-settings-panel button,body #coach-done{background:var(--room-olive);color:var(--room-paper-light);border:1px solid #424e37}
+body #zone-panel,body #zone-panel.project-focus:not(.project-book){background:var(--room-paper-light);color:var(--room-ink);border:1px solid var(--room-line);border-radius:14px;box-shadow:var(--room-shadow)}
+body #zone-panel:before{display:none}
+body #zone-panel :is(h1,h2,h3,h4,.zone-title,.project-showcase h2,.reading-list strong){color:var(--room-ink);text-shadow:none}
+body #zone-panel :is(p,li,figcaption,small,.purpose,.zone-description,.project-tech,.reading-list small){color:var(--room-muted)}
+body #zone-panel :is(.zone-kicker,.project-kind,.eyebrow){color:var(--room-brass);font:600 10px/1.5 Arial,sans-serif;letter-spacing:1.5px}
+body #zone-panel :is(a,.zone-back,.reader-page){color:var(--room-olive-dark)}
+body #zone-panel :is(.panel-close,.reader-close,.zone-back,.showcase-gallery button,.gallery-toolbar button){background:#e1d7c0;color:var(--room-ink);border:1px solid var(--room-line);border-radius:7px;box-shadow:none}
+body #zone-panel :is(.zone-card,.reading-list li){background:#e8dfca;border:1px solid #cfc3a7;border-radius:8px;color:var(--room-ink);box-shadow:none}
+body #zone-panel .zone-card:hover{background:#ded3b9;border-color:var(--room-brass)}
+body #zone-panel .reader-bar,body #zone-panel.project-focus .reader-bar{background:var(--room-paper)!important;border-bottom:1px solid var(--room-line)!important}
+body .reader,body .chapter-host{--cn-brass:#80633e;--cn-line:#b7aa8c66;color:var(--room-ink)}
+body .reader :is(h1,h2,h3,h4,p,li){color:var(--room-ink)}
+body .reader :is(.lede,figcaption,small){color:var(--room-muted)}
+body .reader a{color:#51653c}body .reader :is(pre,code,blockquote){background:#e0d7c3;color:#37432e;border-color:var(--room-line)}
+body .chapter-bar,body .chapter-bar .cb-list{background:var(--room-paper);border-color:var(--room-line)}
+body .chapter-bar :is(.cb-step,.cb-current){background:#e0d5bc;color:var(--room-ink);border-color:var(--room-line)}
+body .chapter-bar .cb-current :is(small,i),body .chapter-toc p{color:var(--room-brass)}
+body :is(.chapter-toc,.cb-list) a{color:var(--room-muted)}
+body :is(.chapter-toc,.cb-list) a[aria-current],body :is(.chapter-toc,.cb-list) a.active{background:#d5c9ad;color:var(--room-ink)}
+body .chapter-top{color:var(--room-olive)}body .chapter-progress{background:#d3c6a7}body .chapter-progress span{background:var(--room-olive)}
+body .showcase-gallery figure,body .case-gallery figure{background:#ded2b6;border:1px solid var(--room-line);border-radius:9px}
+body .gallery-thumbnails button{background:#e6dcc6;border-color:var(--room-line)}body .gallery-thumbnails button[aria-pressed="true"]{border-color:var(--room-olive);box-shadow:0 0 0 2px #58604740}
+body .book-arrow{background:var(--room-paper);color:var(--room-olive-dark);border:1px solid var(--room-line);box-shadow:0 5px 16px #0003;width:52px;height:52px;top:calc(var(--by) + var(--bh)/2 - 26px)}
+body .book-arrow.prev{left:max(12px,calc(var(--bx) - 26px))}body .book-arrow.next{left:min(calc(100vw - 64px),calc(var(--bx) + var(--bw) - 26px))}
+body .book-arrow:not(:disabled):hover{background:var(--room-olive);color:var(--room-paper-light)}
+/* No rectangular hover wash outside the perspective-projected paper. */
+body .book-zone:after{display:none}
+body .book-pill{background:var(--room-paper);border-color:var(--room-line);color:var(--room-ink);box-shadow:0 5px 16px #0003}
+body .book-close{background:#d9cfb7;color:var(--room-ink)}body .book-dots i{background:#a99e82}body .book-dots i.on{background:var(--room-olive);box-shadow:none}
+body .book-explore{background:var(--room-olive);color:var(--room-paper-light);border:1px solid #425036;box-shadow:0 4px 12px #0003;border-radius:7px}
+body #desktop{background:#ece4d2;color:var(--room-ink)}
+body .desktop-menubar,body .desktop-taskbar{background:var(--room-olive-dark);color:var(--room-paper-light);border-color:#788365}
+body .desktop-sidebar{background:#d9d0b9;border-right:1px solid #b8aa88;color:var(--room-ink)}
+body .desktop-sidebar :is(p,button,span,.sidebar-note){color:var(--room-ink)}
+body .desktop-sidebar button[aria-pressed="true"]{background:var(--room-olive);color:var(--room-paper-light)}
+body .desktop-sidebar button[aria-pressed="true"] span{color:var(--room-paper-light)}
+body .desktop-files{background:#eee6d4;color:var(--room-ink)}
+body .files-toolbar :is(h2,p),body .featured-heading :is(h2,h3,p),body .programs-heading{color:var(--room-ink)}
+body .program-search{background:#ded4bc;border:1px solid var(--room-line);color:var(--room-ink)}body .program-search input{color:var(--room-ink)}body .program-search input::placeholder{color:var(--room-muted)}
+body .program-card,body .featured-card{background:var(--room-paper-light);border-color:var(--room-line);color:var(--room-ink);box-shadow:0 3px 12px #26291c12}
+body :is(.program-card,.featured-card) :is(h3,p,small,.program-name,.program-description){color:var(--room-ink)}
+body .app-window{background:var(--room-paper-light);color:var(--room-ink);border:1px solid var(--room-line);box-shadow:var(--room-shadow)}
+body .window-header{background:var(--room-olive);color:var(--room-paper-light);border-bottom:1px solid #404e36}
+body .window-content{background:var(--room-paper-light);color:var(--room-ink)}body .window-content :is(h1,h2,h3,p,li){color:var(--room-ink)}
+body .window-content :is(.purpose,small,figcaption){color:var(--room-muted)}
+body .window-content :is(a,.project-source){color:var(--room-olive-dark)}
+body .window-content :is(.project-tech,.case-section){border-color:var(--room-line)}
+body :is(#zone-panel,.window-content,.desktop-files){scrollbar-color:#a99b7a #e9dfc8}
+@media(max-width:600px){body #markers button:not(.software-entry){font-size:12px;padding:8px 10px}body .book-arrow{width:44px;height:44px;top:calc(var(--by) + var(--bh)/2 - 22px)}body .book-arrow.prev{left:max(8px,calc(var(--bx) - 22px))}body .book-arrow.next{left:min(calc(100vw - 52px),calc(var(--bx) + var(--bw) - 22px))}}
+body .program,body .featured-program{background:var(--room-paper-light);border:1px solid var(--room-line);color:var(--room-ink);box-shadow:0 3px 10px #252a2412}
+body .program:hover,body .featured-program:hover{background:#e6dcc5;border-color:var(--room-brass);box-shadow:0 5px 16px #252a2420}
+body .featured-body{background:var(--room-paper-light)}
+body :is(.program-name,.program-section-heading h3){color:var(--room-ink)}
+body :is(.program-summary,.program-section-heading p,.program-empty){color:var(--room-muted)}
+body .program-tags span{background:#ded5bd;color:#50583d;border-color:#c5b795}
+body .case-link{color:#6d5430;border-top-color:#c9bea3}
+body .sidebar-note{border-color:#b8aa88}
+body .desktop-menubar button,body .desktop-taskbar button{background:#ffffff12;border-color:#aab29344;color:var(--room-paper-light)}
+body .app-window .window-controls button{color:var(--room-paper-light)}
+
+/* Match legacy dock specificity so every navigation state stays readable. */
+body .room-nav button[data-view],body .room-nav .nav-contact{color:var(--room-muted)!important;background:transparent!important;border-radius:9px!important}
+body .room-nav button[data-view]:hover,body .room-nav .nav-contact:hover{background:#d7ccb3!important;color:var(--room-ink)!important}
+body .room-nav button[data-view][aria-pressed="true"]{background:var(--room-olive)!important;color:var(--room-paper-light)!important}
+body .room-nav button[data-view] .dock-ico,body .room-nav .nav-contact .dock-ico{color:currentColor!important}
+body .corner-tools button,body .corner-tools button:hover,body .corner-tools #room-settings[aria-expanded="true"]{background:var(--room-paper)!important;color:var(--room-olive-dark)!important;border-color:var(--room-line)!important}
+body:not([data-view="room"]):not([data-view="computer"]) .location-label{background:#eee4cce8;color:var(--room-ink);border-color:var(--room-line);border-radius:6px;font:500 11px/1.3 Arial,sans-serif;letter-spacing:.8px;padding:9px 14px;box-shadow:0 3px 12px #0002}
+body:not([data-view="room"]):not([data-view="computer"]) .location-label:before{display:none}
+
+/* Authoritative palette for station sheets and their legacy descendants. */
+body #zone-panel:not(.project-book){--hud-ink:var(--room-ink);--hud-muted:var(--room-muted);--hud-faint:#62684f;--hud-brass:#795c32;--hud-line:#b8aa8860;background:var(--room-paper-light);color:var(--room-ink);border-color:var(--room-line);backdrop-filter:none}
+body #zone-panel:not(.project-book) :is(h1,h2,h3,h4,.zone-title,.zone-card strong,.panel-close){color:var(--room-ink)}
+body #zone-panel:not(.project-book) :is(.zone-description,.zone-card small,.purpose,.story-copy,.showcase-notes p){color:var(--room-muted)}
+body #zone-panel:not(.project-book) :is(details,figcaption,.showcase-gallery figcaption){color:var(--room-muted)!important}
+body #zone-panel:not(.project-book) .zone-card{background:#e7ddc5;border:1px solid var(--room-line);margin:8px 0;width:100%}
+body #zone-panel:not(.project-book) .zone-card:hover{background:#dbcfb1}
+body #zone-panel:not(.project-book) .project-tech span{color:var(--room-ink);background:#e0d5bd;border-color:var(--room-line)}
+body:not([data-view="room"]):not([data-view="wood"]):not([data-view="lab"]) .corner-tools,body.reading .corner-tools{display:none!important}
+body #room-settings-panel #motion{background:var(--room-olive);color:var(--room-paper-light)}
+body #coach .steps b,body #coach .steps span,body #coach .coach-note{color:var(--room-ink)}
+body #coach .steps i,body #coach kbd{background:#d8cbb0;color:var(--room-ink);border-color:var(--room-line)}
+body #coach:after{background:var(--room-paper-light);border-color:var(--room-line)}
+body .featured-title .program-name,body .window-content .deep-chapter>p:not(.project-kind){color:var(--room-ink)}
+body .program.featured-program,body .program.featured-program:hover{background:var(--room-paper-light);border-color:var(--room-line)}
+body .chapter-toc button,body .cb-list button{color:var(--room-muted)}
+body .chapter-toc button.on,body .cb-list button.on{color:var(--room-ink);background:#dbcfb4}
+body .chapter-toc button small,body .cb-list button small{color:#79623e}
+.project-expand{display:block;margin:0 38px 20px 0;padding:9px 14px;border:1px solid #a99976;border-radius:6px;background:#ded1b4;color:#303a2e;font:600 13px system-ui;cursor:pointer}
+body #zone-panel .project-showcase h2{font:36px/1.12 Georgia,serif}
+body #zone-panel .showcase-image{max-height:44vh;background:#ded2b6}
+body #markers .software-entry{min-width:180px;padding:10px 19px;border-radius:9px;border-color:#ad9870;background:#eee1c3;box-shadow:0 4px 12px #0003;animation:none}
+body #markers .software-entry strong{font:600 17px Georgia,serif}
+body #markers .software-entry small{font:11px system-ui;letter-spacing:0}
+body #markers .software-entry:after{left:calc(50% - 6px);bottom:-6px;width:10px;height:10px;border:0;background:#eee1c3;box-shadow:none;clip-path:polygon(100% 0,100% 100%,0 100%)}
+body #zone-panel.project-focus .zone-back,body #zone-panel.project-focus .reader-close,body #zone-panel.project-focus .reader-page{color:var(--room-olive-dark);background:#ded2b7;border-color:var(--room-line)}
+body #zone-panel.project-focus .reader-page{background:none}
+body #zone-panel.project-focus .zone-back:hover,body #zone-panel.project-focus .reader-close:hover{background:#cfc0a0;color:var(--room-ink)}
+body #zone-panel:not(.project-book) .showcase-image{background:#ded2b6}
+body .chapter-bar .cb-current span{color:var(--room-ink)}
+body .deep-images img,body .case-gallery img{background:#ded2b6;border-color:var(--room-line)}
+body .window-content .deep-images figcaption,body .window-content .case-gallery figcaption{color:var(--room-muted)}
+body .case-lead{margin:22px 0 30px}body .case-lead img{max-height:380px}

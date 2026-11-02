@@ -93,7 +93,7 @@ $('#running-apps').onclick=e=>{const b=e.target.closest('[data-running]');if(b)f
 $('#show-desktop').onclick=()=>{for(const win of state.open.values())win.hidden=true;state.active=null;taskbar();$('#program-search').focus();};
 const readingList=['What Every BODY Is Saying','How to Win Friends and Influence People','The Tipping Point','Becoming the Best','David and Goliath','Atomic Habits','Outliers','Dracula','Calculating the Cosmos — Ian Stewart'];
 const zoneConfig={
- sign:{kicker:'FROM DESIGN TO THE WEDDING DAY',title:'The wedding welcome sign.',text:'CNC design, laser cutting, staining, micro-glueups and mounting—all in one build.',list:()=>projects.filter(p=>p.id==='sign')},
+ sign:{kicker:'FROM DESIGN TO THE WEDDING DAY',title:'Welcome sign.',text:'CNC design, laser cutting, staining, micro-glueups and mounting—all in one build.',list:()=>projects.filter(p=>p.id==='sign')},
  books:{kicker:'ON THE SHELF',title:'Books & ideas.',text:'A few books I’ve read. People, habits, unexpected ideas—and the occasional vampire.',list:()=>[]},
  scope:{kicker:'SIGNALS / SENSORS / ELECTRONICS',title:'Following the signal.',text:'Hardware experiments, sensor recordings and the software that makes sense of them.',list:()=>projects.filter(p=>p.group==='electronics')},
  cnc:{kicker:'DIGITAL DESIGN / PHYSICAL OBJECTS',title:'At the CNC.',text:'Designing, cutting and building things for the real world.',list:()=>projects.filter(p=>['fabrication','sign'].includes(p.id))},
@@ -161,10 +161,10 @@ $('#zone-content').onclick=e=>{const b=e.target.closest('[data-zone-project]');i
 $('.panel-close').onclick=()=>{closeReader();if(state.view==='book'){$('#zone-panel').hidden=true;$('#zone-panel').classList.remove('project-focus');const ui=$('#book-ui');if(ui)ui.hidden=false;}else go(['sign','lamp','cnc'].includes(state.view)?'wood':['scope','printer','books'].includes(state.view)?'lab':'room');};
 // Native scene coordinates are converted from Blender (X,Y,Z) to glTF (X,Z,-Y).
 const views={
- sign:{p:[-.3,2.65,5.0],t:[-3.53,2.35,4.45],label:'THE WEDDING SIGN / design, layers & tiny details'},
+ sign:{p:[-.3,2.65,5.0],t:[-3.53,2.35,4.45],label:'WELCOME SIGN / design, layers & tiny details'},
  books:{p:[1.1,2.8,3.6],t:[3.6,2.95,3.05],label:'BOOKS & IDEAS'},
  scope:{p:[.7,2.05,.15],t:[3.05,1.78,-.72],label:'SIGNALS / electronics projects'},
- cnc:{p:[-.8,2.3,1.1],t:[-2.57,1.55,-.4],label:'CNC / digital fabrication'},
+ cnc:{p:[-.8,2.3,.35],t:[-2.72,1.55,-1.3],label:'CNC / digital fabrication'},
  book:{p:[-2.10,3.05,2.78],t:[-2.65,1.2,2.78],label:'WOODSHOP PROJECTS / turn a page'},
  room:{p:[0,2.68,5.1],t:[0,1.45,-1.2],label:'A room for all the things I make.'},
  computer:{p:[0,2.02,.0],t:[0,2.02,-1.548],label:'SOFTWARE PROJECTS / open a program to explore it'},
@@ -175,7 +175,7 @@ const views={
 };
 // GitHub Pages gzips the model, so the response's Content-Length is the compressed size while
 // the loader counts uncompressed bytes. Measure against the real file size instead.
-const ROOM_MODEL_BYTES=1733840;
+const ROOM_MODEL_BYTES=1733228;
 // The loader only fades once the room has drawn itself behind it (see initRoom).
 // Setup timings for diagnosing slow loads: cockpit.stages.
 const stages=[];const stage=n=>stages.push([n,Math.round(performance.now())]);window.__stage=stage;
@@ -243,7 +243,7 @@ matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>{sta
 function projectMarkers(){
  if(!camera)return;const root=$('#markers');root.style.opacity=state.transitioning?'0':'1';root.style.pointerEvents=state.transitioning?'none':'';
  let svg=$('#marker-leaders');if(!svg){svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.id='marker-leaders';root.prepend(svg);}svg.setAttribute('viewBox',`0 0 ${innerWidth} ${innerHeight}`);let lines='';const placed=[];
- const offsets={sign:[0,90],book:[0,70],lamp:[-125,-85],cnc:[85,-110],scope:[-100,-95],printer:[80,-110],books:[0,-70]};
+ const offsets={computer:[0,-25],sign:[0,90],book:[0,70],lamp:[-125,-85],cnc:[85,-110],scope:[-100,-95],printer:[80,-110],books:[0,-70]};
  $$('#markers [data-point]').forEach(b=>{const p=new THREE.Vector3(...b.dataset.point.split(',').map(Number)).project(camera);b.hidden=!(b.dataset.context||'room').split(' ').includes(state.view)||p.z>1||Math.abs(p.x)>(mobile()?4:1.15);if(b.hidden)return;
  const ax=(p.x+1)*innerWidth/2,ay=(1-p.y)*innerHeight/2,[dx,dy]=offsets[b.dataset.view]||[0,-65],w=b.offsetWidth,h=b.offsetHeight;
  let x=THREE.MathUtils.clamp(ax+dx,w/2+18,innerWidth-w/2-18),y=THREE.MathUtils.clamp(ay+dy,105,innerHeight-125);

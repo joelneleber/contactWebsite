@@ -35,7 +35,7 @@ function photoUV(geo,facesOnly){
 }
 const extrude=(shape,depth,bevel)=>photoUV(new THREE.ExtrudeGeometry(shape,{depth,curveSegments:10,bevelEnabled:bevel>0,bevelSegments:2,steps:1,bevelSize:bevel,bevelThickness:bevel}),true);
 const canvas=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c;};
-const tex=(c,srgb)=>{const t=new THREE.CanvasTexture(c);if(srgb)t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t;};
+const tex=(c,srgb)=>{const t=new THREE.CanvasTexture(c);if(srgb)t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=2;return t;};
 
 function plyEdge(base,dark){
  // Thin alternating veneers, as on cut plywood. Side-wall UVs run along depth in metres.
@@ -48,7 +48,7 @@ export function addWeddingSign(scene){
  const group=new THREE.Group();group.name='Wedding welcome sign';group.position.set(-3.645,2.35,4.45);group.rotation.y=Math.PI/2;scene.add(group);
  const colorC=canvas(),photoC=canvas(),panelC=canvas(),lettersC=canvas(),bumpC=canvas();
  const photoT=tex(photoC,true),colorT=tex(colorC,true),panelT=tex(panelC),lettersT=tex(lettersC),bumpT=tex(bumpC);
- const face=(o={})=>new THREE.MeshStandardMaterial({map:colorT,bumpMap:bumpT,bumpScale:1.2,roughness:.78,color:'#e9e2d6',...o});
+ const face=(o={})=>new THREE.MeshStandardMaterial({map:colorT,bumpMap:bumpT,bumpScale:.004,roughness:.78,color:'#e9e2d6',...o});
  const maskDepth=m=>new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking,alphaMap:m,alphaTest:.5});
  const add=(geo,mat,z,{cast=true,depth}={})=>{const m=new THREE.Mesh(geo,mat);m.position.z=z;m.castShadow=cast;m.receiveShadow=true;if(depth)m.customDepthMaterial=depth;group.add(m);return m;};
 

@@ -410,3 +410,21 @@ body[data-view="computer"] .corner-tools,body.reading .corner-tools,body.desktop
 #zone-panel.project-focus .reader-bar{background:#131e19!important;border-bottom:1px solid #e4cf9c1f}
 @media (max-width:900px){#zone-panel.project-focus .chapter-layout{padding:0}#zone-panel.project-focus .chapter-layout .reader{padding:12px 18px 48px}}
 .chapter-progress{background:#0f1915}
+
+/* The monitor is the primary entry into the software portfolio. */
+#markers .software-entry{padding:12px 23px;border:1px solid #f6d699;background:linear-gradient(150deg,#e8c58a,#c59e60);color:#203329;box-shadow:0 5px 20px #0006,inset 0 1px #fff7;white-space:normal;min-width:205px;text-align:center;letter-spacing:0}
+#markers .software-entry:before{display:none}
+#markers .software-entry strong{display:block;font:600 18px Georgia,serif;text-transform:none}
+#markers .software-entry small{display:block;margin-top:4px;font:11px Arial,sans-serif;letter-spacing:.4px;text-transform:none}
+#markers .software-entry:hover{background:#f2d8a8;color:#152a20}
+@media(max-width:600px){#markers .software-entry{min-width:170px;padding:10px 15px}#markers .software-entry strong{font-size:16px}}
+
+#markers .software-entry{border-radius:26px;background:#ead9b5;animation:software-bubble-float 3.6s ease-in-out infinite;box-shadow:0 8px 20px #0004}
+#markers .software-entry:after{display:block;content:"";position:absolute;left:calc(50% - 9px);bottom:-9px;width:17px;height:17px;background:#ead9b5;border-right:1px solid #f6d699;border-bottom:1px solid #f6d699;transform:rotate(45deg)}
+#markers .software-entry:hover:after{background:#f2d8a8}
+@keyframes software-bubble-float{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 5px))}}
+@media(prefers-reduced-motion:reduce){#markers .software-entry{animation:none}}
+@media(max-width:900px){
+ body[data-view="room"] #markers:not([hidden]){display:block}
+ body[data-view="room"] #markers>button:not(.software-entry),body[data-view="room"] #marker-leaders{display:none}
+}

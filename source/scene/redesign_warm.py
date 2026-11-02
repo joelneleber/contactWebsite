@@ -81,10 +81,10 @@ for yy in [-1.12,1.32]:
  box('instrument shelf wall bracket',(3.44,yy,1.33),(.055,.035,.38),BRASS)
  box('instrument shelf support',(3.14,yy,1.485),(.62,.035,.035),BRASS)
 # Small enclosed parts cabinet under the instrument shelf, away from the active mat.
-box('lab parts cabinet',(3.30,.17,1.28),(.35,1.5,.34),OLIVE)
+box('lab parts cabinet',(3.135,.17,1.2825),(.63,1.5,.415),OLIVE)
 for yy in [-.39,.17,.73]:
- box('parts drawer face',(3.11,yy,1.28),(.035,.52,.29),OLIVE)
- box('parts drawer pull',(3.082,yy,1.28),(.025,.13,.012),BRASS,.004)
+ box('parts drawer face',(2.803,yy,1.2825),(.035,.52,.365),OLIVE)
+ box('parts drawer pull',(2.773,yy,1.2825),(.025,.13,.012),BRASS,.004)
 # Rear desk pedestals visually tie the whole U together without filling the knee space.
 for xx in [-1.47,1.47]:
  box('desk cabinet',(xx,1.89,.505),(.52,1.35,.94),OLIVE)
@@ -116,6 +116,13 @@ def shift(prefixes,delta):
  delta=web_to_blender(delta)
  for o in bpy.context.scene.objects:
   if not o.hide_render and o.name.startswith(prefixes):o.matrix_world=Matrix.Translation(delta) @ o.matrix_world
+# Move the entire CNC as one station, including its workpiece and hold-downs.
+shift(('CNC ','Spindle carriage','Gantry face rail','Gantry hex fastener','Hold-down bolt','Walnut workpiece'),LAYOUT['cnc']['offset'])
+# Keep stored bits out of the relocated machine footprint; raise its nearest hanging clamp.
+shift(('Drill bit',),(0,0,1.45))
+for o in bpy.context.scene.objects:
+ if o.name.endswith('.006') and o.name.startswith(('Long woodworking clamp','Clamp fixed head','Clamp sliding head','Clamp threaded wooden grip')):
+  o.matrix_world=Matrix.Translation(web_to_blender((0,.23,0))) @ o.matrix_world
 # Inspection lives toward the back edge; a broad front portion of the mat stays empty.
 shift(('Microscope','PCB ','IC solder','Board capacitor','SMT ','Jumper wire'),(.22,0,.32))
 shift(('Soldering station','Temperature encoder'),(1.17,0,1.61))

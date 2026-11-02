@@ -11,7 +11,7 @@ export function addPlants(scene){
  function curve(g,pts,r=.008){mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p))),12,r,5,false),stem,g);}
  function pot(name,x,y,z,r,h,color){const g=new THREE.Group();g.name='Plant '+name;g.position.set(x,y,z);scene.add(g);const m=material(color);mesh(new THREE.CylinderGeometry(r,r*.8,h,24),m,g,0,h/2);const rim=mesh(new THREE.TorusGeometry(r,.012,6,24),m,g,0,h);rim.rotation.x=Math.PI/2;mesh(new THREE.CylinderGeometry(r*.92,r*.92,.008,24),material('#30291f'),g,0,h-.01);return {g,h};}
  // Upright snake plant: narrow, folded blades in a pale stoneware cylinder.
- {const {g,h}=pot('snake plant',-2.96,1.075,-2.64,.15,.25,'#c5bea6');for(let i=0;i<9;i++){const a=i*2.4;foliage(g,Math.cos(a)*.07,h,Math.sin(a)*.07,.105,.38+(i%3)*.10,a,-.1-(i%3)*.08,i);}}
+ {const {g,h}=pot('snake plant',-3.40,1.075,3.95,.15,.25,'#c5bea6');for(let i=0;i<9;i++){const a=i*2.4;foliage(g,Math.cos(a)*.07,h,Math.sin(a)*.07,.105,.38+(i%3)*.10,a,-.1-(i%3)*.08,i);}}
  // Rubber plant: a woody trunk and a few broad, dark, glossy leaves.
  {const {g,h}=pot('rubber plant',2.96,1.075,-2.64,.17,.27,'#a66746');curve(g,[[0,h,0],[.025,h+.25,0],[-.02,h+.6,.02]],.012);for(let i=0;i<7;i++){const a=i*2.4,y=h+.12+i*.065;curve(g,[[0,y,0],[Math.cos(a)*.10,y+.04,Math.sin(a)*.10]]);foliage(g,Math.cos(a)*.10,y+.04,Math.sin(a)*.10,.23,.26,a,-1.05,i);}}
  // Fern: spreading pinnate fronds in a low charcoal bowl.

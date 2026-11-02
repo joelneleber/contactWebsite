@@ -45,3 +45,7 @@ Warm workshop exterior upgrade (2026-11-01):
   Performance revision: runtime now uses two native-resolution window crops:
   forest-window-rear.webp (2867 × 1802), forest-window-side.webp (2457 × 2048).
   Reproduce with source/scripts/crop-exterior.py and the original 8K JPEG.
+
+  Cozy rain revision: the two window crops are resampled to 67% dimensions
+  (1921 × 1207 rear, 1646 × 1372 side) to soften photographic detail,
+  with runtime mist/shadow treatment and one batched rainfall effect.

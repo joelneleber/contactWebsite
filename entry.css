@@ -35,18 +35,3 @@ html.autostart body:not(.workshop-started)>#loading.loader{display:flex!importan
 #loading.loader .howto{margin:.2em 0 0;font:.62em/1.4 ui-monospace,monospace;color:#c9b88f;letter-spacing:.02em}
 #loading.loader .howto .narrow{display:none}@media(max-width:900px){#loading.loader .howto .wide{display:none}#loading.loader .howto .narrow{display:inline}}
 
-/* First-paint activity stays on the compositor while the scene initializes. */
-#loading.loader::after{content:"";position:absolute;left:0;top:0;width:32%;height:2px;background:linear-gradient(90deg,transparent,#ead4a1,transparent);transform:translateX(-100%);animation:loading-sweep 1.8s linear infinite;will-change:transform}
-@keyframes loading-sweep{to{transform:translateX(413%)}}
-@media(prefers-reduced-motion:reduce){#loading.loader::after{animation:none;transform:none;width:100%;opacity:.5}}
-
-/* The loading monitor contains only the continuous meter and percentage. */
-#loading.loader .loader-copy{justify-content:center;align-items:center;padding:12%;gap:22px;opacity:1;text-align:center}
-#loading.loader .load-pct{margin:0;font-size:clamp(22px,4vw,64px);white-space:nowrap}
-#loading.loader .load-track{display:block;width:100%;height:6px;background:#e9d6a826;overflow:hidden}
-#loading.loader #load-progress{display:block;width:100%;height:100%;background:#e4c68f;transform:scaleX(0);transform-origin:left;transition:transform .12s linear}
-#loading[data-sketch-renderer="worker"] .loader-copy{visibility:hidden}
-/* Fixed-size hatch strokes are revealed rather than stretched. */
-#loading.loader .load-pct{font-size:clamp(18px,3vw,42px)}
-#loading.loader .load-track{height:20px;border:1px solid #e4c68f;padding:2px}
-#loading.loader #load-progress{background:repeating-linear-gradient(135deg,transparent 0 5px,#e4c68f 5px 7px,transparent 7px 8px);transform:none;clip-path:inset(0 100% 0 0);transition:clip-path .12s linear}

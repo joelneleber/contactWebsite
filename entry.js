@@ -24,7 +24,7 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
  const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let sketchWorker=null;
  if(canvas.transferControlToOffscreen&&window.Worker){try{
-  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=4',import.meta.url));
+  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=5',import.meta.url));
   const offscreen=canvas.transferControlToOffscreen();sketchWorker.postMessage({type:'init',canvas:offscreen,calm:calm||new URLSearchParams(location.search).get('loader-preview')==='complete'},[offscreen]);
   sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);loading.dataset.meterProgress=data.progress.toFixed(4);loading.querySelector('.load-track')?.setAttribute('aria-valuenow',Math.round(data.progress*100));};
  }catch(error){sketchWorker?.terminate();sketchWorker=null;}}
@@ -92,11 +92,10 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
   ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.drawImage(cache,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);if(copyBox)ctx.clearRect(copyBox.x+3,copyBox.y+3,copyBox.w-6,copyBox.h-6);
   // the stroke being drawn right now, with a warm pen tip
   const s=screen[cachedUpTo];if(s&&p<1){style(ctx);const tip=stroke(ctx,s,goal-s.start);ctx.globalAlpha=1;ctx.fillStyle='#f0b850';ctx.shadowColor='#f0b850';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(tip[0],tip[1],2.6,0,7);ctx.fill();ctx.shadowBlur=0;}}
- function caption(p){loading.querySelector('.loader-copy')?.classList.add('on');if(!sketchWorker){loading.querySelector('.load-track')?.setAttribute('aria-valuenow',Math.round(p*100));document.getElementById('load-progress').style.clipPath=`inset(0 ${(1-p)*100}% 0 0)`;}}
  addEventListener('resize',()=>{if(loading.hidden)return;layout();draw(window.__load?.shown||0);});addEventListener('hashchange',()=>{if(loading.hidden)return;selectView();layout();draw(window.__load?.shown||0);});layout();
  let finishing=false;const pace={last:0,start:0,speed:0,prevF:0,recent:0};
  window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();sketchWorker?.postMessage({type:'progress',p:1});
-  // Let the percentage and drawing finish, then fade; tell the room once the loader is gone.
+  // Let the drawing finish, then fade; tell the room once the loader is gone.
   const t0=performance.now();const wait=()=>{if((sketchWorker?Number(loading.dataset.meterProgress||0):window.__load.shown)>=.999||performance.now()-t0>2600){loading.classList.add('done');setTimeout(()=>{loading.hidden=true;sketchWorker?.terminate();loading.classList.remove('done');window.__load._resolve?.();},calm?0:950);}else requestAnimationFrame(wait);};wait();};
  let lastDrawn=-1;
  function tick(now){if(loading.hidden)return;requestAnimationFrame(tick);if(!document.body.classList.contains('workshop-started'))return;
@@ -107,7 +106,7 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
    // toward 100% at the pace that lands there when the download does, never far ahead of reality.
    const elapsed=Math.max(.25,(now-pace.start)/1000),rate=Math.max(f/elapsed,pace.recent*.85),left=rate>0?(1-f)/rate:30,want=(1-v)/Math.max(.3,left);
    pace.speed+=(want-pace.speed)*Math.min(1,dt*3);v=Math.min(v+Math.max(0,pace.speed)*dt,f+.02,.99);}
-  if(finishing&&1-v<.003)v=1;L.shown=Math.max(L.shown,v);if(L.shown!==lastDrawn){lastDrawn=L.shown;draw(L.shown);}caption(L.shown);if(copyBox&&ctx)ctx.clearRect(copyBox.x+3,copyBox.y+3,copyBox.w-6,copyBox.h-6);}
+  if(finishing&&1-v<.003)v=1;L.shown=Math.max(L.shown,v);if(L.shown!==lastDrawn){lastDrawn=L.shown;draw(L.shown);}if(copyBox&&ctx)ctx.clearRect(copyBox.x+3,copyBox.y+3,copyBox.w-6,copyBox.h-6);}
  window.__playComputerSketch=()=>{
   if(calm||!loading.hidden)return;
   replayProgress=0;loading.hidden=false;loading.classList.remove('done');selectView();layout();const start=performance.now();
@@ -124,10 +123,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-hatching';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-sketch-only';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-hatching');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-sketch-only');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

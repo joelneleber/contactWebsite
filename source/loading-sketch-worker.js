@@ -27,7 +27,7 @@ function tick(now){
  if(target===1&&1-progress<.001)progress=1;
  draw(shown);
  if(previous){const mix=Math.min(1,(now-swapStarted)/350),g=blend.getContext('2d');g.clearRect(0,0,canvas.width,canvas.height);g.drawImage(canvas,0,0);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1-mix;ctx.drawImage(previous,0,0);ctx.globalAlpha=mix;ctx.drawImage(blend,0,0);ctx.globalAlpha=1;if(mix===1){previous=null;blend=null;}}
- paintProgress();
+
  if(now-lastReport>=100){self.postMessage({shown,progress});lastReport=now;}
  frame=requestAnimationFrame(tick);
 }
@@ -46,18 +46,3 @@ function tick(now){
   // Draw the active stroke without a glowing dot teleporting between objects.
   const active=screen[cachedUpTo];if(active&&p<1)stroke(ctx,active,goal-active.start);
  }
-
-function paintProgress(){
- if(!copyBox)return;
- const {x,y,w,h}=copyBox,barW=w*.72,barH=Math.max(12,Math.min(24,h*.08));
- ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=1;
- ctx.clearRect(x+3,y+3,w-6,h-6);
- ctx.fillStyle='#f3e6c8';ctx.textAlign='center';ctx.textBaseline='middle';
- ctx.font=`500 ${Math.max(18,Math.min(42,w*.09))}px monospace`;
- ctx.fillText('Progress',x+w/2,y+h*.43);
- const bx=x+(w-barW)/2,by=y+h*.61;
- ctx.fillStyle='#e9d6a826';ctx.fillRect(bx,by,barW,barH);
- ctx.strokeStyle='#e4c68f';ctx.lineWidth=1;ctx.strokeRect(bx,by,barW,barH);
- ctx.save();ctx.beginPath();ctx.rect(bx+2,by+2,(barW-4)*progress,barH-4);ctx.clip();ctx.lineWidth=2;
- for(let offset=-barH;offset<barW;offset+=8){ctx.beginPath();ctx.moveTo(bx+offset,by+barH);ctx.lineTo(bx+offset+barH,by);ctx.stroke();}ctx.restore();
-}

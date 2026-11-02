@@ -1,3 +1,36 @@
 body:not(.workshop-started)>:not(#entry):not(script):not(noscript){display:none!important}#entry{position:fixed;inset:0;z-index:9999;overflow:auto;display:grid;place-items:center;background:radial-gradient(ellipse at 75% 20%,#294536,#111e19);color:#f6e9c9;padding:30px;font:16px/1.7 system-ui,sans-serif}#entry[hidden]{display:none}.entry-inner{max-width:750px}.entry-inner .eyebrow{font:12px monospace;color:#e4c68f;letter-spacing:3px}.entry-inner h1{font:clamp(40px,7vw,76px)/1.1 Georgia;margin:25px 0}.entry-inner p{color:#c1cdbf;max-width:580px}.entry-choices{display:flex;gap:16px;flex-wrap:wrap;margin:32px 0}.entry-choices a,.entry-choices button{font:600 16px system-ui;border:1px solid #cfceb56b;border-radius:10px;padding:17px 23px;text-decoration:none;background:#f3e6c7;color:#203729;cursor:pointer}.entry-choices a{background:#294235;color:#f3e6c7}.entry-inner small{display:block;color:#acbba9}.entry-inner a:focus-visible,.entry-inner button:focus-visible{outline:3px solid #edc884;outline-offset:5px}.entry-contact{display:inline-block;color:#e4c68f;margin-top:28px}.loading-alternative{display:block;color:#f0d298;margin:18px}.simple-view-link{color:#ebd5a9;padding:10px;display:block;font-size:13px}
 
 .entry-choices{align-items:center}.entry-choices a.entry-secondary{background:none;border:0;padding:10px 0;color:#c1cdbf;font-size:14px;font-weight:400;text-decoration:underline}.entry-choices button{padding:22px 30px;font-size:18px}
+
+/* Loading screen: a blueprint of the room, traced from the 3D model with the same camera,
+   sketches itself in as the files download, then fades into the real room in the same spot. */
+#loading.loader{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:24px 24px max(56px,7vh);text-align:center;color:#f4e8cc;background:radial-gradient(ellipse at 50% 45%,#1c2b23 0%,#111b16 60%,#0b120f 100%);backdrop-filter:none;-webkit-backdrop-filter:none;font:16px/1.6 system-ui,sans-serif;transition:opacity .9s ease}
+#loading.loader[hidden]{display:none}
+#loading.loader.done{opacity:0;pointer-events:none}
+#bp-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* The welcome and loading status sit on the main monitor's screen (placed by entry.js). */
+.loader-copy{position:absolute;left:var(--sx,50%);top:var(--sy,40%);width:var(--sw,420px);height:var(--sh,240px);box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:.5em;padding:1.2em 1.6em;text-align:left;font-size:var(--fs,15px);color:#e8dcc0;opacity:0;transition:opacity .5s ease;overflow:hidden}
+.loader-copy.on{opacity:1}
+.loader-copy .screen-bar{position:absolute;left:0;right:0;top:0;margin:0;padding:.45em 1.2em;font:.62em ui-monospace,monospace;letter-spacing:.06em;color:#9fae9c;border-bottom:1px solid #e9d6a826}
+.loader-copy .screen-bar b{font:italic 1.25em Georgia,serif;color:#e4c68f;margin-right:.5em}
+#loading.loader .loader-copy .eyebrow{margin:0;font:.7em ui-monospace,monospace;letter-spacing:.25em;color:#e4c68f}
+.loader-copy .about{margin:0;font:1.15em/1.45 Georgia,serif;color:#fff3d8;max-width:30em}
+.loader-copy .status{margin:0;font:italic .85em Georgia,serif;color:#cfc3a8}
+#load-quip{transition:opacity .35s}
+#load-quip.fading{opacity:0}
+#loading.loader .load-pct{margin:.15em 0 0;font:600 2.6em/1 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:-.02em;color:#f3e6c8;font-variant-numeric:tabular-nums}
+#loading.loader .load-pct small{font-size:.45em;margin-left:.1em;color:#e4c68f}
+#loading.loader #load-message{margin:0;font:.62em ui-monospace,monospace;color:#7f8c7d}
+#loading.loader .loading-alternative{position:absolute;left:50%;bottom:max(18px,3vh);transform:translateX(-50%);margin:0;padding:8px 14px;border-radius:999px;background:#0b120fcc;color:#e9cd94;font-size:13px;white-space:nowrap}
+@keyframes loader-in{from{opacity:0}}
+@media(prefers-reduced-motion:reduce){#loading.loader{animation:none;transition:none}#load-quip{transition:none}}
+/* Text sits below the screen's title bar and never under it. */
+.loader-copy{justify-content:flex-start;gap:.4em;padding:2.3em 1.6em 1em}
+.loader-copy .about{font-size:1.05em}
+#loading.loader .load-pct{font-size:2.3em}
+
+/* Auto-starting visitors: show the loading screen from the first paint (entry.js removes this on failure). */
+html.autostart #entry{display:none!important}
+html.autostart body:not(.workshop-started)>#loading.loader{display:flex!important}
+#loading.loader .howto{margin:.2em 0 0;font:.62em/1.4 ui-monospace,monospace;color:#c9b88f;letter-spacing:.02em}
+#loading.loader .howto .narrow{display:none}@media(max-width:900px){#loading.loader .howto .wide{display:none}#loading.loader .howto .narrow{display:inline}}

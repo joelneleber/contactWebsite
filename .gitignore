@@ -1,0 +1,4 @@
+source/scene/*.blend*
+assets/cockpit/command-center-warm-raw.glb
+assets/cockpit/command-center-warm-compressed.glb
+source/**/__pycache__/

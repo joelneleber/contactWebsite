@@ -1,0 +1,19 @@
+{
+  "source_objects": 858,
+  "mesh_groups": 71,
+  "triangles": 205084,
+  "bytes": 22442476,
+  "elapsed_seconds": 4,
+  "zones": [
+    "cnc_gantry",
+    "cnc_motion",
+    "computer",
+    "lab",
+    "lamp",
+    "printer",
+    "printer_motion",
+    "room",
+    "screen",
+    "wood"
+  ]
+}

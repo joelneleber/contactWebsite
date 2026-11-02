@@ -420,7 +420,7 @@ body[data-view="computer"] .corner-tools,body.reading .corner-tools,body.desktop
 @media(max-width:600px){#markers .software-entry{min-width:170px;padding:10px 15px}#markers .software-entry strong{font-size:16px}}
 
 #markers .software-entry{border-radius:26px;background:#ead9b5;animation:software-bubble-float 3.6s ease-in-out infinite;box-shadow:0 8px 20px #0004}
-#markers .software-entry:after{display:block;content:"";position:absolute;left:calc(50% - 9px);bottom:-9px;width:17px;height:17px;background:#ead9b5;border-right:1px solid #f6d699;border-bottom:1px solid #f6d699;transform:rotate(45deg)}
+#markers .software-entry:after{display:block;content:"";position:absolute;left:calc(50% - 9px);top:auto;bottom:-7px;width:17px;height:17px;background:#ead9b5;border-right:1px solid #f6d699;border-bottom:1px solid #f6d699;transform:rotate(45deg)}
 #markers .software-entry:hover:after{background:#f2d8a8}
 @keyframes software-bubble-float{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 5px))}}
 @media(prefers-reduced-motion:reduce){#markers .software-entry{animation:none}}

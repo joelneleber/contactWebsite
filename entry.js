@@ -1,3 +1,4 @@
+import {outsidePolygon} from './source/sketch-occlusion.js';
 import {views,viewPose} from './source/cockpit-views.js?v=bench-eye-level';
 // One progress figure for the whole load, weighted by what each step really downloads
 // (compressed sizes): styles, project data, the 3D code, the room model, then scene setup.
@@ -64,7 +65,10 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
   monitorOutline.monitor=true;
   const outlines=loadingView==='computer'?[]:[monitorOutline,...polys.filter(pl=>!pl.monitor)];
   for(const pl of outlines){const pts=[];let len=0,prev=null,ok=true;for(let i=0;i<pl.length;i+=3){const dx=pl[i]-c.p[0],dy=pl[i+1]-c.p[1],dz=pl[i+2]-c.p[2];const zc=-(dx*c.z[0]+dy*c.z[1]+dz*c.z[2]);if(zc<.05){ok=false;break;}const sx=((dx*c.x[0]+dy*c.x[1]+dz*c.x[2])/zc*c.f/c.aspect+1)/2*W-c.offX,sy=(1-(dx*c.y[0]+dy*c.y[1]+dz*c.y[2])/zc*c.f)/2*H-c.offY;if(prev)len+=Math.hypot(sx-prev[0],sy-prev[1]);prev=[sx,sy];pts.push(sx,sy);}
-   if(ok&&pts.length>=4)(pl.monitor?first:rest).push({pts,len});}
+   if(ok&&pts.length>=4){
+    const behind=!pl.monitor&&first.length&&Array.from(pl).every((v,i)=>i%3!==2||v< -1.575);
+    if(behind)rest.push(...outsidePolygon(pts,first[0].pts));else (pl.monitor?first:rest).push({pts,len});
+   }}
   // Collapse nearby parallel bevels into a single contour in the actual viewport.
   const kept=[],gap=Math.max(2.5,Math.min(5,W/350));
   for(const line of [...first,...rest].sort((a,b)=>b.len-a.len)){
@@ -124,10 +128,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-bench-eye-level';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-monitor-mask';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-bench-eye-level');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-monitor-mask');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

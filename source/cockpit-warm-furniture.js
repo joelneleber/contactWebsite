@@ -35,5 +35,5 @@ export function addWarmFurniture(scene) {
  }
  // Recessed strips run beneath the two aligned shelves.
  const diffuser=new THREE.MeshStandardMaterial({color:'#fff1d4',emissive:'#ffe0aa',emissiveIntensity:1.2});
- for(const side of [-1,1]){const strip=new THREE.Mesh(new THREE.BoxGeometry(.025,.012,4.55),diffuser);strip.position.set(side*3.13,3.011,-.05);scene.add(strip);const light=new THREE.PointLight('#ffe5bc',.3,3.5,2);light.position.set(side*3.12,2.90,-.5);scene.add(light);}
+ for(const side of [-1,1]){const strip=new THREE.Mesh(new THREE.BoxGeometry(.025,.012,side<0?3.65:3.75),diffuser);strip.position.set(side*3.13,3.011,side<0?-.40:-.10);scene.add(strip);const light=new THREE.PointLight('#ffe5bc',.16,3.5,2);light.position.set(side*3.12,2.90,-.5);scene.add(light);}
 }

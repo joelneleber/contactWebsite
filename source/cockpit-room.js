@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {addPlants} from './cockpit-plants.js';
 import {addRoomShell} from './cockpit-shell.js';
 import {addWarmFurniture} from './cockpit-warm-furniture.js';
 import {addWeddingSign} from './cockpit-sign.js?v=12.4';
@@ -8,19 +9,7 @@ export function furnishRoom(scene){
  const mat=(color,roughness=.8)=>new THREE.MeshStandardMaterial({color,roughness});
  const wall=mat('#a49d8b'),wood=mat('#b79160'),dark=mat('#202c2a'),paper=mat('#d4c9af'),metal=mat('#74817c',.4),green=mat('#405a49');
  function block(x,y,z,w,h,d,m){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.receiveShadow=true;o.castShadow=true;scene.add(o);return o;}
- // Small potted plants: tapered terracotta pot with a rim, arching stems and real leaf shapes.
- const leafShape=new THREE.Shape();leafShape.moveTo(0,0);leafShape.bezierCurveTo(.42,.18,.38,.72,0,1);leafShape.bezierCurveTo(-.38,.72,-.42,.18,0,0);
- const leafGeo=new THREE.ShapeGeometry(leafShape,10);{const p=leafGeo.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i);p.setZ(i,-x*x*.9+Math.sin(y*Math.PI)*.08);}leafGeo.computeVertexNormals();}
- const leafMats=['#3f6b3a','#4d7d43','#5d8c4c','#355e33'].map(c=>new THREE.MeshStandardMaterial({color:c,roughness:.62,side:THREE.DoubleSide}));
- function plant(x,y,z,size){const potMat=mat('#a0623f',.85);const pot=new THREE.Mesh(new THREE.CylinderGeometry(size*.27,size*.2,size*.42,28),potMat);pot.position.set(x,y+size*.21,z);pot.castShadow=true;scene.add(pot);const rim=new THREE.Mesh(new THREE.TorusGeometry(size*.27,size*.028,8,28),potMat);rim.rotation.x=Math.PI/2;rim.position.set(x,y+size*.42,z);scene.add(rim);const soil=new THREE.Mesh(new THREE.CylinderGeometry(size*.25,size*.25,.01,24),mat('#2a2018'));soil.position.set(x,y+size*.405,z);scene.add(soil);
-  const stemMat=mat('#4d6b3a');for(let i=0;i<15;i++){const a=i*2.399,reach=size*(.22+(i%4)*.09),h=size*(.35+(i%5)*.13),base=new THREE.Vector3(x+Math.cos(a)*size*.05,y+size*.4,z+Math.sin(a)*size*.05),tip=new THREE.Vector3(x+Math.cos(a)*reach,y+size*.4+h,z+Math.sin(a)*reach);
-   const curve=new THREE.QuadraticBezierCurve3(base,new THREE.Vector3(x+Math.cos(a)*reach*.2,tip.y+size*.05,z+Math.sin(a)*reach*.2),tip);const stem=new THREE.Mesh(new THREE.TubeGeometry(curve,8,size*.008,5,false),stemMat);scene.add(stem);
-   const holder=new THREE.Group();holder.position.copy(tip);holder.rotation.y=-a-Math.PI/2;scene.add(holder);const leaf=new THREE.Mesh(leafGeo,leafMats[i%4]);const s=size*(.24+(i%3)*.05);leaf.scale.set(s,s,s);leaf.rotation.x=-(.45+(i%4)*.22);leaf.castShadow=true;holder.add(leaf);}}
- // Plants occupy supported corners and shelves, leaving equipment and glazing clear.
- plant(-3.38,3.085,-1.6,.48);plant(3.38,3.085,-1.6,.48);
- plant(-2.96,1.075,-2.64,.62);plant(2.96,1.075,-2.64,.60);
- plant(-3.38,3.085,.85,.35);
- plant(3.60,2.75,3.76,.34);
+ addPlants(scene);
  // A usable whiteboard occupies the former box shelf and tool rail.
  block(3.55,2.22,2.50,.065,.87,1.10,metal);
  const wc=document.createElement('canvas');wc.width=1500;wc.height=1000;const w=wc.getContext('2d');w.fillStyle='#f1f0e4';w.fillRect(0,0,1500,1000);w.fillStyle='#244d49';w.font='54px Georgia';w.fillText('On the bench',90,110);w.strokeStyle='#62827b';w.lineWidth=3;w.beginPath();w.moveTo(90,145);w.lineTo(1400,145);w.stroke();
@@ -35,9 +24,9 @@ export function furnishRoom(scene){
  clip.add(new THREE.Mesh(new THREE.TubeGeometry(curve,28,.009,8,false),mat('#ba602e',.35)));
  const gate=new THREE.Mesh(new THREE.CylinderGeometry(.006,.006,.165,12),metal);gate.position.set(.04,-.003,0);clip.add(gate);
  // Reading shelf above the printer; spine colors are decorative, no invented titles.
- block(3.65,2.72,3.05,.45,.055,1.72,wood);
+ block(3.65,2.92,3.10,.45,.055,1.72,wood);
  const titles=['What Every BODY Is Saying','How to Win Friends and Influence People','The Tipping Point','Becoming the Best','David and Goliath','Atomic Habits','Outliers','Dracula','Calculating the Cosmos'];
- for(let i=0;i<titles.length;i++){const h=.3+(i%4)*.035,z=2.35+i*.17;block(3.64,2.75+h/2,z,.28,h,.135,[green,paper,dark,wood][i%4]);const canvas=document.createElement('canvas');canvas.width=256;canvas.height=1024;const ctx=canvas.getContext('2d');ctx.fillStyle=['#405a49','#b4a786','#202c2a','#57432e'][i%4];ctx.fillRect(0,0,256,1024);ctx.translate(128,512);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#f5e8ca';ctx.font='48px Georgia';ctx.fillText(titles[i],0,12,850);const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const label=new THREE.Mesh(new THREE.PlaneGeometry(.13,h),new THREE.MeshBasicMaterial({map:texture}));label.rotation.y=-Math.PI/2;label.position.set(3.491,2.75+h/2,z);scene.add(label);}
+ for(let i=0;i<titles.length;i++){const h=.3+(i%4)*.035,z=2.40+i*.15;block(3.64,2.95+h/2,z,.28,h,.135,[green,paper,dark,wood][i%4]);const canvas=document.createElement('canvas');canvas.width=256;canvas.height=1024;const ctx=canvas.getContext('2d');ctx.fillStyle=['#405a49','#b4a786','#202c2a','#57432e'][i%4];ctx.fillRect(0,0,256,1024);ctx.translate(128,512);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillStyle='#f5e8ca';ctx.font='48px Georgia';ctx.fillText(titles[i],0,12,850);const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const label=new THREE.Mesh(new THREE.PlaneGeometry(.13,h),new THREE.MeshBasicMaterial({map:texture}));label.rotation.y=-Math.PI/2;label.position.set(3.491,2.95+h/2,z);scene.add(label);}
  // An electronics notebook sits on the working bench.
  // A glowing sign over the monitors says what the computer holds: the software projects.
  {const W=1600,H=300,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');

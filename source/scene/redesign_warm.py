@@ -67,7 +67,7 @@ for side in [-1,1]:
   box('olive drawer',(side*1.775,yy,.835),(.065,1.018,.22),OLIVE)
   box('brass drawer pull',(side*1.724,yy,.835),(.032,.28,.018),BRASS,.007)
   box('brass door pull',(side*1.724,yy+.34,.54),(.032,.018,.17),BRASS,.007)
- box('side floating shelf',(side*3.39,.05,3.05),(.58,4.8,.065),OAK)
+ box('side floating shelf',(side*3.39,.40 if side<0 else .10,3.05),(.58,3.9 if side<0 else 4.0,.065),OAK)
  # Quiet backsplash against the walls rather than unsupported trim on the inner edge.
  box('oak backsplash',(side*3.635,-.75,1.135),(.035,7.40,.12),OAK,.005)
 # A continuous bank of four upper cabinets over the lab, clear of the rear window.

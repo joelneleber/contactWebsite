@@ -35,3 +35,10 @@ Flathead Screwdriver
 
 All external textures used by the final scene are packed into the .blend file.
 API metadata snapshots and downloaded source assets are retained under assets/.
+
+Warm workshop exterior upgrade (2026-11-01):
+  Forest Slope — Andreas Mischok / Poly Haven, CC0.
+  https://polyhaven.com/a/forest_slope
+  Native 8192 × 4096 tonemapped JPEG from Poly Haven files API,
+  encoded as forest-slope-8k.webp at quality 88 without upscaling.
+  Runtime exterior texture is served separately from the GLB.

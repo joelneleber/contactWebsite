@@ -146,11 +146,8 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin
 /* Separate, opaque faces prevent QR/back-face bleed through in Firefox. */
 .card-stage{position:relative}
 .card{--rx:0deg;--ry:0deg}
-.front{transform:translateZ(1px);visibility:visible}
-.back{transform:rotateY(180deg) translateZ(1px);visibility:hidden}
-.face{transition:visibility 0s linear .4s}
-.card.flipped .front{visibility:hidden}
-.card.flipped .back{visibility:visible}
+.front{transform:translateZ(1px)}
+.back{transform:rotateY(180deg) translateZ(1px)}
 .face:before{mix-blend-mode:normal}
 .card-toggle{z-index:2;border:1px solid #8a6a3344;cursor:pointer;min-height:32px;letter-spacing:.08em}
 .email-line a{color:#354536;text-underline-offset:3px;font-size:clamp(10px,1vw,12px)}

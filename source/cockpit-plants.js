@@ -21,5 +21,10 @@ export function addPlants(scene){
  // Compact succulent: thick rosette leaves in a muted clay bowl.
  {const {g,h}=pot('succulent',-3.38,3.085,.65,.12,.12,'#b47c61');for(let i=0;i<17;i++){const a=i*2.4;foliage(g,0,h,0,.09,.13+(i%3)*.035,a,-.6-(i%3)*.35,i);}}
  {const {g,h}=pot('small palm',3.38,3.085,1.50,.10,.15,'#747c68');for(let i=0;i<7;i++){const a=i*2.4;foliage(g,0,h,0,.065,.29,a,-.3-(i%3)*.25,i);}}
+ // A small, varied cluster in the back corner of the electronics bench.
+ // Reuse the leaf geometry and pot finishes so it joins the existing static batches.
+ {const {g,h}=pot('corner fern',2.35,1.075,-2.60,.16,.18,'#51584b');for(let i=0;i<8;i++){const a=i*2.4,pts=[];for(let j=0;j<=6;j++){const t=j/6;pts.push([Math.cos(a)*t*.28,h+Math.sin(t*Math.PI*.8)*.31,Math.sin(a)*t*.28]);}curve(g,pts,.003);for(let j=1;j<6;j++){const [x,y,z]=pts[j];for(const side of [-1,1]){const o=foliage(g,x,y,z,.045,.095*(1-j/9),a+side*.75,-.85,j);o.rotation.z=side*.6;}}}}
+ {const {g,h}=pot('corner rosette',2.18,1.075,-2.02,.105,.10,'#b47c61');for(let i=0;i<15;i++){const a=i*2.4;foliage(g,0,h,0,.095,.13+(i%3)*.025,a,-.65-(i%3)*.3,i);}}
+ {const {g,h}=pot('corner peperomia',2.72,1.075,-1.97,.13,.17,'#c5bea6');for(let i=0;i<9;i++){const a=i*2.4,y=h+.13+(i%3)*.07,x=Math.cos(a)*.12,z=Math.sin(a)*.12;curve(g,[[0,h,0],[x*.5,y-.03,z*.5],[x,y,z]],.004);foliage(g,x,y,z,.17,.18,a,-.75,i);}}
  batchStatic(scene,scene.children.filter(o=>o.name.startsWith('Plant ')));
 }

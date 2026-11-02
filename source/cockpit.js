@@ -163,7 +163,7 @@ $('.panel-close').onclick=()=>{closeReader();if(state.view==='book'){$('#zone-pa
 const views={
  sign:{p:[-.3,2.65,5.0],t:[-3.53,2.35,4.45],label:'THE WEDDING SIGN / design, layers & tiny details'},
  books:{p:[1.1,2.8,3.6],t:[3.6,2.95,3.05],label:'BOOKS & IDEAS'},
- scope:{p:[.8,2.1,1.1],t:[2.28,1.55,-.5],label:'SIGNALS / electronics projects'},
+ scope:{p:[.7,2.05,.15],t:[3.05,1.78,-.72],label:'SIGNALS / electronics projects'},
  cnc:{p:[-.8,2.3,1.1],t:[-2.57,1.55,-.4],label:'CNC / digital fabrication'},
  book:{p:[-2.10,3.05,2.78],t:[-2.65,1.2,2.78],label:'WOODSHOP PROJECTS / turn a page'},
  room:{p:[0,2.68,5.1],t:[0,1.45,-1.2],label:'A room for all the things I make.'},
@@ -175,7 +175,7 @@ const views={
 };
 // GitHub Pages gzips the model, so the response's Content-Length is the compressed size while
 // the loader counts uncompressed bytes. Measure against the real file size instead.
-const ROOM_MODEL_BYTES=2057352;
+const ROOM_MODEL_BYTES=1727672;
 // The loader only fades once the room has drawn itself behind it (see initRoom).
 // Setup timings for diagnosing slow loads: cockpit.stages.
 const stages=[];const stage=n=>stages.push([n,Math.round(performance.now())]);window.__stage=stage;
@@ -304,10 +304,10 @@ async function initRoom(){
  try{
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(viewW(),viewH(),false);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;$('#world').append(renderer.domElement);
   scene=new THREE.Scene();scene.background=new THREE.Color('#17201b');camera=new THREE.PerspectiveCamera(43.8,viewW()/viewH(),.04,70);const first=destination('room');camera.position.copy(first.p);look.copy(first.t);baseLook.copy(look);camera.lookAt(look);
-  scene.add(new THREE.HemisphereLight('#fff6e5','#aa9270',1.3));
+  scene.add(new THREE.HemisphereLight('#fff6e5','#aa9270',.95));
   function spot(name,color,intensity,pos,target){const l=new THREE.SpotLight(color,intensity,15,Math.PI/2.8,.65,2);l.name=name;l.position.set(...pos);l.target.position.set(...target);l.castShadow=true;l.shadow.mapSize.set(1024,1024);l.shadow.bias=-.0003;l.shadow.normalBias=.015;scene.add(l,l.target);return l;}
-  spot('Warm woodshop','#ffe8c4',28,[-2.5,3.3,-.45],[-2.5,1,0]);spot('Cool lab','#ffebcd',24,[2.6,3.35,-.4],[2.6,1,0]);spot('Central task light','#fff0d8',20,[0,3.5,-1.1],[0,1,-1]);
-  const fill=new THREE.DirectionalLight('#fff4df',1.05);fill.position.set(0,3,5);scene.add(fill);
+  spot('Warm woodshop','#ffe8c4',20,[-2.5,3.3,-.45],[-2.5,1,0]);spot('Cool lab','#ffebcd',16,[2.6,3.35,-.4],[2.6,1,0]);spot('Central task light','#fff0d8',20,[0,3.5,-1.1],[0,1,-1]);
+  const fill=new THREE.DirectionalLight('#fff4df',.7);fill.position.set(0,3,5);scene.add(fill);
   for(const z of [-.8,1.1,2.6]){const l=new THREE.PointLight('#dce7df',1.6,5,2);l.position.set(2.0,2.8,z);scene.add(l);}
   const glow=new THREE.PointLight('#ffb95c',3,2.5,2);glow.position.set(-3.13,1.5,.35);scene.add(glow);
   const loader=new GLTFLoader();loader.setMeshoptDecoder(MeshoptDecoder);stage('model-request');const gltf=await loader.loadAsync('assets/cockpit/command-center-warm.glb?v=1',e=>{window.__load?.set('room',e.loaded/ROOM_MODEL_BYTES);$('#load-message').textContent=e.loaded<ROOM_MODEL_BYTES?'Bringing the workshop into view…':'Setting out the projects…';});

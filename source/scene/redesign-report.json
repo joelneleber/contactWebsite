@@ -1,5 +1,5 @@
 {
-  "removed_visual_clutter": 1398,
-  "new_objects": 69,
-  "interactive_positions": "retained"
+  "removed_visual_clutter": 1430,
+  "new_objects": 106,
+  "interactive_positions": "CNC, printer, computer retained; lab in lab-layout.json"
 }

@@ -4,6 +4,7 @@ for(const [w,h] of [[1440,900],[390,844],[844,390],[2560,1440]]){
  const wood=viewPose('wood',w,h),lab=viewPose('lab',w,h);
  assert.ok(Math.abs(wood.p[0]+lab.p[0])<1e-9);
  for(const i of [1,2])assert.equal(wood.p[i],lab.p[i]);
+ assert.equal(wood.p[1],viewPose('room',w,h).p[1]);assert.ok(wood.p[2]<=viewPose('room',w,h).p[2]);
  assert.equal(wood.fov,lab.fov);assert.equal(wood.fov,viewPose('room',w,h).fov);
  for(const from of Object.keys(views))for(const to of Object.keys(views)){
   const a=viewPose(from,w,h),b=viewPose(to,w,h);

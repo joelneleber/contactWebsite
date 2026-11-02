@@ -23,8 +23,11 @@ export function viewPose(view,w,h){
  if(portrait&&phoneViews[view]){p.splice(0,3,...phoneViews[view].p);t.splice(0,3,...phoneViews[view].t);}
  else if(portrait&&view!=='computer')scale(({book:1.75,cnc:1.3})[view]||1.08);
  else if(mobile&&view!=='computer'){scale(view==='room'?1.3:view==='book'?1.35:['wood','lab'].includes(view)?1.12:1.4);if(view!=='room'&&view!=='book')t[1]-=.35;}
- // Keep the bench coverage while matching the room's lens; framing comes from distance.
- if(['wood','lab'].includes(view))scale(portrait?Math.tan(62*Math.PI/360)/Math.tan(72*Math.PI/360):Math.tan(60*Math.PI/360)/Math.tan(43.8*Math.PI/360));
+ // Bench navigation stays at the room's eye height and never retreats behind it.
+ // Framing uses the existing lens, without the old distance multiplier lifting the camera.
+ if(['wood','lab'].includes(view)){
+  const room=viewPose('room',w,h);p[1]=room.p[1];p[2]=Math.min(p[2],room.p[2]);
+ }
  p[0]=Math.min(3.3,Math.max(-3.25,p[0]));p[2]=Math.min(p[2],7.6);p[1]=Math.min(p[1],3.6);
  const offY=phone&&!phoneViews[view]&&!['computer','book'].includes(view)?h*.26:0,offX=!mobile&&['sign','lamp','cnc','scope','printer','books'].includes(view)?w*.23:0;
  return {p,t,fov,offX,offY};

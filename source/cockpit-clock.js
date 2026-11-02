@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 export function addNixieClock(scene){
- const group=new THREE.Group();group.name='Nixie desk clock';group.position.set(-.96,1.14,-1.43);scene.add(group);
+ const group=new THREE.Group();group.name='Nixie desk clock';group.position.set(0,1.14,-1.43);group.scale.setScalar(.9);scene.add(group);
  const base=new THREE.Mesh(new THREE.BoxGeometry(.65,.035,.18),new THREE.MeshStandardMaterial({color:'#66462b',roughness:.7}));base.position.y=.0175;base.castShadow=true;group.add(base);
  const glass=new THREE.MeshBasicMaterial({color:'#e9bb87',transparent:true,opacity:.14,depthWrite:false});
  const canvas=document.createElement('canvas');canvas.width=768;canvas.height=256;const ctx=canvas.getContext('2d');const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;

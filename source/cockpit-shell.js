@@ -3,20 +3,22 @@ import * as THREE from 'three';
 
 // One coherent shell: full-height walls, closed corners and joined window casings.
 export function addRoomShell(scene){
- const plaster=new THREE.MeshStandardMaterial({color:'#a49d8b',roughness:.95});
- const ceiling=new THREE.MeshStandardMaterial({color:'#8f9184',roughness:.95});
+ const plaster=new THREE.MeshStandardMaterial({color:'#bcb09b',roughness:.95});
+ const ceiling=new THREE.MeshStandardMaterial({color:'#c4bba8',roughness:.95});
  const trim=new THREE.MeshStandardMaterial({color:'#786b52',roughness:.78});
  const oak=walnutMaterial();
+ const accent=new THREE.MeshStandardMaterial({color:'#747f82',roughness:.95});
+ const floor=new THREE.MeshStandardMaterial({color:'#b0a08a',roughness:.9});
  function box(name,x,y,z,w,h,d,mat){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.name=name;m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m;}
  // Side window opening is z=1.72..3.48 and y=1.68..3.02.
  box('Shell left rear',-3.75,1.95,-.73,.16,3.9,4.90,plaster);
  box('Shell left front',-3.75,1.95,5.84,.16,3.9,4.72,plaster);
  box('Shell left window apron',-3.75,.84,2.6,.16,1.68,1.76,plaster);
  box('Shell left window lintel',-3.75,3.46,2.6,.16,.88,1.76,plaster);
- box('Shell right',3.75,1.95,2.51,.16,3.9,11.38,plaster);
- box('Shell rear apron',0,.8,-3.18,7.66,1.6,.16,plaster);
- box('Shell rear lintel',0,3.735,-3.18,7.66,.33,.16,plaster);
- for(const x of [-3.56,3.56])box('Shell rear pier',x,2.585,-3.18,.46,1.97,.16,plaster);
+ box('Shell right',3.75,1.95,2.51,.16,3.9,11.38,accent);
+ box('Shell rear apron',0,.8,-3.18,7.66,1.6,.16,accent);
+ box('Shell rear lintel',0,3.735,-3.18,7.66,.33,.16,accent);
+ for(const x of [-3.56,3.56])box('Shell rear pier',x,2.585,-3.18,.46,1.97,.16,accent);
  box('Shell ceiling',0,3.96,2.51,7.66,.12,11.54,ceiling);
  box('Shell front',0,1.95,8.2,7.66,3.9,.16,plaster);
  // A continuous crown and baseboard meet the corner posts without dangling ends.
@@ -58,5 +60,5 @@ export function addRoomShell(scene){
  for(const cx of [-2.24,0,2.24]){const pane=new THREE.Mesh(new THREE.PlaneGeometry(2.12,1.75),glass);pane.name='Rear window glass';pane.position.set(cx,2.585,-3.13);scene.add(pane);}
  const side=new THREE.Mesh(new THREE.PlaneGeometry(1.57,1.15),glass);side.name='Side window glass';side.rotation.y=Math.PI/2;side.position.set(-3.76,2.35,2.6);scene.add(side);
  // Floor extension beyond the modeled oak boards, hidden behind the camera in the main view.
- box('Front floor extension',0,-.07,6.6,7.66,.14,3.5,oak);
+ box('Front floor extension',0,-.07,6.6,7.66,.14,3.5,floor);
 }

@@ -13,7 +13,8 @@ def material(name,color,metal=0,rough=.7):
  m=bpy.data.materials.new(name);m.use_nodes=True
  b=m.node_tree.nodes.get('Principled BSDF');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Metallic'].default_value=metal;b.inputs['Roughness'].default_value=rough
  return m
-OLIVE=material('Warm workshop olive cabinetry',(.19,.22,.135))
+OLIVE=material('Warm workshop charcoal cabinetry',(.075,.09,.095))
+FLOOR=material('Warm workshop pale ash floor',(.43,.36,.26),rough=.88)
 PLASTER=material('Warm workshop cream plaster',(.37,.34,.28),rough=.92)
 BRASS=material('Warm workshop satin brass',(.45,.30,.12),.65,.4)
 SAGE=material('Warm workshop sage silicone',(.22,.31,.23),rough=.9)
@@ -42,14 +43,15 @@ def box(name,loc,dim,m,bevel=.015):
   mod=o.modifiers.new('Soft cabinet edges','BEVEL');mod.width=bevel;mod.segments=3;o.modifiers.new('Weighted normals','WEIGHTED_NORMAL')
  return o
 
-remove=('Left portrait display','Side wall','Overhead ceiling','Lower rear bulkhead','Window pane','Window structural mullion','Window horizontal frame','Solid oak side worktop','Central walnut desktop','Cabinet carcass','Desk edge metal strip','Forward cabinet toe','Monitor articulated arm','Workshop stool','Headphone hook','Central desk pedestal','Code lab monitor','Aircraft','Jamb rivet','Cockpit sloped','Overhead strip','Ceiling fastener','Skylight','Upper task light','Overbench shelf','Shelf storage','Technical notebook spine','Speaker','Woodshop pegboard','Pegboard hole','Chisel turned','Chisel steel','Tool hook','Clamp bar','Clamp upper','Clamp movable','Parts organizer','Parts bin','Right wall component','Side parts drawer','Side drawer','Inner drawer','Drawer pull','Drawer label','Drawer paper','Extended inner drawer','Extended drawer','Extended pull','Walnut drawer','Brass drawer handle','Footwell','Rubber hex','Curled wood shaving','Individual wood chip','Bent oak ribbon','Leaning timber','Seasoned timber','Plant pot','Pothos','Trailing pothos','Under-console cable','Workbench countersunk','Extended worktop screw','Bench dog socket','Extended bench dog','Right portrait display','Monitor arm','Long upper wood shelf','Side shelf practical','Window mullion')
+remove=('Console mini','Left portrait display','Side wall','Overhead ceiling','Lower rear bulkhead','Window pane','Window structural mullion','Window horizontal frame','Solid oak side worktop','Central walnut desktop','Cabinet carcass','Desk edge metal strip','Forward cabinet toe','Monitor articulated arm','Workshop stool','Headphone hook','Central desk pedestal','Code lab monitor','Aircraft','Jamb rivet','Cockpit sloped','Overhead strip','Ceiling fastener','Skylight','Upper task light','Overbench shelf','Shelf storage','Technical notebook spine','Speaker','Woodshop pegboard','Pegboard hole','Chisel turned','Chisel steel','Tool hook','Clamp bar','Clamp upper','Clamp movable','Parts organizer','Parts bin','Right wall component','Side parts drawer','Side drawer','Inner drawer','Drawer pull','Drawer label','Drawer paper','Extended inner drawer','Extended drawer','Extended pull','Walnut drawer','Brass drawer handle','Footwell','Rubber hex','Curled wood shaving','Individual wood chip','Bent oak ribbon','Leaning timber','Seasoned timber','Plant pot','Pothos','Trailing pothos','Under-console cable','Workbench countersunk','Extended worktop screw','Bench dog socket','Extended bench dog','Right portrait display','Monitor arm','Long upper wood shelf','Side shelf practical','Window mullion')
 removed=[]
 for o in list(bpy.context.scene.objects):
  if not o.hide_render and o.name.startswith(remove):o.hide_render=True;removed.append(o.name)
  if o.hide_render or not hasattr(o.data,'materials'):continue
  n=o.name
  if n.startswith(('Side wall','Overhead ceiling','Lower rear bulkhead')):assign(o,PLASTER)
- if n.startswith(('Solid oak side worktop','Central walnut desktop','Oak floor plank','Walnut monitor riser','Walnut waveform shelf','Left wall timber toolboard','Wall tool mounting rail','Lamp wooden','Lamp walnut','Lumber offcut')):assign(o,OAK)
+ if n.startswith(('Solid oak side worktop','Central walnut desktop','Walnut monitor riser','Walnut waveform shelf','Left wall timber toolboard','Wall tool mounting rail','Lamp wooden','Lamp walnut','Lumber offcut')):assign(o,OAK)
+ if n.startswith('Oak floor plank'):assign(o,FLOOR)
  if n.startswith(('Cabinet carcass','Central desk pedestal','Forward cabinet toe','Rear service access')):assign(o,OLIVE)
  if n.startswith(('Blue electronics work mat','Soldering iron grip')):assign(o,SAGE)
  if n.startswith(('Window structural mullion','Window horizontal frame')):assign(o,OAK)
@@ -175,6 +177,38 @@ for channel,(socket_z,pad_z) in enumerate([(-1.11,.78),(-.96,.94)]):
 box('woodshop tool tray',(-2.89,-1.18,1.092),(.76,.62,.025),OLIVE,.014)
 shift(('PROP ROOT · hand_plane_no4',),(-.43,.025,.12))
 shift(('Wooden mallet',),(-.22,.02,.67))
+# Work in progress lives in small groups, outside the main cutting and inspection areas.
+PAPER=material('Warm project paper',(.73,.68,.54))
+DARK=material('Warm project graphite',(.055,.065,.065))
+RAW=material('Warm unfinished timber',(.56,.38,.20))
+PCB=material('Warm spare circuit boards',(.055,.19,.13))
+# A dry-fit timber frame and two offcuts beside it.
+for xx in [-2.45,-2.07]:box('dry fit frame rail',(xx,-.65,1.10),(.045,.42,.05),RAW,.003)
+for yy in [-.46,-.84]:box('dry fit frame crossbar',(-2.26,yy,1.10),(.34,.045,.05),RAW,.003)
+for i in range(3):
+ o=box('stacked timber sample',(-3.25,-2.04,1.09+i*.028),(.24,.48,.027),RAW,.003);o.rotation_euler.z=(i-1)*.08
+# A marked-up sketch pad and pencil near the dry fit.
+box('woodshop sketch pad',(-2.35,-1.30,1.082),(.32,.27,.014),PAPER,.004)
+for yy in [-1.23,-1.30,-1.37]:box('pencil layout mark',(-2.35,yy,1.090),(.22,.002,.001),DARK,0)
+box('carpenter pencil',(-2.13,-1.30,1.086),(.012,.25,.018),RAW,.002)
+# Parts tray, a loose board and a prototype enclosure at the lab's front right.
+box('project parts tray',(2.13,-2.55,1.089),(.40,.48,.028),OLIVE,.009)
+for xx in [1.94,2.32]:box('parts tray edge',(xx,-2.55,1.112),(.014,.48,.035),OLIVE,.003)
+for yy in [-2.32,-2.78]:box('parts tray edge',(2.13,yy,1.112),(.40,.014,.035),OLIVE,.003)
+box('spare PCB',(2.06,-2.46,1.108),(.15,.19,.012),PCB,.002)
+for i in range(4):box('spare board chip',(2.02+(i%2)*.06,-2.42-(i//2)*.07,1.122),(.03,.04,.015),DARK,.002)
+for i in range(5):box('sorted small connector',(2.05+i*.045,-2.69,1.117),(.026,.045,.027),BRASS,.002)
+box('prototype enclosure',(2.58,-2.73,1.13),(.23,.28,.11),PAPER,.008)
+box('prototype lid',(2.60,-3.08,1.085),(.23,.28,.02),PAPER,.004)
+# A few desk notes beside the keyboard, away from Mango.
+for i in range(3):
+ o=box('desk memo',(1.26,.62,1.078+i*.002),(.22,.19,.002),PAPER,0);o.rotation_euler.z=i*.07
+# Ceramic mug on a coaster, behind the mouse area.
+box('mug coaster',(1.20,1.03,1.084),(.22,.22,.018),OLIVE,.015)
+bpy.ops.mesh.primitive_cylinder_add(vertices=32,radius=.075,depth=.15,location=(1.20,1.03,1.167));mug=bpy.context.object;mug.name='Warm ceramic mug';assign(mug,PAPER)
+bpy.ops.mesh.primitive_cylinder_add(vertices=32,radius=.062,depth=.002,location=(1.20,1.03,1.243));assign(bpy.context.object,DARK);bpy.context.object.name='Warm coffee surface'
+bpy.ops.mesh.primitive_torus_add(major_radius=.047,minor_radius=.012,major_segments=20,minor_segments=8,location=(1.29,1.03,1.17),rotation=(1.5708,0,0));assign(bpy.context.object,PAPER);bpy.context.object.name='Warm mug handle'
+
 # Existing interactive anchors for the computer, CNC and printer remain fixed.
 
 assert not bpy.data.objects['Main workspace monitor active screen'].hide_render

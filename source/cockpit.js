@@ -178,7 +178,7 @@ const views={
 };
 // GitHub Pages gzips the model, so the response's Content-Length is the compressed size while
 // the loader counts uncompressed bytes. Measure against the real file size instead.
-const ROOM_MODEL_BYTES=1986928;
+const ROOM_MODEL_BYTES=2010900;
 // The loader only fades once the room has drawn itself behind it (see initRoom).
 // Setup timings for diagnosing slow loads: cockpit.stages.
 const stages=[];const stage=n=>stages.push([n,Math.round(performance.now())]);window.__stage=stage;

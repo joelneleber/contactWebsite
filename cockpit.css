@@ -751,3 +751,16 @@ body #zone-panel:not(.project-book) .zone-card:hover{background:#f0e5cd;border-c
 body #zone-panel:not(.project-book) .zone-card:focus-visible{outline:3px solid #76603d;outline-offset:3px;background:#f0e5cd}
 body #zone-panel .zone-card:hover .zone-card-action{background:#293a30;color:#f7eedb}
 @media(prefers-reduced-motion:reduce){body #zone-panel:not(.project-book) .zone-card{transition:none}body #zone-panel:not(.project-book) .zone-card:hover{transform:none}}
+
+/* Compact reading sheets: wider figures, fewer stacked gaps. */
+body #zone-panel.project-focus .reader,
+body #zone-panel.project-focus .chapter-layout .reader{padding:20px clamp(18px,2.2vw,34px) 32px}
+body #zone-panel.project-focus .reader-hero{gap:28px;margin-bottom:20px;padding-bottom:20px}
+body #zone-panel.project-focus .reader>section,
+body #zone-panel.project-focus .reader>p{max-width:100%;margin-left:0;margin-right:0}
+body #zone-panel.project-focus .reader .chapter{margin-top:24px;padding-top:24px}
+body #zone-panel.project-focus .reader-hero+.chapter{margin-top:0;padding-top:8px;border-top:0}
+body #zone-panel.project-focus .reader p{max-width:85ch}
+body #zone-panel.project-focus .reader figure{margin-top:20px;margin-bottom:20px}
+body #zone-panel.project-focus .reader-hero figure{margin:0}
+body #zone-panel.project-focus .reader h2{margin-bottom:12px}

@@ -32,7 +32,7 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
  const ctx=sketchWorker?null:canvas.getContext('2d');
  loading.dataset.sketchRenderer=sketchWorker?'worker':'main';
  let polys=null,monitorEnd=.08,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,W=0,H=0,dpr=1,copyBox=null;
- function loadDetailedSketch(view){fetch('assets/cockpit/sketches/'+view+'.json?v=8').then(r=>{if(!r.ok)throw new Error('Sketch unavailable');return r.json();}).then(data=>{if(view!==loadingView||loading.hidden)return;loading.dataset.sketch='detailed';decodeBlueprint(data.packed,100);layout();draw(replayProgress??window.__load?.shown??0);}).catch(()=>{});}
+ function loadDetailedSketch(view){fetch('assets/cockpit/sketches/'+view+'.json?v=9').then(r=>{if(!r.ok)throw new Error('Sketch unavailable');return r.json();}).then(data=>{if(view!==loadingView||loading.hidden)return;loading.dataset.sketch='detailed';decodeBlueprint(data.packed,100);layout();draw(replayProgress??window.__load?.shown??0);}).catch(()=>{});}
  // Decode the built-in blueprint (source/scripts/sketch-blueprint.py): per stroke a point count, then
  // zigzag varints in 2 cm units, first point absolute and the rest as deltas.
  function decodeBlueprint(packed,scale){try{const bytes=Uint8Array.from(atob(packed),c=>c.charCodeAt(0));let k=0;const next=()=>{let n=0,shift=0,b;do{b=bytes[k++];n+=(b&127)*2**shift;shift+=7;}while(b&128);return n%2?-(n+1)/2:n/2;};
@@ -70,17 +70,17 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
     if(behind)rest.push(...outsidePolygon(pts,first[0].pts));else (pl.monitor?first:rest).push({pts,len});
    }}
   // Collapse nearby parallel bevels into a single contour in the actual viewport.
-  const kept=[],gap=Math.max(.8,Math.min(1.6,W/1000));
+  const kept=[],gap=Math.max(.65,Math.min(1.2,W/1300));
   for(const line of [...first,...rest].sort((a,b)=>b.len-a.len)){
    const [ax,ay,bx,by]=line.pts;if(line.len<1.0||Math.max(...line.pts.filter((_,i)=>i%2===0))<0||Math.min(...line.pts.filter((_,i)=>i%2===0))>W||Math.max(...line.pts.filter((_,i)=>i%2))<0||Math.min(...line.pts.filter((_,i)=>i%2))>H)continue;
    const dx=(bx-ax)/line.len,dy=(by-ay)/line.len;
    const duplicate=line.pts.length===4&&kept.some(k=>{if(k.pts.length!==4)return false;const [x,y,u,v]=k.pts,l=k.len,ex=(u-x)/l,ey=(v-y)/l;if(Math.abs(dx*ey-dy*ex)>.025)return false;
     if(Math.abs((ax-x)*ey-(ay-y)*ex)>gap||Math.abs((bx-x)*ey-(by-y)*ex)>gap)return false;
     const a=(ax-x)*ex+(ay-y)*ey,b=(bx-x)*ex+(by-y)*ey;return Math.max(0,Math.min(l,Math.max(a,b))-Math.max(0,Math.min(a,b)))>line.len*.55;
-   });if(!duplicate)kept.push(line);if(kept.length>=4500)break;
+   });if(!duplicate)kept.push(line);if(kept.length>=6500)break;
   }
   const chosen=new Set(kept);
-  for(const s of [...first,...rest].filter(s=>chosen.has(s))){s.major=s.len>W*.045;s.start=total;screen.push(s);total+=s.len;}monitorEnd=(first.reduce((a,s)=>a+s.len,0)+(r?2*(r.w+r.h):0))/Math.max(1,total);
+  for(const s of [...first,...rest].filter(s=>chosen.has(s)).sort((a,b)=>b.len-a.len)){s.major=s.len>W*.045;s.start=total;screen.push(s);total+=s.len;}monitorEnd=(first.reduce((a,s)=>a+s.len,0)+(r?2*(r.w+r.h):0))/Math.max(1,total);
   if(sketchWorker){sketchWorker.postMessage({type:'layout',screen,total,W,H,dpr,copyBox,loadingView});return;}
   cache=document.createElement('canvas');cache.width=canvas.width;cache.height=canvas.height;cacheCtx=cache.getContext('2d');cacheCtx.scale(dpr,dpr);style(cacheCtx);cachedUpTo=0;cachedLen=0;}
  function style(g){g.strokeStyle='#e9d6a8';g.globalAlpha=.62;g.lineWidth=.9;g.lineCap='round';g.lineJoin='round';}
@@ -129,10 +129,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-sketch-detail';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-detailed-reader';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-sketch-detail');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-detailed-reader');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

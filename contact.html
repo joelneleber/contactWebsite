@@ -154,6 +154,8 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin
 .email .ico{background:#354536;color:#f2e9d4}
 @media(prefers-reduced-motion:reduce){.face{transition:none}}
 </style>
+<script>if(new URLSearchParams(location.search).has('embedded'))document.documentElement.classList.add('embedded');</script>
+<style>.embedded .topnav,.embedded footer,.embedded .more{display:none}.embedded body{background:#14211b}.embedded .wrap{padding-top:28px}.embedded .rise{animation:none}</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to contact links</a>
@@ -318,5 +320,5 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin
 
 })();
 </script>
-</body>
+<script>if(window.parent!==window)addEventListener('keydown',e=>{if(e.key==='Escape')parent.postMessage('close-workshop-contact',location.origin)});</script></body>
 </html>

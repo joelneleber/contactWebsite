@@ -736,3 +736,11 @@ body #zone-panel.project-focus .reader-photos img{height:min(42vh,360px)}
 body #zone-panel.project-focus .chapter-layout .reader{padding:30px clamp(24px,4vw,64px) 64px;box-sizing:border-box;width:100%}
 body #zone-panel.project-focus .reader-photos figure:first-child{grid-column:auto}
 @media(max-width:700px){body #zone-panel.project-focus .chapter-layout .reader{padding:20px 20px 48px}}
+
+.contact-sheet{position:fixed;inset:0;width:min(1240px,calc(100vw - 40px));height:min(900px,calc(100dvh - 40px));max-width:none;max-height:none;padding:0;border:1px solid #9c8963;border-radius:18px;background:#14211b;color:#f3e8cf;overflow:hidden;box-shadow:0 30px 100px #0008}
+.contact-sheet::backdrop{background:#0b120dbb;backdrop-filter:blur(5px)}
+.contact-sheet>header{height:64px;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid #e4cf9c30}
+.contact-sheet>header button{padding:10px 16px;border:1px solid #b09b71;border-radius:8px;background:#eee2c5;color:#293a30;font:600 15px system-ui;cursor:pointer}
+.contact-sheet>header span{font:11px monospace;letter-spacing:.16em;color:#dcbc7f}
+.contact-sheet iframe{display:block;width:100%;height:calc(100% - 64px);border:0}
+@media(max-width:600px){.contact-sheet{width:100%;height:100dvh;border-radius:0}.contact-sheet>header{padding:12px}.contact-sheet>header span{display:none}}

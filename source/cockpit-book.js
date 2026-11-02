@@ -89,7 +89,7 @@ export function createProjectBook(scene){
 
  const cache=new Map();function photo(src){if(!src)return Promise.resolve(null);if(!cache.has(src))cache.set(src,new Promise(resolve=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>resolve(null);im.src=src;}));return cache.get(src);}
  (window.PROJECTS||[]).filter(p=>p.group==='wood').forEach(p=>photo(p.photos?.[0]?.src));
- let pending=false,open=false,requested=false,ready=false,serial=0,opening=Infinity,index=0,turn=null;
+ let pending=false,open=false,requested=false,ready=false,serial=0,opening=Infinity,index=0,turn=null,closing=null;
  const copy=(from,to,tex)=>{if(to.width!==PX||to.height!==PY){tex.dispose();to.width=PX;to.height=PY;}const c=to.getContext('2d');c.clearRect(0,0,PX,PY);c.drawImage(from,0,0);tex.needsUpdate=true;};
  function wrap(c,text,x,y,max,size,font='Georgia,serif',lead=1.42){c.font=size+'px '+font;let line='';for(const word of String(text||'').split(/\s+/)){const next=line+word+' ';if(c.measureText(next).width>max&&line){c.fillText(line,x,y);y+=size*lead;line=word+' ';}else line=next;}c.fillText(line,x,y);return y+size*lead;}
  // Paper with fine grain and a shaded gutter toward the spine.
@@ -114,7 +114,9 @@ export function createProjectBook(scene){
   b.fillStyle='#45412f';wrap(b,String(p.tech||'').replaceAll('·',' · '),110,y+90,960,28,'Georgia,serif',1.5);
   return result;}
  function setBook(value,p,n=0,total=1,animate=false){
- if(!value){for(const [c,t] of [[leftCanvas,leftTexture],[rightCanvas,rightTexture],[frontC,frontT],[backC,backT]]){if(c.width>1){t.dispose();c.width=c.height=1;t.needsUpdate=true;}}pending=false;serial++;open=false;requested=false;ready=false;opening=Infinity;hinge.rotation.z=0;spine.visible=true;flip.visible=false;turn=null;return;}
+ if(!value){if(open&&!closing){serial++;pending=false;requested=false;turn=null;flip.visible=false;closing={start:performance.now(),angle:hinge.rotation.z};}return;}
+ if(closing){closing=null;open=false;opening=Infinity;}
+
  if(!p)return;const first=!open;open=true;const token=++serial;pending=true;
  draw(p,n).then(next=>{if(token!==serial)return;pending=false;if(first||!animate){copy(next[0],leftCanvas,leftTexture);copy(next[1],rightCanvas,rightTexture);index=n;ready=true;if(requested&&opening===Infinity)opening=performance.now();return;}
  const dir=n>index?1:-1;copy(dir===1?rightCanvas:leftCanvas,frontC,frontT);copy(dir===1?next[0]:next[1],backC,backT);
@@ -125,7 +127,8 @@ export function createProjectBook(scene){
  turn={start:performance.now(),dir,next};flip.rotation.z=0;flip.visible=true;index=n;
  });
  }
- return {book,setBook,openBook(){requested=true;if(ready&&opening===Infinity)opening=performance.now();},inspect(){return {bookOpen:open,bookBusy:pending||!!turn||(open&&(!ready||hinge.rotation.z<Math.PI)),bookCoverAngle:hinge.rotation.z};},update(t,motion){
+ return {book,setBook,openBook(){requested=true;if(ready&&opening===Infinity)opening=performance.now();},inspect(){return {bookOpen:open,bookBusy:!!closing||pending||!!turn||(open&&(!ready||hinge.rotation.z<Math.PI)),bookCoverAngle:hinge.rotation.z};},update(t,motion){
+ if(closing){const q=motion?Math.min(1,(t-closing.start)/650):1;hinge.rotation.z=closing.angle*(1-q*q*(3-2*q));spine.visible=hinge.rotation.z<Math.PI*.55;book.children.forEach(o=>{if(o.userData.spineBand)o.visible=spine.visible;});if(q===1){closing=null;for(const [c,t] of [[leftCanvas,leftTexture],[rightCanvas,rightTexture],[frontC,frontT],[backC,backT]]){if(c.width>1){t.dispose();c.width=c.height=1;t.needsUpdate=true;}}pending=false;serial++;open=false;requested=false;ready=false;opening=Infinity;hinge.rotation.z=0;spine.visible=true;flip.visible=false;turn=null;}return;}
  if(!open)return;const k=ready&&requested?(motion?Math.max(0,Math.min(1,(t-opening)/1250)):1):0;hinge.rotation.z=(k*k*(3-2*k))*Math.PI;
  // The rounded spine flattens under an open book; hide it once the cover passes upright.
  spine.visible=hinge.rotation.z<Math.PI*.55;book.children.forEach(o=>{if(o.userData.spineBand)o.visible=spine.visible;});

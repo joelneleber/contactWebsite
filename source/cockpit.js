@@ -1,4 +1,4 @@
-import {views,viewPose,cameraPath} from './cockpit-views.js';
+import {views,viewPose,cameraPath,parentView} from './cockpit-views.js';
 import {contactCard} from './cockpit-contact.js';
 import {monitorBoot} from './cockpit-monitor-boot.js';
 import html2canvas from './vendor/html2canvas.esm.js';
@@ -234,7 +234,7 @@ function go(view,{preserveHash=false}={}){
  requestFrame();
 }
 $$('[data-view]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
-document.addEventListener('keydown',e=>{if(e.key!=='Escape'||contact?.active)return;if(!$('#room-settings-panel').hidden){closeRoomSettings();$('#room-settings').focus();return;}if(state.view==='computer'&&state.active&&state.open.has(state.active)&&!state.open.get(state.active).hidden){closeProgram(state.active);return;}if(state.view!=='room')go('room');});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape'||e.repeat||contact?.active)return;e.preventDefault();if(!$('#room-settings-panel').hidden){closeRoomSettings();$('#room-settings').focus();return;}if(state.view==='computer'&&state.active&&state.open.has(state.active)&&!state.open.get(state.active).hidden){closeProgram(state.active);return;}if($('#zone-panel').classList.contains('project-focus')){sheetMotion($('#zone-panel'),true).then(()=>zonePanel(state.view));return;}if(state.view!=='room')go(parentView(state.view));});
 function closeRoomSettings(){const p=$('#room-settings-panel');p.hidden=true;$('#room-settings').setAttribute('aria-expanded','false');}
 $('#room-settings').onclick=()=>{const p=$('#room-settings-panel');p.hidden=!p.hidden;$('#room-settings').setAttribute('aria-expanded',String(!p.hidden));if(!p.hidden)$('#motion').focus();};
 document.addEventListener('click',e=>{if(!e.target.closest('#room-settings-panel,#room-settings'))closeRoomSettings();});

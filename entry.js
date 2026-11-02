@@ -1,5 +1,5 @@
 import {outsidePolygon} from './source/sketch-occlusion.js';
-import {views,viewPose} from './source/cockpit-views.js?v=pet-framing';
+import {views,viewPose} from './source/cockpit-views.js?v=back-level';
 // One progress figure for the whole load, weighted by what each step really downloads
 // (compressed sizes): styles, project data, the 3D code, the room model, then scene setup.
 const loadSteps=[['css',.005],['data',.035],['code',.09],['room',.62],['setup',.25]];
@@ -32,7 +32,7 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
  const ctx=sketchWorker?null:canvas.getContext('2d');
  loading.dataset.sketchRenderer=sketchWorker?'worker':'main';
  let polys=null,monitorEnd=.08,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,W=0,H=0,dpr=1,copyBox=null;
- function loadDetailedSketch(view){fetch('assets/cockpit/sketches/'+view+'.json?v=10').then(r=>{if(!r.ok)throw new Error('Sketch unavailable');return r.json();}).then(data=>{if(view!==loadingView||loading.hidden)return;loading.dataset.sketch='detailed';decodeBlueprint(data.packed,100);layout();draw(replayProgress??window.__load?.shown??0);}).catch(()=>{});}
+ function loadDetailedSketch(view){fetch('assets/cockpit/sketches/'+view+'.json?v=11').then(r=>{if(!r.ok)throw new Error('Sketch unavailable');return r.json();}).then(data=>{if(view!==loadingView||loading.hidden)return;loading.dataset.sketch='detailed';decodeBlueprint(data.packed,100);layout();draw(replayProgress??window.__load?.shown??0);}).catch(()=>{});}
  // Decode the built-in blueprint (source/scripts/sketch-blueprint.py): per stroke a point count, then
  // zigzag varints in 2 cm units, first point absolute and the rest as deltas.
  function decodeBlueprint(packed,scale){try{const bytes=Uint8Array.from(atob(packed),c=>c.charCodeAt(0));let k=0;const next=()=>{let n=0,shift=0,b;do{b=bytes[k++];n+=(b&127)*2**shift;shift+=7;}while(b&128);return n%2?-(n+1)/2:n/2;};
@@ -129,10 +129,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-pet-framing';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-back-level';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-pet-framing');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-back-level');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

@@ -550,3 +550,189 @@ body .chapter-bar .cb-current span{color:var(--room-ink)}
 body .deep-images img,body .case-gallery img{background:#ded2b6;border-color:var(--room-line)}
 body .window-content .deep-images figcaption,body .window-content .case-gallery figcaption{color:var(--room-muted)}
 body .case-lead{margin:22px 0 30px}body .case-lead img{max-height:380px}
+/* The bench itself and its object labels establish the location. */
+body[data-view="wood"] #location,body[data-view="lab"] #location{display:none!important}
+
+/* Software studio: an editorial landing page and a single, uninterrupted case study. */
+body #desktop{--studio-paper:#f5f0e5;--studio-ink:#302a24;background:var(--studio-paper);color:var(--studio-ink);font:16px/1.6 Arial,sans-serif}
+body #desktop .desktop-menubar{height:76px;padding:0 clamp(20px,4vw,72px);gap:24px;background:var(--studio-paper);border-bottom:1px solid #302a2425;position:relative;z-index:600;justify-content:space-between}
+body #desktop .desktop-menubar strong{font-size:15px;color:#302a24;letter-spacing:0}
+body #desktop .desktop-menubar .os-mark{color:#766345;font-size:28px}
+body #desktop .desktop-menubar #leave-computer{margin:0;max-width:none;font-size:14px!important;color:#302a24;background:transparent;border:1px solid #302a2440;border-radius:30px;padding:10px 17px;white-space:nowrap;min-height:44px}
+body #desktop .desktop-menubar #leave-computer:before{content:none}
+body #desktop .desktop-menubar>a{font-size:14px;color:#302a24;text-decoration:none;border-bottom:1px solid #857554}
+body #desktop .desktop-body{inset:76px 0 0;display:block!important}
+body #desktop .desktop-sidebar,body #desktop .desktop-taskbar{display:none!important}
+body #desktop .desktop-files{height:100%;padding:0 clamp(22px,6vw,104px) 100px;background:var(--studio-paper);scroll-behavior:smooth;scroll-padding-top:24px}
+.studio-intro{max-width:1380px;margin:0 auto;padding:66px 0 0}
+.studio-eyebrow{font:11px/1.5 monospace;letter-spacing:2px;color:#6b624f;margin:0 0 28px}
+.studio-intro h1{font:clamp(46px,6.3vw,100px)/1.04 Georgia,serif;font-weight:400;letter-spacing:-.045em;color:#302a24;margin:0;max-width:1050px}
+.studio-intro h1 em{font-weight:400;color:#697149}
+.studio-intro-bottom{display:flex;align-items:end;justify-content:space-between;gap:40px;margin:30px 0 46px}
+.studio-intro-bottom p{max-width:520px;color:#655d50;font-size:17px;line-height:1.75;margin:0}
+.studio-intro-bottom a{color:#302a24;border-bottom:1px solid #96866b;text-decoration:none;padding:12px 0;white-space:nowrap;font-size:15px}
+.studio-intro-bottom a span{margin-left:45px}
+.studio-disciplines{display:flex;justify-content:space-between;gap:14px;border-top:1px solid #302a2430;border-bottom:1px solid #302a2430;padding:16px 0;color:#766b56;font:10px/1.5 monospace;letter-spacing:1.4px}
+body #desktop .files-toolbar{max-width:1380px;margin:66px auto 30px;display:flex;align-items:center;gap:20px}
+body #desktop .files-toolbar h2{font:38px/1.2 Georgia;color:#302a24;margin:0 0 8px}
+body #desktop .files-toolbar p{color:#6b624f;font-size:12px}
+body #desktop .program-search{background:transparent;border:1px solid #302a2435;border-radius:30px;padding:10px 18px;width:300px;color:#302a24}
+body #desktop .program-search input{color:#302a24;font-size:14px}
+body #desktop .program-search input::placeholder{color:#756e61}
+body #desktop #program-grid{max-width:1380px;margin:auto;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+body #desktop .featured-programs>.program-section-heading{display:none}
+body #desktop .featured-grid{display:flex;flex-direction:column;gap:44px}
+body #desktop .program.featured-program{display:grid;grid-template-columns:1.3fr 1fr;min-height:390px;border:0;border-radius:14px;background:#e9e3d5;color:#302a24;text-align:left;box-shadow:none;transition:box-shadow .2s,transform .2s}
+body #desktop .program.featured-program:nth-child(even){grid-template-columns:1fr 1.3fr}
+body #desktop .program.featured-program:nth-child(even) .app-cover{order:2}
+body #desktop .program.featured-program:hover{transform:translateY(-3px);box-shadow:0 14px 35px #302a2412}
+body #desktop .featured-program .app-cover{height:100%;min-height:390px;border:0;border-radius:0}
+body #desktop .featured-body{padding:clamp(25px,4vw,64px);gap:22px;align-self:center}
+body #desktop .featured-title .app-icon{display:none}
+body #desktop .featured-title .program-name{font:clamp(28px,3vw,46px)/1.1 Georgia;color:#302a24;letter-spacing:-1px}
+body #desktop .featured-program .program-summary{font-size:16px;line-height:1.75;color:#625a4e}
+body #desktop .program-tags span{background:transparent;color:#655c4d;border:1px solid #302a2425;border-radius:20px;padding:4px 9px;font-size:10px}
+body #desktop .case-link{color:#38402a;border-color:#302a2425;padding-top:20px;font-size:14px}
+body #desktop .other-programs-heading{margin:36px 0 4px}
+body #desktop .other-programs-heading h3{font:32px Georgia;color:#302a24}
+body #desktop .program:not(.featured-program){border:1px solid #302a2425;border-radius:12px;padding:25px;background:#eee8db;text-align:left}
+body #desktop .program:not(.featured-program) .program-name{color:#302a24;font-size:18px}
+body #desktop .program:not(.featured-program) .program-summary{color:#655d50;font-size:14px;line-height:1.65}
+body #desktop.project-open .desktop-body{visibility:hidden}
+body #desktop #windows{inset:76px 0 0;z-index:10}
+body #desktop .app-window.showcase-page{inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;border:0;border-radius:0;box-shadow:none;background:var(--studio-paper)}
+body #desktop .showcase-page .window-header{height:60px;padding:0 clamp(20px,4vw,72px);background:#e9e3d5;color:#302a24;cursor:default;touch-action:auto;gap:24px;border-bottom:1px solid #302a2425}
+body #desktop .showcase-page .window-header button{width:auto;height:auto;min-height:44px;border:0;padding:8px 0;color:#302a24;font-size:14px;background:transparent;white-space:nowrap}
+body #desktop .showcase-page .window-header strong{font:17px Georgia;text-align:center}
+body #desktop .showcase-page .window-header>span{font:10px monospace;letter-spacing:1px;color:#6b624f}
+body #desktop .showcase-page .window-content{padding:60px clamp(22px,7vw,120px) 80px;background:var(--studio-paper);scroll-behavior:smooth}
+body #desktop .showcase-page .deep-case{max-width:1200px}
+body #desktop .showcase-page .case-heading{padding:0 0 36px;border-color:#302a2425;max-width:1100px;margin:auto}
+body #desktop .showcase-page .case-heading h2{font:clamp(42px,6vw,86px)/1.08 Georgia;letter-spacing:-.035em;color:#302a24;margin:16px 0 24px}
+body #desktop .showcase-page .purpose{font-size:20px;line-height:1.7;max-width:760px;color:#655d50}
+body #desktop .showcase-page .project-kind{color:#6b624f;font:11px/1.5 monospace;letter-spacing:1.6px}
+body #desktop .showcase-page .project-tech{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+body #desktop .showcase-page .project-tech span{border:1px solid #302a2425;border-radius:22px;padding:6px 12px;font-size:12px;color:#655d50}
+body #desktop .showcase-page .deep-images{margin:35px 0}
+body #desktop .showcase-page .deep-images img,body #desktop .showcase-page .case-gallery img{max-height:760px;background:#e8e2d5;border:0;border-radius:10px;padding:16px}
+body #desktop .showcase-page .deep-images figcaption{color:#655d50;font-size:12px;margin:12px 0}
+body #desktop .showcase-page .case-contents{display:flex;flex-wrap:wrap;gap:10px;background:transparent;padding:20px 0;border:0;border-top:1px solid #302a2425;border-bottom:1px solid #302a2425;border-radius:0;margin:40px 0 70px}
+body #desktop .showcase-page .case-contents button{color:#302a24;font-size:13px}
+body #desktop .showcase-page .case-contents small{color:#7c704e}
+body #desktop .showcase-page .deep-chapter{margin:0 0 80px;padding-top:30px;border-color:#302a2425}
+body #desktop .showcase-page .deep-chapter h3{font:clamp(28px,3vw,42px)/1.2 Georgia;color:#302a24;max-width:800px}
+body #desktop .showcase-page .deep-chapter>p:not(.project-kind){max-width:760px;font-size:18px;line-height:1.85;color:#554d42}
+body #desktop .showcase-page .case-section{max-width:850px;margin:45px auto;color:#554d42;font-size:17px}
+.showcase-next{max-width:1200px;margin:80px auto 0;padding:40px 0;border-top:1px solid #302a2440}
+.showcase-next>p{font:12px monospace;letter-spacing:1px;text-transform:uppercase}
+.showcase-next button{display:block;border:0;background:transparent;color:#302a24;cursor:pointer;text-align:left;padding:15px 0}
+.showcase-next button[data-next-project]{font:clamp(30px,4vw,58px) Georgia;width:100%;display:flex;justify-content:space-between}
+body #desktop :is(button,a,input):focus-visible{outline:3px solid #7b814e;outline-offset:5px}
+@media(max-width:700px){
+ body #desktop .desktop-menubar{height:66px;padding:0 16px;gap:12px}body #desktop .desktop-menubar strong{display:none}body #desktop .desktop-body,body #desktop #windows{top:66px}
+ body #desktop .desktop-files{padding:0 20px 60px}.studio-intro{padding-top:40px}.studio-intro h1{font-size:48px}.studio-intro-bottom{display:block;margin-bottom:30px}.studio-intro-bottom p{font-size:15px}.studio-intro-bottom a{display:inline-block;margin-top:18px}.studio-disciplines{font-size:8px;letter-spacing:.4px}
+ body #desktop .files-toolbar{display:block;margin-top:42px}body #desktop .program-search{width:100%;margin-top:20px}body #desktop #program-grid{grid-template-columns:1fr}
+ body #desktop .program.featured-program,body #desktop .program.featured-program:nth-child(even){display:flex;flex-direction:column;min-height:0}body #desktop .program.featured-program:nth-child(even) .app-cover{order:0}body #desktop .featured-program .app-cover{height:290px;min-height:290px}body #desktop .featured-body{padding:28px;gap:18px}body #desktop .featured-title .program-name{font-size:34px}
+ body #desktop .showcase-page .window-header{padding:0 18px;gap:16px}body #desktop .showcase-page .window-header>span{display:none}body #desktop .showcase-page .window-header strong{font-size:14px;text-align:right}
+ body #desktop .showcase-page .window-content{padding:35px 22px 60px}body #desktop .showcase-page .purpose{font-size:17px}body #desktop .showcase-page .deep-chapter>p:not(.project-kind){font-size:16px}body #desktop .showcase-page .deep-images img{padding:6px}
+}
+@media(prefers-reduced-motion:reduce){body #desktop .program.featured-program{transition:none}body #desktop :is(.desktop-files,.window-content){scroll-behavior:auto}}
+
+.studio-filters{display:flex;gap:10px;margin-top:16px}.studio-filters button{border:1px solid #302a2435;background:transparent;color:#514b3f;border-radius:22px;padding:8px 14px;font-size:12px;min-height:40px}.studio-filters button[aria-pressed=true]{background:#596144;color:#fff8e9}.studio-filters span{margin-left:8px;opacity:.75}
+body #desktop .showcase-page .deep-case>.case-heading{display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:none;align-items:center;padding-bottom:45px}
+body #desktop .showcase-page .case-heading>.app-cover{height:440px;border-radius:14px;width:100%;margin:0}
+body #desktop .showcase-page .case-heading .purpose{font-size:18px}
+@media(min-width:701px){.studio-intro{padding-top:42px}.studio-intro h1{font-size:clamp(46px,5.6vw,88px)}.studio-intro-bottom{margin:24px 0 30px}body #desktop .files-toolbar{margin-top:42px}}
+@media(max-width:800px){body #desktop .showcase-page .deep-case>.case-heading{display:block}body #desktop .showcase-page .case-heading>.app-cover{height:310px;margin-top:28px}}
+
+body #desktop :is(h1,h2)[tabindex="-1"]:focus{outline:none}
+/* Kavelle-inspired project stage, with Quell's typographic scale and open composition. */
+body #desktop .desktop-menubar{background:#f0ecdf;border-bottom-color:#282e2225;height:70px}
+body #desktop .desktop-body,body #desktop #windows{top:70px}
+body #desktop .desktop-files{padding:0 0 100px;background:#f0ecdf}
+body #desktop .folio-hero{position:relative;isolation:isolate;max-width:none;min-height:calc(100dvh - 70px);margin:0;padding:28px 5vw 0;background:#1c3029;color:#f0ecdf;overflow:hidden;display:flex;flex-direction:column}
+.folio-topline{display:flex;justify-content:space-between;align-items:center;gap:20px;font:10px monospace;letter-spacing:1.5px;position:relative;z-index:2}
+.folio-topline a{color:#f0ecdf;text-decoration:none;font:13px Arial;letter-spacing:0;padding:10px 0;border-bottom:1px solid #e1dcc377}
+body #desktop .folio-hero h1{position:relative;z-index:2;font:400 clamp(52px,8.4vw,148px)/.98 Arial,sans-serif;letter-spacing:-.065em;color:#f0ecdf;margin:26px 0 0;max-width:none}
+#folio-feature{position:relative;flex:1;min-height:430px;display:flex;align-items:center;padding:40px 0 60px}
+.folio-project{width:39%;position:relative;z-index:2}
+.folio-number{font:10px monospace;letter-spacing:1.5px;color:#b9c0aa;margin:0 0 22px}
+.folio-project h2{font:400 clamp(40px,4.6vw,76px)/1.05 Georgia,serif;letter-spacing:-2px;color:#f3edda;margin:0 0 24px}
+.folio-description{font:16px/1.7 Arial;color:#c0c8b8;max-width:370px;margin:0 0 30px}
+.folio-open{border:0;border-bottom:1px solid #d8caa2;background:#d8caa2;color:#203027;padding:15px 22px;font:14px Arial;display:flex;gap:60px;align-items:center;min-height:48px;cursor:pointer}
+.folio-visual{position:absolute;right:-5vw;top:15px;bottom:5px;width:65%;transform:rotate(-3deg);transform-origin:50% 70%}
+body #desktop .folio-visual .app-cover{height:100%;width:100%;min-height:400px;border-radius:0;border:0;box-shadow:0 35px 80px #0005;background:linear-gradient(140deg,#365d48,#122a24)}
+body #desktop .folio-visual .cover-category,body #desktop .folio-visual .cover-caption{display:none}
+body #desktop .folio-visual .cover-orbit{opacity:.3}
+body #desktop .folio-visual .cover-device{box-shadow:0 20px 45px #0006}
+.folio-controls{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:stretch;border-top:1px solid #c2c8b63b;margin-top:10px;min-height:76px;gap:25px}
+#folio-tabs{display:flex;gap:24px;flex:1}
+#folio-tabs button{position:relative;border:0;background:transparent;color:#b7c1b0;font:12px/1.4 Arial;text-align:left;cursor:pointer;padding:20px 0;flex:1}
+#folio-tabs button span{display:block;font:9px monospace;color:#8eaa98;margin-bottom:6px}
+#folio-tabs button[aria-pressed=true]{color:#fff3d9}#folio-tabs button[aria-pressed=true]:before{content:'';height:2px;background:#dbcca5;position:absolute;top:-1px;left:0;right:0}
+.folio-arrows{display:flex;align-items:center;gap:10px}.folio-arrows button{width:44px;height:44px;border:1px solid #c6ceb66b;border-radius:50%;background:transparent;color:#f0ecdf;font-size:20px;cursor:pointer}
+body #desktop .files-toolbar,body #desktop #program-grid{max-width:none;margin-left:5vw;margin-right:5vw}
+body #desktop .files-toolbar{margin-top:72px;margin-bottom:40px}
+body #desktop .files-toolbar h2{font:400 clamp(38px,5vw,76px)/1 Arial;letter-spacing:-3px}
+body #desktop .featured-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px 40px}
+body #desktop .program.featured-program,body #desktop .program.featured-program:nth-child(even){display:flex;flex-direction:column;align-items:stretch;background:transparent;border-radius:0;box-shadow:none;overflow:visible;text-align:left}
+body #desktop .program.featured-program:nth-child(even) .app-cover{order:0}
+body #desktop .featured-program .app-cover{height:420px;min-height:0;border-radius:0}
+body #desktop .featured-body{padding:25px 0 0;gap:14px;width:100%;align-self:auto}
+body #desktop .featured-title .program-name{font:400 34px/1.1 Arial;letter-spacing:-1px}
+body #desktop .featured-program .program-summary{max-width:50ch;font-size:15px}
+body #desktop .featured-program .program-tags{display:none}
+body #desktop .program.featured-program:hover{box-shadow:none;transform:none}
+body #desktop .program.featured-program:hover .app-cover{outline:1px solid #96886a;outline-offset:5px}
+body #desktop .featured-program:last-child{grid-column:1/-1;display:grid;grid-template-columns:1.5fr 1fr;gap:50px;align-items:center}
+body #desktop .case-link{border-top:0;border-bottom:1px solid #302a2435;padding:4px 0 16px}
+body #desktop .showcase-page .deep-case>.case-heading{padding:30px 0 60px}
+body #desktop .showcase-page .case-heading h2{font-family:Arial,sans-serif;font-weight:400;letter-spacing:-.055em}
+body #desktop .showcase-page .case-heading>.app-cover{border-radius:0;transform:rotate(-2deg);height:480px}
+@media(max-width:700px){
+ body #desktop .desktop-menubar{height:64px}body #desktop .desktop-body,body #desktop #windows{top:64px}
+ body #desktop .folio-hero{min-height:calc(100dvh - 64px);padding:20px 22px 0}.folio-topline{font-size:8px;letter-spacing:.7px;gap:10px}.folio-topline a{font-size:12px}
+ body #desktop .folio-hero h1{font-size:clamp(45px,11vw,72px);margin-top:25px}
+ #folio-feature{display:flex;flex-direction:column;align-items:stretch;padding:22px 0 30px;min-height:0;gap:25px}
+ .folio-visual{position:relative;width:calc(100% + 44px);right:22px;top:0;bottom:auto;height:280px;transform:rotate(-2deg)}
+ body #desktop .folio-visual .app-cover{min-height:0;height:280px}.folio-project{width:100%}.folio-number{margin-bottom:12px}.folio-project h2{font-size:42px;margin-bottom:14px}.folio-description{font-size:14px;margin-bottom:22px;max-width:none}.folio-open{width:100%;justify-content:space-between}
+ .folio-controls{gap:12px;min-height:66px}#folio-tabs{gap:14px;overflow:auto}#folio-tabs button{font-size:0;flex:1;min-width:20px;padding:18px 0}#folio-tabs button span{font-size:11px;margin:0}.folio-arrows button{width:38px;height:38px}
+ body #desktop .files-toolbar,body #desktop #program-grid{margin-left:22px;margin-right:22px}body #desktop .files-toolbar{margin-top:45px}
+ body #desktop .featured-grid{grid-template-columns:1fr;gap:42px}body #desktop .featured-program .app-cover{height:290px;min-height:0}
+ body #desktop .featured-body{padding:20px 0 0}body #desktop .featured-program:last-child{display:flex;gap:0;grid-column:auto}
+ body #desktop .showcase-page .case-heading>.app-cover{height:310px;transform:none}
+}
+@media(prefers-reduced-motion:no-preference){.folio-visual{animation:folio-arrive .65s ease-out both}.folio-project{animation:folio-copy .5s ease-out both}@keyframes folio-arrive{from{opacity:0;translate:30px 10px}to{opacity:1;translate:0 0}}@keyframes folio-copy{from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}}
+/* Keep device proportions intact as the imagery scales up. */
+body #desktop :is(.folio-visual,.featured-program,.case-heading) .phone{height:82%;width:auto;aspect-ratio:.48;top:12%;border-radius:22px}
+body #desktop :is(.folio-visual,.featured-program,.case-heading) .phone-main{top:7%}
+body #desktop :is(.folio-visual,.featured-program,.case-heading) .browser-screen{top:13%;height:76%}
+body #desktop :is(.folio-visual,.featured-program,.case-heading) .cover-amazon .browser-screen{height:67%}
+body #desktop :is(.folio-visual,.featured-program,.case-heading) .chart-detail{height:34%;bottom:7%}
+body #desktop :is(.folio-visual,.featured-program,.case-heading) .map-sheet{top:15%;height:66%}
+body #desktop :is(.folio-visual,.featured-program,.case-heading) .postcard{top:32%;height:48%}
+@media(max-width:700px){body #desktop :is(.folio-visual,.featured-program,.case-heading) .phone{border-radius:13px}}
+
+/* Scene names are navigation, not floating title banners. */
+#location,.location-label{display:none!important}
+/* Project readers use the viewport for the project, with compact chapter navigation. */
+body #zone-panel.project-focus:not(.project-book){inset:20px;transform:none;width:auto;max-width:1320px;max-height:none;margin:auto;border-radius:14px}
+body #zone-panel.project-focus .chapter-layout{display:block;padding:0}
+body #zone-panel.project-focus .chapter-toc{display:none}
+body #zone-panel.project-focus .chapter-bar{display:flex;top:64px}
+body #zone-panel.project-focus .reader-bar{padding:12px 24px;min-height:64px;box-sizing:border-box}
+body #zone-panel.project-focus .reader{max-width:none;margin:0;padding:30px clamp(24px,4vw,64px) 64px}
+body #zone-panel.project-focus .reader-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:44px;align-items:center;margin:0 0 40px;padding-bottom:32px;border-bottom:1px solid #b8aa8855}
+body #zone-panel.project-focus .reader-hero:has(.reader-intro:only-child){display:block}
+body #zone-panel.project-focus .reader h1{font:clamp(30px,3.6vw,54px)/1.08 Georgia;margin:14px 0 20px;overflow-wrap:anywhere}
+body #zone-panel.project-focus .reader .lede{font-size:18px;line-height:1.65}
+body #zone-panel.project-focus .reader-hero figure{margin:0;min-width:0}
+body #zone-panel.project-focus .reader-hero img{display:block;width:100%;height:min(48vh,440px);object-fit:contain;background:#e6ddc9;border-radius:8px}
+body #zone-panel.project-focus .reader-hero figcaption{font:12px/1.5 system-ui;color:#686653;margin-top:10px}
+body #zone-panel.project-focus .reader>section,body #zone-panel.project-focus .reader>p{max-width:760px;margin-left:auto;margin-right:auto}
+body #zone-panel.project-focus .reader-photos{max-width:1000px;margin:30px auto}
+body #zone-panel.project-focus .reader-photos img{height:min(42vh,360px)}
+@media(max-width:700px){body #zone-panel.project-focus:not(.project-book){inset:8px;border-radius:10px}body #zone-panel.project-focus .reader-bar{padding:10px 14px}body #zone-panel.project-focus .reader{padding:20px 20px 48px}body #zone-panel.project-focus .reader-hero{grid-template-columns:1fr;gap:18px;margin-bottom:26px}body #zone-panel.project-focus .reader-hero img{height:min(38vh,320px)}body #zone-panel.project-focus .reader h1{font-size:32px}}
+body #zone-panel.project-focus .chapter-layout .reader{padding:30px clamp(24px,4vw,64px) 64px;box-sizing:border-box;width:100%}
+body #zone-panel.project-focus .reader-photos figure:first-child{grid-column:auto}
+@media(max-width:700px){body #zone-panel.project-focus .chapter-layout .reader{padding:20px 20px 48px}}

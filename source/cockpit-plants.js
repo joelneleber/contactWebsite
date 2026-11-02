@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import {mergeGeometries} from './vendor/utils/BufferGeometryUtils.js';
+import {batchStatic} from './cockpit-static.js';
 // Different growth habits, sized for their actual shelf/counter footprint.
 export function addPlants(scene){
- const material=c=>new THREE.MeshStandardMaterial({color:c,roughness:.78,side:THREE.DoubleSide});
+ const materials=new Map();const material=c=>{if(!materials.has(c))materials.set(c,new THREE.MeshStandardMaterial({color:c,roughness:.78,side:THREE.DoubleSide}));return materials.get(c);};
  const greens=['#274b32','#446442','#64814b'].map(material),stem=material('#526340');
  function mesh(g,m,parent,x=0,y=0,z=0){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;parent.add(o);return o;}
  const shape=new THREE.Shape();shape.moveTo(0,0);shape.bezierCurveTo(.55,.35,.4,.8,0,1);shape.bezierCurveTo(-.4,.8,-.55,.35,0,0);
@@ -21,10 +21,5 @@ export function addPlants(scene){
  // Compact succulent: thick rosette leaves in a muted clay bowl.
  {const {g,h}=pot('succulent',-3.38,3.085,.65,.12,.12,'#b47c61');for(let i=0;i<17;i++){const a=i*2.4;foliage(g,0,h,0,.09,.13+(i%3)*.035,a,-.6-(i%3)*.35,i);}}
  {const {g,h}=pot('small palm',3.38,3.085,1.50,.10,.15,'#747c68');for(let i=0;i<7;i++){const a=i*2.4;foliage(g,0,h,0,.065,.29,a,-.3-(i%3)*.25,i);}}
- for(const group of scene.children.filter(o=>o.name.startsWith('Plant '))){
-  group.updateMatrixWorld(true);const batches=new Map();
-  for(const child of [...group.children]){if(!child.isMesh)continue;child.updateMatrix();const geo=child.geometry.index?child.geometry.toNonIndexed():child.geometry.clone();geo.applyMatrix4(child.matrix);const list=batches.get(child.material)||[];list.push(geo);batches.set(child.material,list);group.remove(child);}
-  for(const [mat,geometries] of batches){const merged=mergeGeometries(geometries);const m=new THREE.Mesh(merged,mat);m.castShadow=true;group.add(m);geometries.forEach(g=>g.dispose());}
- }
-
+ batchStatic(scene,scene.children.filter(o=>o.name.startsWith('Plant ')));
 }

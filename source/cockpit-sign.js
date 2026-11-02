@@ -71,12 +71,8 @@ export function addWeddingSign(scene){
  // 4. The park badge: its own thicker stacked piece, overhanging the board's top edge.
  add(extrude(shapeFrom(BADGE),TB,.0012),[face({bumpScale:2}),new THREE.MeshStandardMaterial({color:'#2a1c14',roughness:.7})],z1);
 
- // Soft contact shadow on the wall behind the board.
- const sh=document.createElement('canvas');sh.width=256;sh.height=192;const sx=sh.getContext('2d');
- for(let i=0;i<14;i++){sx.fillStyle='rgba(0,0,0,.045)';sx.fillRect(12+i*2.4,10+i*2.4,232-i*4.8,172-i*4.8);}
- const shadow=new THREE.Mesh(new THREE.PlaneGeometry(W*S*1.18,H*S*1.22),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sh),transparent:true,depthWrite:false}));
- shadow.position.set(.01,-.03,.002);group.add(shadow);
-
+ // The actual board casts its silhouette onto the wall. A rectangular painted
+ // shadow made the sign appear recessed inside a large, dark frame.
  // A soft picture light from above, not a hot spot.
  const light=new THREE.SpotLight('#ffe2b8',2.6,3.4,.62,1,2);light.position.set(-2.75,3.25,4.45);light.target=group;
  light.castShadow=true;light.shadow.mapSize.set(1024,1024);light.shadow.bias=-.0004;light.shadow.normalBias=.002;light.shadow.radius=3;light.shadow.camera.near=.3;light.shadow.camera.far=3.5;scene.add(light);

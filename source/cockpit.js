@@ -1,3 +1,5 @@
+import {views,viewPose,cameraPath} from './cockpit-views.js';
+import {monitorBoot} from './cockpit-monitor-boot.js';
 import html2canvas from './vendor/html2canvas.esm.js';
 import * as THREE from 'three';
 import {addDetails} from './cockpit-details.js?v=13.1';
@@ -20,7 +22,7 @@ const featuredCopy={
  amazon:['Amazon Business Compare','Comparing offers and tracking prices with a collaborative monitoring dashboard.']
 };
 const activePrograms=softwareProjects.filter(p=>!archivedIds.has(p.id));
-const groupNames={all:'Programs',recycle:'Recycle Bin'};
+const groupNames={all:'Selected work',recycle:'Earlier experiments'};
 const state={view:'room',ready:false,motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,filter:'all',query:'',open:new Map(),top:10,active:null,transitioning:false,failed:false};
 const colors=['#6b9382','#9e805d','#63879c','#9a726f','#7a8f64','#7d7b9a'];
 const iconPaths={avaron:'M5 17l5-12 4 8 3-5 3 9M4 21h16',hirebolt:'M14 2L5 14h7l-2 8 10-13h-7z',cockfights:'M6 20V9l6-6 6 6v11M9 13h6M9 17h6',reels:'M4 5h16v14H4zM10 8l6 4-6 4z',hueprint:'M5 8h14v10H5zM8 3h8v5M8 15h8v6H8z',navier:'M3 7q4-6 9 0t9 0M3 12q4-6 9 0t9 0M3 17q4-6 9 0t9 0',maps:'M4 5l5-2 6 2 5-2v16l-5 2-6-2-5 2zM9 3v16M15 5v16',desktop:'M3 4h18v13H3zM8 21h8M12 17v4'};
@@ -54,43 +56,45 @@ function legacyStory(p){const photos=p.photos||[];return `<article class="projec
 
 function deepStory(p,data){
  const picture=f=>`<figure><img src="${esc(f.src)}" alt="${esc(f.caption)}" loading="lazy"><figcaption>${esc(f.caption)}</figcaption></figure>`;
- return `<article class="deep-case"><header class="case-heading"><p class="project-kind">FEATURED PROJECT · CASE STUDY</p><h2>${esc(featuredCopy[p.id][0])}</h2><p class="purpose">${esc(data.summary)}</p><div class="project-tech">${String(p.tech||'').split('·').map(t=>`<span>${esc(t.trim())}</span>`).join('')}</div>${p.id==='avaron'?'<a class="project-source" href="https://avaronsports.com/" target="_blank" rel="noopener noreferrer">Visit AVARON Sports ↗</a>':''}</header>${data.screenshots?.length?`<div class="deep-images case-lead">${picture(data.screenshots[0])}</div>`:''}<nav class="case-contents" aria-label="Case study chapters">${data.chapters.map((c,i)=>`<button data-chapter="chapter-${esc(p.id)}-${esc(c.id)}"><small>${String(i+1).padStart(2,'0')}</small>${esc(c.title)}</button>`).join('')}</nav>${data.chapters.map((c,i)=>`<section class="deep-chapter" id="chapter-${esc(p.id)}-${esc(c.id)}"><p class="project-kind">${String(i+1).padStart(2,'0')} / ${data.chapters.length}</p><h3>${esc(c.title)}</h3>${c.paragraphs.map(t=>`<p>${esc(t)}</p>`).join('')}<div class="deep-images">${data.screenshots.filter(f=>f.chapter===c.id).map(picture).join('')}</div></section>`).join('')}</article>`;
+ return `<article class="deep-case"><header class="case-heading"><div class="case-intro"><p class="project-kind">FEATURED PROJECT · CASE STUDY</p><h2>${esc(featuredCopy[p.id][0])}</h2><p class="purpose">${esc(data.summary)}</p><div class="project-tech">${String(p.tech||'').split('·').map(t=>`<span>${esc(t.trim())}</span>`).join('')}</div>${p.id==='avaron'?'<a class="project-source" href="https://avaronsports.com/" target="_blank" rel="noopener noreferrer">Visit AVARON Sports ↗</a>':''}</div>${appCover(p)}</header>${data.screenshots?.length?`<div class="deep-images case-lead">${picture(data.screenshots[0])}</div>`:''}<nav class="case-contents" aria-label="Case study chapters">${data.chapters.map((c,i)=>`<button data-chapter="chapter-${esc(p.id)}-${esc(c.id)}"><small>${String(i+1).padStart(2,'0')}</small>${esc(c.title)}</button>`).join('')}</nav>${data.chapters.map((c,i)=>`<section class="deep-chapter" id="chapter-${esc(p.id)}-${esc(c.id)}"><p class="project-kind">${String(i+1).padStart(2,'0')} / ${data.chapters.length}</p><h3>${esc(c.title)}</h3>${c.paragraphs.map(t=>`<p>${esc(t)}</p>`).join('')}<div class="deep-images">${data.screenshots.filter(f=>f.chapter===c.id).map(picture).join('')}</div></section>`).join('')}</article>`;
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-chapter]');if(b)document.getElementById(b.dataset.chapter)?.scrollIntoView({block:'start',behavior:'instant'});});
 function story(p){if(deepCases.has(p.id))return deepStory(p,deepCases.get(p.id));const data=storyData.get(p.id);if(!data||!softwareProjects.includes(p))return legacyStory(p);const shots=data.screenshots||[];const section=(title,items)=>items?.length?`<section class="case-section"><h3>${title}</h3>${items.map(x=>`<article><h4>${esc(x.title)}</h4><p>${esc(x.text)}</p></article>`).join('')}</section>`:'';return `<div class="case-heading"><p class="project-kind">${archivedIds.has(p.id)?'RECYCLE BIN · ARCHIVED PROJECT':'SOFTWARE PROJECT'}</p><h2>${esc(p.name)}</h2><p class="purpose">${esc(p.purpose)}</p><div class="project-tech">${String(p.tech).split('·').map(t=>`<span>${esc(t.trim())}</span>`).join('')}</div></div>${shots.length?`<div class="case-gallery">${shots.map(f=>`<figure><img src="${esc(f.src)}" alt="${esc(f.caption)}" loading="lazy"><figcaption>${esc(f.caption)}</figcaption></figure>`).join('')}</div>`:''}<section class="case-section"><h3>The idea</h3><p>${esc(data.aspiration)}</p></section>${data.usage?.length?`<section class="case-section"><h3>How it works</h3><ol>${data.usage.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></section>`:''}${section('Inside the build',data.technology)}${section('What the project explores',data.learning)}${p.url&&/^https:\/\//.test(p.url)?`<a class="project-source" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">View source ↗</a>`:''}`;}
+// The opening is a manually browsable project stage, not an autoplay carousel.
+const folioIds=['avaron','amazon','leads','hirebolt','cockfights'].filter(id=>byId.has(id)&&deepCases.has(id));let folioIndex=0;
+function drawFolio(){const host=$('#folio-feature');if(!host)return;const id=folioIds[folioIndex],p=byId.get(id);host.innerHTML=`<div class="folio-visual">${appCover(p)}</div><div class="folio-project"><p class="folio-number">${String(folioIndex+1).padStart(2,'0')} / ${String(folioIds.length).padStart(2,'0')} — FEATURED PROJECT</p><h2>${esc(featuredCopy[id][0])}</h2><p class="folio-description">${esc(featuredCopy[id][1])}</p><button class="folio-open" data-folio-open="${id}">Explore project <span>↗</span></button></div>`;$('#folio-tabs').innerHTML=folioIds.map((id,i)=>`<button data-folio-index="${i}" aria-pressed="${i===folioIndex}"><span>${String(i+1).padStart(2,'0')}</span>${esc(featuredCopy[id][0])}</button>`).join('');}
+if($('#folio-feature')){drawFolio();$('#folio-feature').onclick=e=>{const b=e.target.closest('[data-folio-open]');if(b)openProgram(b.dataset.folioOpen);};$('#folio-tabs').onclick=e=>{const b=e.target.closest('[data-folio-index]');if(b){folioIndex=Number(b.dataset.folioIndex);drawFolio();$(`[data-folio-index="${folioIndex}"]`).focus({preventScroll:true});}};$('#folio-prev').onclick=()=>{folioIndex=(folioIndex+folioIds.length-1)%folioIds.length;drawFolio();};$('#folio-next').onclick=()=>{folioIndex=(folioIndex+1)%folioIds.length;drawFolio();};}
 function drawPrograms(){
  const list=softwareProjects.filter(p=>(state.filter==='recycle'?archivedIds.has(p.id):!archivedIds.has(p.id))&&`${p.name} ${p.purpose} ${p.tech} ${featuredCopy[p.id]?.[0]||''}`.toLowerCase().includes(state.query.toLowerCase()));
- $('#folder-title').textContent=groupNames[state.filter];$('#program-count').textContent=`${list.length} ${list.length===1?'program':'programs'} · click to explore`;
+ $('#folder-title').textContent=groupNames[state.filter];$('#program-count').textContent=`${list.length} projects · the ideas, the interfaces, and how they work`;
  const featured=[...deepCases.keys()].map(id=>list.find(p=>p.id===id)).filter(Boolean);
  const regular=list.filter(p=>!deepCases.has(p.id));
- $('#program-grid').innerHTML=(featured.length?`<section class="featured-programs" aria-label="Featured projects"><div class="program-section-heading"><h3>Start here</h3><p>Five projects to spend some time with.</p></div><div class="featured-grid">${featured.map(p=>`<button class="program featured-program" data-program="${esc(p.id)}" aria-label="Open ${esc(p.name)}">${appCover(p)}<span class="featured-body"><span class="featured-title"><span class="app-icon" style="--app-color:${appColor(p)}" aria-hidden="true">${icon(p)}</span><span class="program-name">${esc(featuredCopy[p.id][0])}</span></span><span class="program-summary">${esc(featuredCopy[p.id][1])}</span><span class="program-tags">${String(p.tech||'').split('·').slice(0,3).map(t=>`<span>${esc(t.trim())}</span>`).join('')}</span><span class="case-link">Explore the case study <span>↗</span></span></span></button>`).join('')}</div></section>`:'')+(featured.length&&regular.length?'<div class="program-section-heading other-programs-heading"><h3>More from my computer</h3></div>':'')+regular.map(p=>`<button class="program" data-program="${esc(p.id)}" title="${esc(p.purpose)}" aria-label="Open ${esc(p.name)}"><span class="app-icon" style="--app-color:${appColor(p)}" aria-hidden="true">${icon(p)}</span><span class="program-info"><span class="program-name">${esc(p.name)}</span><span class="program-summary">${esc(p.purpose)}</span><span class="program-tags">${String(p.tech||'').split('·').slice(0,3).map(t=>`<span>${esc(t.trim())}</span>`).join('')}</span></span></button>`).join('')||'<p class="program-empty">No programs match that search.</p>';if(state.filter==='all'&&!state.query)$('#program-grid').insertAdjacentHTML('beforeend',`<button class="program recycle-program" id="open-recycle" aria-label="Open Recycle Bin, ${archivedIds.size} items"><span class="app-icon recycle-icon">♲<b>${archivedIds.size}</b></span><span class="program-info"><span class="program-name">Recycle Bin (${archivedIds.size})</span><span class="program-summary">Earlier experiments and projects I’ve set aside. Still here to explore.</span><span class="program-tags"><span>Archive</span></span></span></button>`);
+ $('#program-grid').innerHTML=(featured.length?`<section class="featured-programs" aria-label="Featured projects"><div class="program-section-heading"><h3>A few things I’ve been building.</h3><p>Open a project to explore the product and the work behind it.</p></div><div class="featured-grid">${featured.map(p=>`<button class="program featured-program" data-program="${esc(p.id)}" aria-label="Open ${esc(p.name)}">${appCover(p)}<span class="featured-body"><span class="featured-title"><span class="app-icon" style="--app-color:${appColor(p)}" aria-hidden="true">${icon(p)}</span><span class="program-name">${esc(featuredCopy[p.id][0])}</span></span><span class="program-summary">${esc(featuredCopy[p.id][1])}</span><span class="program-tags">${String(p.tech||'').split('·').slice(0,3).map(t=>`<span>${esc(t.trim())}</span>`).join('')}</span><span class="case-link">Explore the case study <span>↗</span></span></span></button>`).join('')}</div></section>`:'')+(featured.length&&regular.length?'<div class="program-section-heading other-programs-heading"><h3>More from my computer</h3></div>':'')+regular.map(p=>`<button class="program" data-program="${esc(p.id)}" title="${esc(p.purpose)}" aria-label="Open ${esc(p.name)}"><span class="app-icon" style="--app-color:${appColor(p)}" aria-hidden="true">${icon(p)}</span><span class="program-info"><span class="program-name">${esc(p.name)}</span><span class="program-summary">${esc(p.purpose)}</span><span class="program-tags">${String(p.tech||'').split('·').slice(0,3).map(t=>`<span>${esc(t.trim())}</span>`).join('')}</span></span></button>`).join('')||'<p class="program-empty">No programs match that search.</p>';if(state.filter==='all'&&!state.query)$('#program-grid').insertAdjacentHTML('beforeend',`<button class="program recycle-program" id="open-recycle" aria-label="Browse earlier experiments, ${archivedIds.size} projects"><span class="app-icon recycle-icon">♲<b>${archivedIds.size}</b></span><span class="program-info"><span class="program-name">Earlier experiments (${archivedIds.size})</span><span class="program-summary">Earlier experiments and projects I’ve set aside. Still here to explore.</span><span class="program-tags"><span>Archive</span></span></span></button>`);
  $$('[data-filter]').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.filter===state.filter);b.querySelector('span').textContent=softwareProjects.filter(p=>b.dataset.filter==='recycle'?archivedIds.has(p.id):!archivedIds.has(p.id)).length;});
 }
 drawPrograms();$('#program-search').addEventListener('input',e=>{state.query=e.target.value;drawPrograms();});
 $$('[data-filter]').forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;drawPrograms();});
+if($('#browse-selected'))$('#browse-selected').onclick=e=>{e.preventDefault();$('#selected-work').scrollIntoView({behavior:state.motion?'smooth':'auto',block:'start'});};
 $('#program-grid').onclick=e=>{if(e.target.closest('#open-recycle')){state.filter='recycle';drawPrograms();return;}const b=e.target.closest('[data-program]');if(b)openProgram(b.dataset.program);};
 function taskbar(){
  $('#running-apps').innerHTML=[...state.open].map(([id,w])=>`<button data-running="${id}" aria-pressed="${state.active===id&&!w.hidden}" title="${esc(byId.get(id).name)}">${esc(byId.get(id).name)}</button>`).join('');
 }
-function focusProgram(id){const win=state.open.get(id);if(!win)return;win.hidden=false;win.style.zIndex=++state.top;state.active=id;taskbar();}
-function closeProgram(id){const win=state.open.get(id);if(!win)return;win.remove();state.open.delete(id);state.active=[...state.open.keys()].at(-1)||null;if(state.active)focusProgram(state.active);else taskbar();$(`[data-program="${id}"]`)?.focus({preventScroll:true});history.replaceState(null,'','#computer');}
+function focusProgram(id){const win=state.open.get(id);if(!win)return;state.open.forEach(w=>w.hidden=w!==win);win.hidden=false;state.active=id;$('#desktop').classList.add('project-open');$('.desktop-body').inert=true;taskbar();}
+function closeProgram(id){const win=state.open.get(id);if(!win)return;win.remove();state.open.delete(id);state.active=null;$('#desktop').classList.remove('project-open');$('.desktop-body').inert=false;taskbar();$(`[data-program="${id}"]`)?.focus({preventScroll:true});history.replaceState(null,'','#computer');}
 function openProgram(id){
  const p=byId.get(id);if(!p||!softwareProjects.includes(p))return;
  if(state.open.has(id)){focusProgram(id);return;}
- const win=document.createElement('section');win.className='app-window'+(deepCases.has(id)?' deep-case-window':'');win.dataset.app=id;win.setAttribute('role','region');win.setAttribute('aria-label',`${p.name} project window`);
- const n=state.open.size%4;const desktopWidth=$('#desktop').clientWidth;const windowWidth=Math.min(deepCases.has(id)?1100:900,desktopWidth-32);win.style.left=Math.max(12,Math.min(desktopWidth-windowWidth-12,(desktopWidth-windowWidth)/2+n*20))+'px';win.style.top=65+Math.min(n*12,30)+'px';if(deepCases.has(id))win.style.width=windowWidth+'px';
- win.innerHTML=`<div class="window-header"><strong>${esc(p.name)}</strong><button data-action="minimize" aria-label="Minimize ${esc(p.name)}">−</button><button data-action="maximize" aria-label="Maximize ${esc(p.name)}" aria-pressed="false">□</button><button data-action="close" aria-label="Close ${esc(p.name)}">×</button></div><div class="window-content">${story(p)}</div>`;
+ for(const previous of [...state.open.keys()])closeProgram(previous);
+ const win=document.createElement('section');win.className='app-window showcase-page'+(deepCases.has(id)?' deep-case-window':'');win.dataset.app=id;win.setAttribute('role','region');win.setAttribute('aria-label',`${p.name} case study`);
+ const title=featuredCopy[id]?.[0]||p.name;
+ const next=activePrograms[(activePrograms.indexOf(p)+1)%activePrograms.length];
+ win.innerHTML=`<div class="window-header"><button data-action="close">← All software</button><strong>${esc(title)}</strong><span>PROJECT NOTES / ${String(softwareProjects.indexOf(p)+1).padStart(2,'0')}</span></div><div class="window-content">${story(p)}<footer class="showcase-next"><p>Keep exploring</p><button data-next-project="${esc(next.id)}">${esc(featuredCopy[next.id]?.[0]||next.name)} <span>↗</span></button><button data-action="close">Back to all software</button></footer></div>`;
  $('#windows').append(win);state.open.set(id,win);focusProgram(id);history.replaceState(null,'',`#computer/${id}`);
- {const wc=win.querySelector('.window-content');addChapterNav(wc,wc.querySelector('article'),'.deep-chapter > h3, .case-section > h3, section.chapter > h2');}
- win.querySelector('h2').tabIndex=-1;win.querySelector('h2').focus({preventScroll:true});win.addEventListener('pointerdown',()=>focusProgram(id));
- win.addEventListener('click',e=>{const action=e.target.closest('[data-action]')?.dataset.action;if(action==='close')closeProgram(id);if(action==='minimize'){win.hidden=true;state.active=null;taskbar();$('#show-desktop').focus();}if(action==='maximize'){win.classList.toggle('window-maximized');e.target.setAttribute('aria-pressed',win.classList.contains('window-maximized'));e.target.setAttribute('aria-label',(win.classList.contains('window-maximized')?'Restore ':'Maximize ')+p.name);}});
- const bar=win.querySelector('.window-header');let drag=null;
- bar.addEventListener('pointerdown',e=>{if(e.target.closest('button')||innerWidth<=900||win.classList.contains('window-maximized'))return;const scale=$('#computer').getBoundingClientRect().width/$('#desktop').offsetWidth;drag={x:e.clientX,y:e.clientY,left:win.offsetLeft,top:win.offsetTop,scale};bar.setPointerCapture(e.pointerId);e.preventDefault();});
- bar.addEventListener('pointermove',e=>{if(!drag)return;win.style.left=Math.max(0,Math.min($('#desktop').offsetWidth-200,drag.left+(e.clientX-drag.x)/drag.scale))+'px';win.style.top=Math.max(44,Math.min($('#desktop').offsetHeight-100,drag.top+(e.clientY-drag.y)/drag.scale))+'px';});
- bar.addEventListener('pointerup',()=>drag=null);bar.addEventListener('pointercancel',()=>drag=null);
+ const heading=win.querySelector('h2');heading.tabIndex=-1;heading.focus({preventScroll:true});
+ win.addEventListener('click',e=>{if(e.target.closest('[data-action="close"]'))closeProgram(id);const nextButton=e.target.closest('[data-next-project]');if(nextButton)openProgram(nextButton.dataset.nextProject);});
 }
 $('#running-apps').onclick=e=>{const b=e.target.closest('[data-running]');if(b)focusProgram(b.dataset.running);};
-$('#show-desktop').onclick=()=>{for(const win of state.open.values())win.hidden=true;state.active=null;taskbar();$('#program-search').focus();};
+$('#show-desktop').onclick=()=>{for(const id of [...state.open.keys()])closeProgram(id);$('#program-search').focus();};
 const readingList=['What Every BODY Is Saying','How to Win Friends and Influence People','The Tipping Point','Becoming the Best','David and Goliath','Atomic Habits','Outliers','Dracula','Calculating the Cosmos — Ian Stewart'];
 const zoneConfig={
  sign:{kicker:'FROM DESIGN TO THE WEDDING DAY',title:'Welcome sign.',text:'CNC design, laser cutting, staining, micro-glueups and mounting—all in one build.',list:()=>projects.filter(p=>p.id==='sign')},
@@ -117,7 +121,7 @@ function zonePanel(view){
 const readerCache=new Map();
 function readerArticle(id){if(!readerCache.has(id))readerCache.set(id,fetch(`read/${id}.html`).then(r=>r.ok?r.text():Promise.reject(r.status)).then(t=>{const a=new DOMParser().parseFromString(t,'text/html').querySelector('main article');if(!a)throw new Error('no article');
  a.querySelectorAll('[src],[href]').forEach(el=>{for(const at of ['src','href']){const v=el.getAttribute(at);if(v?.startsWith('../'))el.setAttribute(at,v.slice(3));}});a.querySelectorAll('a[href^="http"]').forEach(l=>{l.target='_blank';l.rel='noopener';});return a.innerHTML;}).catch(err=>{readerCache.delete(id);throw err;}));return readerCache.get(id);}
-function readerStyles(){if(!document.querySelector('link[data-reader]')){const l=document.createElement('link');l.rel='stylesheet';l.href='reader.css?v=2';l.dataset.reader='';document.head.append(l);}}
+function readerStyles(){if(!document.querySelector('link[data-reader]')){const l=document.createElement('link');l.rel='stylesheet';l.href='reader.css?v=3';l.dataset.reader='';document.head.append(l);}}
 async function openProject(id,{fromBook=false}={}){
  readerStyles();const panel=$('#zone-panel'),content=$('#zone-content');panel.hidden=false;panel.classList.add('project-focus');document.body.classList.add('reading');
  content.innerHTML=`<div class="reader-bar"><button class="zone-back">← ${fromBook?'Back to the book':'Back to the bench'}</button><span class="reader-actions"><a class="reader-page" href="read/${esc(id)}.html" target="_blank" rel="noopener">Open as a page ↗</a><button class="reader-close" aria-label="Close the project">×</button></span></div><article class="reader" aria-busy="true"><p class="reader-loading">Opening the project…</p></article>`;panel.scrollTop=0;
@@ -125,6 +129,11 @@ async function openProject(id,{fromBook=false}={}){
  const project=byId.get(id),photos=project?.photos||storyData.get(id)?.screenshots||[];
  if(photos.length&&!art.querySelector('img')){const gallery=document.createElement('div');gallery.className='reader-photos';gallery.innerHTML=photos.map((f,i)=>`<figure><img src="${esc(f.src)}" alt="${esc(f.caption||project.name)}" loading="${i?'lazy':'eager'}"><figcaption>${esc(f.caption||'')}</figcaption></figure>`).join('');const intro=art.querySelector('.lede,.purpose');if(intro)intro.after(gallery);else art.prepend(gallery);}
  art.querySelectorAll('a[href$="-photos.html"]').forEach(a=>a.remove());
+ const leadPhoto=art.querySelector('.reader-photos figure');
+ const hero=document.createElement('header');hero.className='reader-hero';const intro=document.createElement('div');intro.className='reader-intro';
+ for(const child of [...art.children]){if(child.matches('section,.reader-photos,.deep-chapter'))break;if(child.matches('h1,h2,.eyebrow,.lede,.purpose,.tags,.project-kind'))intro.append(child);}
+ const tags=art.querySelector(':scope > .tags');if(tags)intro.append(tags);hero.append(intro);if(leadPhoto)hero.append(leadPhoto);if(intro.children.length)art.prepend(hero);
+ art.querySelectorAll('.reader-photos').forEach(g=>{if(!g.children.length)g.remove();else art.querySelector('section.chapter,.deep-chapter')?.after(g);});
  addChapterNav(content,art,'section.chapter > h2, .deep-chapter > h3',{top:content.querySelector('.reader-bar')?.offsetHeight||0});
  // Chapter links scroll inside the sheet.
  art.querySelectorAll('a[href^="#"]').forEach(l=>l.addEventListener('click',ev=>{const t=art.querySelector(l.getAttribute('href'));if(t){ev.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}}));
@@ -163,26 +172,14 @@ function closeReader(){document.body.classList.remove('reading');$('#zone-panel'
 $('#zone-content').onclick=e=>{const b=e.target.closest('[data-zone-project]');if(b){openProject(b.dataset.zoneProject);return;}if(e.target.closest('.reader-close')){$('.panel-close').click();return;}if(e.target.closest('.zone-back'))zonePanel(state.view);};
 $('.panel-close').onclick=()=>{closeReader();if(state.view==='book'){$('#zone-panel').hidden=true;$('#zone-panel').classList.remove('project-focus');const ui=$('#book-ui');if(ui)ui.hidden=false;}else go(['sign','lamp','cnc'].includes(state.view)?'wood':['scope','printer','books'].includes(state.view)?'lab':'room');};
 // Native scene coordinates are converted from Blender (X,Y,Z) to glTF (X,Z,-Y).
-const views={
- sign:{p:[-.3,2.65,5.0],t:[-3.53,2.35,4.45],label:'WELCOME SIGN / design, layers & tiny details'},
- books:{p:[1.1,3.1,1.8],t:[3.38,3.28,.25],label:'BOOKS & IDEAS'},
- scope:{p:[.7,2.05,.15],t:[3.05,1.78,-.72],label:'SIGNALS / electronics projects'},
- cnc:{p:[-.8,2.3,.35],t:[-2.72,1.55,-1.3],label:'CNC / digital fabrication'},
- book:{p:[-2.10,3.05,2.78],t:[-2.65,1.2,2.78],label:'WOODSHOP PROJECTS / turn a page'},
- room:{p:[0,2.68,5.1],t:[0,1.45,-1.2],label:'A room for all the things I make.'},
- computer:{p:[0,2.02,.0],t:[0,2.02,-1.548],label:'SOFTWARE PROJECTS / open a program to explore it'},
- wood:{p:[.96,2.65,3.09],t:[-2.7,1.85,1.9],label:'WOODSHOP / CNC, craft, and things made by hand'},
- lab:{p:[-.63,2.6,2.18],t:[2.7,1.9,1.1],label:'ELECTRONICS LAB / from board to bench'},
- printer:{p:[1.1,2.35,4.1],t:[3.05,1.65,3.1],label:'3D PRINTER / ideas into objects'},
- lamp:{p:[-1.7,1.95,1.7],t:[-3.13,1.4,.35],label:'THE LAMP / a wedding gift'}
-};
+
 // GitHub Pages gzips the model, so the response's Content-Length is the compressed size while
 // the loader counts uncompressed bytes. Measure against the real file size instead.
-const ROOM_MODEL_BYTES=2010900;
+const ROOM_MODEL_BYTES=1951996;
 // The loader only fades once the room has drawn itself behind it (see initRoom).
 // Setup timings for diagnosing slow loads: cockpit.stages.
 const stages=[];const stage=n=>stages.push([n,Math.round(performance.now())]);window.__stage=stage;
-let roomWarm=false,revealing=false;const afterReveal=[];
+let roomWarm=false,revealing=false,monitorRevealedAt=null;const afterReveal=[];
 const hideLoader=()=>{if(!roomWarm)return;window.__loadDone?window.__loadDone():($('#loading').hidden=true);};
 // Wait for the browser to actually paint a frame between heavy setup steps. Waiting on a real frame
 // (not a timer) keeps queued GPU work from piling up, and lets the loader animate in between.
@@ -197,7 +194,6 @@ const mobile=()=>innerWidth<=900;
 // Phones held upright get their own framing: a closer room shot, and stations lifted above the project sheet.
 const viewW=()=>document.getElementById('world')?.clientWidth||innerWidth,viewH=()=>document.getElementById('world')?.clientHeight||innerHeight;
 // Phone shots: the room from just behind the stool, each bench seen down its length.
-const phoneViews={room:{p:[0,2.35,3.6],t:[0,1.55,-1.2],fov:72},wood:{p:[.9,2.55,5.4],t:[-2.7,1.35,1.2],fov:62},lab:{p:[-.9,2.55,5.4],t:[2.7,1.45,1.2],fov:62}};
 // Any screen taller than wide (phones and vertical monitors) gets the portrait camera framing;
 // only phones also get the bottom-sheet offset.
 const portrait=()=>innerHeight>innerWidth;
@@ -213,25 +209,25 @@ function layoutDesktop(){
 
 function updateViewUI(){
  $$('[data-view]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===state.view||(['book','cnc','lamp','sign'].includes(state.view)&&b.dataset.view==='wood')||(['scope','printer','books'].includes(state.view)&&b.dataset.view==='lab')));$('#location').textContent=views[state.view].label;
- $('#hint').textContent=state.view==='computer'?'Open a program · minimize, move, or close its window':'Choose a workstation button to explore';
+ $('#hint').textContent=state.view==='computer'?'Explore the software · back to workshop at the top left':'Choose a workstation button to explore';
  $('#markers').hidden=!state.ready;document.body.dataset.view=state.view;$('#welcome').hidden=state.view!=='room';
 }
-function frameStation(){if(!camera)return;const baseFov=state.view==='wood'?60:state.view==='lab'?60:state.view==='computer'?38:43.8;const widen=camera.aspect<1.25?Math.min(2.4,1.25/camera.aspect):Math.min(1,1.8/camera.aspect);camera.fov=Math.min(state.view==='computer'?100:84,THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(baseFov)/2)*widen))); if(portrait()&&state.view!=='computer')camera.fov=phoneViews[state.view]?.fov||64;camera.clearViewOffset();camera.userData.offY=phone()&&!phoneViews[state.view]&&!['computer','book'].includes(state.view)?innerHeight*.26:0;if(camera.userData.offY)camera.setViewOffset(innerWidth,innerHeight,0,camera.userData.offY,innerWidth,innerHeight);if(!mobile()&&zoneConfig[state.view]&&!['wood','lab','book','computer'].includes(state.view))camera.setViewOffset(innerWidth,innerHeight,innerWidth*.23,camera.userData.offY||0,innerWidth,innerHeight);camera.updateProjectionMatrix();}
-function destination(view){const p=new THREE.Vector3(...views[view].p),t=new THREE.Vector3(...views[view].t);if(view==='computer'){const h=1.22;p.z=-1.548+h/(2*Math.tan(THREE.MathUtils.degToRad(camera?.fov||38)/2));}if(!mobile()&&!portrait()&&['room','wood'].includes(view)){p.sub(t).multiplyScalar(Math.max(1,1.65/(innerWidth/innerHeight))).add(t);}if(portrait()&&phoneViews[view]){p.set(...phoneViews[view].p);t.set(...phoneViews[view].t);}else if(portrait()&&view!=='computer'){p.sub(t).multiplyScalar({book:1.75,cnc:1.3}[view]||1.08).add(t);}else if(mobile()&&view!=='computer'){p.sub(t).multiplyScalar(view==='room'?1.3:view==='book'?1.35:['wood','lab'].includes(view)?1.12:1.4).add(t);if(view!=='room'&&view!=='book')t.y-=.35;}p.x=THREE.MathUtils.clamp(p.x,-3.25,3.3);p.z=Math.min(p.z,7.6);p.y=Math.min(p.y,3.6);return{p,t};}
+function frameStation(){if(!camera)return;const pose=viewPose(state.view,innerWidth,innerHeight);camera.fov=pose.fov;camera.userData.offY=pose.offY;camera.clearViewOffset();if(pose.offX||pose.offY)camera.setViewOffset(innerWidth,innerHeight,pose.offX,pose.offY,innerWidth,innerHeight);camera.updateProjectionMatrix();}
+function destination(view){const pose=viewPose(view,innerWidth,innerHeight);return {p:new THREE.Vector3(...pose.p),t:new THREE.Vector3(...pose.t)};}
 function arrive(){
  state.transitioning=false;if(state.view==='book')details?.openBook();$('#computer').hidden=state.view!=='computer';layoutDesktop();
- if(state.view==='computer'){$('#program-search').focus({preventScroll:true});const id=location.hash.split('/')[1];if(byId.has(id))openProgram(id);}
+ if(state.view==='computer'){const intro=$('.studio-intro h1');if(intro){intro.tabIndex=-1;intro.focus({preventScroll:true});}const id=location.hash.split('/')[1];if(byId.has(id))openProgram(id);}
  else if(state.view!=='room')$('#zone-content h2')?.focus({preventScroll:true});
 }
 function go(view,{preserveHash=false}={}){
  if(!views[view])return;if(roomWarm&&view!=='room')hideCoach();if(view==='computer'&&roomWarm)afterReveal.splice(0).forEach(f=>f());closeRoomSettings();const previousView=state.view;state.view=view;state.transitioning=state.ready;dragX=dragY=0;
  document.body.classList.remove('desktop-full');
  if(!preserveHash)history.replaceState(null,'',`#${view}`);
- const oldFov=camera?.fov,oldOffset=camera?.view?.enabled?camera.view.offsetX:0;const oldQ=camera?.quaternion.clone();frameStation();const newFov=camera?.fov,newOffset=camera?.view?.enabled?camera.view.offsetX:0;updateViewUI();zonePanel(view);layoutDesktop();
- if(!state.ready){$('#loading').hidden=view!=='room';if(view==='computer'){state.transitioning=false;$('#computer').hidden=false;layoutDesktop();}return;}
+ const oldFov=camera?.fov,oldOffset=camera?.view?.enabled?camera.view.offsetX:0;const oldQ=camera?.quaternion.clone(),oldOffsetY=camera?.view?.enabled?camera.view.offsetY:0;frameStation();const newFov=camera?.fov,newOffset=camera?.view?.enabled?camera.view.offsetX:0;updateViewUI();zonePanel(view);layoutDesktop();
+ if(!state.ready){$('#loading').hidden=false;return;}
  hideLoader();const dest=destination(view);state.transitioning=true;
- const sideOf=v=>['wood','book','lamp','cnc','sign'].includes(v)?-1:['lab','scope','printer','books'].includes(v)?1:0;const crossBench=sideOf(previousView)*sideOf(view)===-1;const midCamera=camera.clone();midCamera.position.set(0,2.6,1.8);midCamera.lookAt(0,1.9,-2);
- const destinationCamera=camera.clone();destinationCamera.position.copy(dest.p);destinationCamera.lookAt(dest.t);transition={fromScreen:previousView==='computer',crossBench,midQ:midCamera.quaternion.clone(),elapsed:0,last:performance.now(),fromFov:oldFov,toFov:newFov,fromOffset:oldOffset,toOffset:newOffset,fromQ:oldQ,toQ:destinationCamera.quaternion.clone(),start:performance.now(),from:camera.position.clone(),look:look.clone(),to:dest.p,target:dest.t,arc:['wood','lab'].includes(view)?(view==='wood'?1:-1):0};
+ const startLook=camera.position.clone().add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(Math.max(.1,camera.position.distanceTo(look))));
+ transition={fromScreen:previousView==='computer',elapsed:0,last:performance.now(),fromFov:oldFov,toFov:newFov,fromOffset:oldOffset,toOffset:newOffset,fromOffsetY:oldOffsetY,toOffsetY:camera.userData.offY||0,fromQ:oldQ,start:performance.now(),from:camera.position.clone(),look:startLook,to:dest.p,target:dest.t};
  if(state.motion){camera.fov=oldFov;camera.setViewOffset(innerWidth,innerHeight,oldOffset,camera.userData.offY||0,innerWidth,innerHeight);camera.updateProjectionMatrix();}if(!state.motion){camera.position.copy(dest.p);look.copy(dest.t);baseLook.copy(dest.t);camera.lookAt(look);transition=null;arrive();}
  requestFrame();
 }
@@ -243,8 +239,9 @@ document.addEventListener('click',e=>{if(!e.target.closest('#room-settings-panel
 function updateMotion(){const b=$('#motion');b.textContent=state.motion?'Motion on':'Motion off';b.setAttribute('aria-pressed',state.motion);document.body.classList.toggle('motion-off',!state.motion);}
 $('#motion').onclick=()=>{state.motion=!state.motion;updateMotion();if(!state.motion&&transition){camera.fov=transition.toFov;camera.setViewOffset(innerWidth,innerHeight,transition.toOffset,camera.userData.offY||0,innerWidth,innerHeight);camera.updateProjectionMatrix();camera.position.copy(transition.to);look.copy(transition.target);baseLook.copy(look);camera.lookAt(look);transition=null;arrive();}requestFrame();};
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>{state.motion=!e.matches;updateMotion();});updateMotion();
+let markerPose='';
 function projectMarkers(){
- if(!camera)return;const root=$('#markers');root.style.opacity=state.transitioning?'0':'1';root.style.pointerEvents=state.transitioning?'none':'';
+ if(!camera)return;const key=[state.view,state.transitioning,innerWidth,innerHeight,...camera.matrixWorld.elements,...camera.projectionMatrix.elements].join(',');if(key===markerPose)return;markerPose=key;const root=$('#markers');root.style.opacity=state.transitioning?'0':'1';root.style.pointerEvents=state.transitioning?'none':'';
  let svg=$('#marker-leaders');if(!svg){svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.id='marker-leaders';root.prepend(svg);}svg.setAttribute('viewBox',`0 0 ${innerWidth} ${innerHeight}`);let lines='';const placed=[];
  const offsets={computer:[0,-25],wood:[-25,-45],lab:[75,-65],sign:[0,75],book:[0,65],lamp:[-75,-85],cnc:[20,-70],scope:[-55,-75],printer:[85,-115],books:[0,-45]};
  $$('#markers [data-point]').forEach(b=>{const p=new THREE.Vector3(...b.dataset.point.split(',').map(Number)).project(camera);b.hidden=!(b.dataset.context||'room').split(' ').includes(state.view)||p.z>1||Math.abs(p.x)>(mobile()?4:1.15);if(b.hidden)return;
@@ -278,27 +275,38 @@ addEventListener('pointerup',e=>{const d=screenDown;screenDown=null;if(!d||Math.
 function requestFrame(){if(!frame)frame=requestAnimationFrame(render);}
 function render(t){
  // Nothing draws until setup has finished and the GPU programs are ready (see initRoom).
- frame=0;if(!renderer||!scene||!camera||!state.ready||revealing||(state.view==='computer'&&!transition&&document.body.classList.contains('desktop-full')))return;
- if(transition){transition.elapsed=Math.max(0,t-transition.start);transition.last=t;const k=state.motion?Math.min(transition.elapsed/2100,1):1,e=k*k*k*(k*(k*6-15)+10);camera.position.lerpVectors(transition.from,transition.to,e);let turnEase=e;if(transition.arc){const a=transition.from,b=transition.to,c1=a.clone(),c2=b.clone();c1.z=a.z+(b.z-a.z)*.72;c1.y=a.y+(b.y-a.y)*.35;c2.x=a.x+(b.x-a.x)*.45;c2.z=b.z;c2.y=b.y;const q=1-e;camera.position.copy(a).multiplyScalar(q*q*q).addScaledVector(c1,3*q*q*e).addScaledVector(c2,3*q*e*e).addScaledVector(b,e*e*e);const r=Math.max(0,Math.min(1,(k-.10)/.90));turnEase=r*r*r*(r*(r*6-15)+10);}camera.fov=THREE.MathUtils.lerp(transition.fromFov,transition.toFov,e);camera.setViewOffset(innerWidth,innerHeight,THREE.MathUtils.lerp(transition.fromOffset,transition.toOffset,e),camera.userData.offY||0,innerWidth,innerHeight);camera.updateProjectionMatrix();if(state.view==='computer'||transition.fromScreen){const fit=state.view==='computer'?Math.max(0,Math.min(1,(k-.75)/.25)):1-Math.min(1,k/.25);const smooth=fit*fit*(3-2*fit);camera.projectionMatrix.elements[0]*=THREE.MathUtils.lerp(1,camera.aspect/(2.15/1.22),smooth);camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();}if(transition.crossBench){if(e<.5)camera.quaternion.slerpQuaternions(transition.fromQ,transition.midQ,e*2);else camera.quaternion.slerpQuaternions(transition.midQ,transition.toQ,(e-.5)*2);}else camera.quaternion.slerpQuaternions(transition.fromQ,transition.toQ,turnEase);look.lerpVectors(transition.look,transition.target,e);baseLook.copy(look);if(k===1){transition=null;camera.lookAt(look);arrive();}}
+ frame=0;if(!renderer||!scene||!camera||!state.ready||revealing||document.hidden||(state.view==='computer'&&!transition&&document.body.classList.contains('desktop-full')))return;
+ if(transition){
+  transition.elapsed=Math.max(0,t-transition.start);const k=state.motion?Math.min(transition.elapsed/2100,1):1;
+  const pose=cameraPath(transition.from.toArray(),transition.look.toArray(),transition.to.toArray(),transition.target.toArray(),k),e=pose.e;
+  camera.position.fromArray(pose.p);look.fromArray(pose.t);baseLook.copy(look);camera.up.set(0,1,0);camera.lookAt(look);
+  camera.fov=THREE.MathUtils.lerp(transition.fromFov,transition.toFov,e);camera.setViewOffset(innerWidth,innerHeight,THREE.MathUtils.lerp(transition.fromOffset,transition.toOffset,e),THREE.MathUtils.lerp(transition.fromOffsetY,transition.toOffsetY,e),innerWidth,innerHeight);camera.updateProjectionMatrix();
+  if(state.view==='computer'||transition.fromScreen){const fit=state.view==='computer'?Math.max(0,Math.min(1,(k-.75)/.25)):1-Math.min(1,k/.25);const smooth=fit*fit*(3-2*fit);camera.projectionMatrix.elements[0]*=THREE.MathUtils.lerp(1,camera.aspect/(2.15/1.22),smooth);camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();}
+  if(k===1){look.copy(transition.target);baseLook.copy(look);transition=null;camera.lookAt(look);arrive();}
+ }
+ const monitor=screenMesh?.material.map;const bootBusy=monitor?.userData.boot?.update(t,state.motion,!!monitor.userData.exactDesktop);
  if(!transition)look.copy(baseLook);
- if(!transition)camera.lookAt(look);details?.update(t,state.motion);renderer.render(scene,camera);projectMarkers();if(state.view==='book')layoutBookUI();layoutDesktop();if(transition||details?.inspect().bookBusy)requestFrame();
+ if(!transition)camera.lookAt(look);details?.update(t,state.motion);renderer.render(scene,camera);projectMarkers();if(state.view==='book')layoutBookUI();if(transition||bootBusy||details?.inspect().bookBusy)requestFrame();
 }
 function desktopTexture(){
- const c=document.createElement('canvas');c.width=innerWidth*2;c.height=innerHeight*2;
- const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.anisotropy=4;
- const fallback=new Image();fallback.onload=()=>{if(t.userData.exactDesktop)return;c.getContext('2d').drawImage(fallback,0,0,c.width,c.height);t.needsUpdate=true;requestFrame();};fallback.src='assets/optimized/assets-cockpit-desktop-first.webp?v=19';
+ const c=document.createElement('canvas');c.width=1578;c.height=1200;
+ const snapshot=document.createElement('canvas');snapshot.width=c.width;snapshot.height=c.height;
+ const t=new THREE.CanvasTexture(c);t.userData.boot=monitorBoot(c,snapshot,t);if(monitorRevealedAt!==null)t.userData.boot.start(monitorRevealedAt);t.colorSpace=THREE.SRGBColorSpace;t.flipY=false;t.anisotropy=4;
+ const fallback=new Image();fallback.onload=()=>{if(t.userData.exactDesktop)return;snapshot.getContext('2d').drawImage(fallback,0,0,c.width,c.height);requestFrame();};fallback.src='assets/optimized/assets-cockpit-desktop-first.webp?v=19';
  async function capture(){try{
   await document.fonts.ready;
   const w=innerWidth,h=innerHeight;
-  const rendered=await html2canvas($('#desktop'),{width:w,height:h,windowWidth:w,windowHeight:h,scale:2,logging:false,backgroundColor:'#16262b',foreignObjectRendering:false,onclone:doc=>{
+  const rendered=await html2canvas($('#desktop'),{width:w,height:h,windowWidth:w,windowHeight:h,scale:Math.min(1.5,1578/w),logging:false,backgroundColor:'#16262b',foreignObjectRendering:false,onclone:doc=>{
    doc.body.classList.add('workshop-started','desktop-full','flat-desktop');
+   // html2canvas clones restart CSS entrance animations at opacity zero. Render their final state.
+   const still=doc.createElement('style');still.textContent='#desktop *,#desktop *::before,#desktop *::after{animation:none!important;transition:none!important}#desktop .folio-visual,#desktop .folio-project{opacity:1!important;translate:0 0!important}';doc.head.append(still);
    const surface=doc.querySelector('#computer');surface.hidden=false;surface.style.cssText=`position:fixed!important;inset:0!important;display:block!important;width:${w}px!important;height:${h}px!important`;
    const desktop=doc.querySelector('#desktop');desktop.style.cssText=`width:${w}px!important;height:${h}px!important;transform:none!important`;
    doc.querySelector('#windows').replaceChildren();doc.querySelector('.desktop-files').scrollTop=0;
    doc.querySelector('#entry').hidden=true;
   }});
-  c.getContext('2d').drawImage(rendered,0,0,c.width,c.height);t.needsUpdate=true;t.userData.exactDesktop=true;requestFrame();
- }catch(error){console.warn('Desktop preview could not refresh:',error);}}
+  snapshot.getContext('2d').drawImage(rendered,0,0,c.width,c.height);t.userData.exactDesktop=true;requestFrame();
+ }catch(error){t.userData.previewError=String(error);console.warn('Desktop preview could not refresh:',error);}}
  // Snapshotting the live desktop is heavy; do it after the room is revealed.
  roomWarm?capture():afterReveal.push(capture);return t;
 }
@@ -328,19 +336,19 @@ async function initRoom(){
   stage('compiled');state.ready=true;const initial=location.hash.slice(1).split('/')[0];if(views[initial]&&initial!==state.view)state.view=initial;go(state.view,{preserveHash:true});
   // Start already at the first view (no camera move behind the loader).
   if(transition){camera.fov=transition.toFov;camera.setViewOffset(innerWidth,innerHeight,transition.toOffset,camera.userData.offY||0,innerWidth,innerHeight);camera.updateProjectionMatrix();camera.position.copy(transition.to);look.copy(transition.target);baseLook.copy(look);camera.lookAt(look);transition=null;arrive();}
-  // Draw the room (with shadows) behind the loader, then hold that frame while the loader fades,
-  // so the fade has the page to itself.
+  // Finish GPU warmup behind the loader, then animate throughout its fade.
   stage('first-render');revealing=true;renderer.shadowMap.needsUpdate=true;details?.update(performance.now(),state.motion);renderer.render(scene,camera);projectMarkers();await breathe();renderer.render(scene,camera);await breathe();await settled();
-  stage('warm');roomWarm=true;window.__load?.set('setup',1);hideLoader();
-  (window.__load?.finish?.()||Promise.resolve()).then(()=>setTimeout(()=>{revealing=false;requestFrame();if(!coachSeen&&state.view==='room')setTimeout(showCoach,700);},1000));
+  stage('warm');roomWarm=true;revealing=false;requestFrame();window.__load?.set('setup',1);hideLoader();
+  (window.__load?.finish?.()||Promise.resolve()).then(()=>{monitorRevealedAt=performance.now();screenMesh?.material.map?.userData.boot?.start(monitorRevealedAt);requestFrame();afterReveal.splice(0).forEach(f=>f());if(!coachSeen&&state.view==='room')setTimeout(showCoach,700);});
   // The room view shows a placeholder desktop image; the exact snapshot is taken when someone heads to the computer.
 
  }catch(error){console.error('Command center could not load:',error);state.failed=true;$('#load-message').textContent='The 3D room could not load. Use the lightweight site below to explore every project.';$('#load-progress').style.width='100%';if(state.view==='computer'){$('#loading').hidden=true;$('#computer').hidden=false;layoutDesktop();}}
 }
-function onResize(){if(screenMesh){const old=screenMesh.material.map;screenMesh.material.map=desktopTexture();old?.dispose();}if(renderer){renderer.setSize(viewW(),viewH(),false);camera.aspect=viewW()/viewH();frameStation();if(state.ready){const d=destination(state.view);camera.position.copy(d.p);look.copy(d.t);baseLook.copy(d.t);camera.lookAt(look);transition=null;state.transitioning=false;$('#computer').hidden=state.view!=='computer';}}layoutDesktop();requestFrame();}
+function onResize(){markerPose='';if(screenMesh){const old=screenMesh.material.map;screenMesh.material.map=desktopTexture();old?.dispose();}if(renderer){renderer.setSize(viewW(),viewH(),false);camera.aspect=viewW()/viewH();frameStation();if(state.ready){const d=destination(state.view);camera.position.copy(d.p);look.copy(d.t);baseLook.copy(d.t);camera.lookAt(look);transition=null;state.transitioning=false;$('#computer').hidden=state.view!=='computer';}}layoutDesktop();requestFrame();}
 // Safari's toolbars resize the viewport while scrolling or rotating; follow every change.
 let resizeQueued=0;const queueResize=()=>{cancelAnimationFrame(resizeQueued);resizeQueued=requestAnimationFrame(onResize);};addEventListener('resize',queueResize);addEventListener('orientationchange',queueResize);visualViewport?.addEventListener('resize',queueResize);
-window.cockpit={get stages(){return stages;},get debug(){return {scene,camera,renderer,model,draw(){renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera);}};},get details(){return details?.inspect();},get cameraPose(){return camera?{position:camera.position.toArray(),target:look.toArray(),fov:camera.fov,quaternion:camera.quaternion.toArray()}:null;},get ready(){return state.ready;},get view(){return state.view;},get transitioning(){return state.transitioning;},get desktopSnapshotReady(){return !!screenMesh?.material.map?.userData.exactDesktop;},get programCount(){return softwareProjects.length;},get recycleCount(){return archivedIds.size;},get openPrograms(){return [...state.open.keys()];},get renderInfo(){return renderer?{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles}:null;},get failed(){return state.failed;}};
+window.cockpit={get stages(){return stages;},get debug(){return {scene,camera,renderer,model,draw(){renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera);}};},get details(){return details?.inspect();},get cameraPose(){return camera?{position:camera.position.toArray(),target:look.toArray(),fov:camera.fov,quaternion:camera.quaternion.toArray()}:null;},get ready(){return state.ready;},get view(){return state.view;},get transitioning(){return state.transitioning;},get monitorBootDone(){return !!screenMesh?.material.map?.userData.boot?.done;},get desktopSnapshotError(){return screenMesh?.material.map?.userData.previewError||null;},get desktopSnapshotReady(){return !!screenMesh?.material.map?.userData.exactDesktop;},get programCount(){return softwareProjects.length;},get recycleCount(){return archivedIds.size;},get openPrograms(){return [...state.open.keys()];},get renderInfo(){return renderer?{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles}:null;},get failed(){return state.failed;}};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestFrame();});
 let ambientTick=0;setInterval(()=>{ambientTick++;if(state.ready&&!document.hidden&&(state.motion||ambientTick%20===0))requestFrame();},1000/20);
 initRoom();
 

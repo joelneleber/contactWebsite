@@ -32,5 +32,5 @@ export function addOutdoors(scene){
  fragmentShader:'varying float fade;void main(){gl_FragColor=vec4(.75,.85,.88,fade);}' });
  const rain=new THREE.LineSegments(rainGeo,rainMat);rain.name='Forest rainfall';rain.frustumCulled=false;scene.add(rain);
  // Time comes from the room's motion clock, so reduced motion / Motion off freezes the scene.
- return {update(t){breeze.value=t*.001;for(let i=0;i<leaves.length;i++){const phase=(t/42000+i/7)%1;const leaf=leaves[i];leaf.position.set(-2.7+i*.77+Math.sin(phase*Math.PI*2+i)*.24,3.85-phase*2.45,-4.4-(i%3)*.28);leaf.rotation.set(Math.sin(t*.0007+i)*.45,Math.sin(t*.0005+i)*.8,phase*3+i);}}};
+ return {update(t){breeze.value=t*.001;daylight.intensity=.65+.035*Math.sin(t*.00019-.4);for(let i=0;i<leaves.length;i++){const phase=(t/42000+i/7)%1;const leaf=leaves[i];leaf.position.set(-2.7+i*.77+Math.sin(phase*Math.PI*2+i)*.24,3.85-phase*2.45,-4.4-(i%3)*.28);leaf.rotation.set(Math.sin(t*.0007+i)*.45,Math.sin(t*.0005+i)*.8,phase*3+i);}}};
 }

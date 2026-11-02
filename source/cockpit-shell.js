@@ -1,8 +1,10 @@
+import {batchStatic} from './cockpit-static.js';
 import {walnutMaterial} from './cockpit-wood.js';
 import * as THREE from 'three';
 
 // One coherent shell: full-height walls, closed corners and joined window casings.
 export function addRoomShell(scene){
+ const before=new Set(scene.children);
  const plaster=new THREE.MeshStandardMaterial({color:'#bcb09b',roughness:.95});
  const ceiling=new THREE.MeshStandardMaterial({color:'#c4bba8',roughness:.95});
  const trim=new THREE.MeshStandardMaterial({color:'#786b52',roughness:.78});
@@ -61,4 +63,5 @@ export function addRoomShell(scene){
  const side=new THREE.Mesh(new THREE.PlaneGeometry(1.57,1.15),glass);side.name='Side window glass';side.rotation.y=Math.PI/2;side.position.set(-3.76,2.35,2.6);scene.add(side);
  // Floor extension beyond the modeled oak boards, hidden behind the camera in the main view.
  box('Front floor extension',0,-.07,6.6,7.66,.14,3.5,floor);
+ batchStatic(scene,scene.children.filter(o=>!before.has(o)));
 }

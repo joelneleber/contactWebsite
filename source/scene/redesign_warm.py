@@ -113,6 +113,16 @@ place_assembly(fasteners,LAYOUT['powerSupply'],lambda o:o.name not in scope_fast
 place_assembly(('Oscilloscope body','Oscilloscope LCD','Oscilloscope control','BNC input'),LAYOUT['scope'])
 place_assembly(('Bench power supply','PSU ','Label · 12.00','Label · 0.125'),LAYOUT['powerSupply'])
 place_assembly(('Bench multimeter','Multimeter ','Label · 12.04'),LAYOUT['multimeter'])
+# Seat inherited front hardware and vents on their owner's actual surface.
+for o in bpy.context.scene.objects:
+ if o.hide_render:continue
+ if o.name.startswith('Instrument cooling slot'):
+  o.location.x+=.025;o.location.z=2.091 if o.name in scope_fasteners else 1.981
+ if o.name.startswith('Instrument front screw'):o.location.x+=.030
+ if o.name.startswith('Oscilloscope control knob'):o.location.x+=.020
+ if o.name.startswith(('PSU numeric readout','Label · 12.00','Label · 0.125')):o.location.x+=.012
+ if o.name.startswith('PSU output socket'):o.location.x+=.010
+
 def shift(prefixes,delta):
  delta=web_to_blender(delta)
  for o in bpy.context.scene.objects:
@@ -203,12 +213,46 @@ box('prototype lid',(2.60,-3.08,1.085),(.23,.28,.02),PAPER,.004)
 # A few desk notes beside the keyboard, away from Mango.
 for i in range(3):
  o=box('desk memo',(1.26,.62,1.078+i*.002),(.22,.19,.002),PAPER,0);o.rotation_euler.z=i*.07
-# Ceramic mug on a coaster, behind the mouse area.
-box('mug coaster',(1.20,1.03,1.084),(.22,.22,.018),OLIVE,.015)
-bpy.ops.mesh.primitive_cylinder_add(vertices=32,radius=.075,depth=.15,location=(1.20,1.03,1.167));mug=bpy.context.object;mug.name='Warm ceramic mug';assign(mug,PAPER)
-bpy.ops.mesh.primitive_cylinder_add(vertices=32,radius=.062,depth=.002,location=(1.20,1.03,1.243));assign(bpy.context.object,DARK);bpy.context.object.name='Warm coffee surface'
-bpy.ops.mesh.primitive_torus_add(major_radius=.047,minor_radius=.012,major_segments=20,minor_segments=8,location=(1.29,1.03,1.17),rotation=(1.5708,0,0));assign(bpy.context.object,PAPER);bpy.context.object.name='Warm mug handle'
+# A forged claw hammer with a contoured wooden handle and a separate striking face.
+for o in bpy.context.scene.objects:
+ if o.name.startswith(('Claw hammer','Hammer curved claw')):o.hide_render=True
+STEEL=material('Warm brushed tool steel',(.27,.29,.28),.8,.32)
+FORGED=material('Warm forged tool steel',(.065,.075,.08),.65,.42)
+HANDLE=material('Warm oiled ash handle',(.37,.22,.095),rough=.64)
+box('hammer forged head',(-3.4,-.1,2.55),(.105,.20,.09),FORGED,.014)
+bpy.ops.mesh.primitive_cylinder_add(vertices=24,radius=.055,depth=.055,location=(-3.4,-.2225,2.55),rotation=(1.5708,0,0));assign(bpy.context.object,STEEL);bpy.context.object.name='Warm hammer striking face'
+# Cross-sections narrow at the neck, swell gently at the grip, and flare at the heel.
+profile=[(2.06,.027,.034),(2.075,.031,.038),(2.12,.027,.033),(2.22,.023,.028),(2.36,.020,.024),(2.48,.019,.023),(2.54,.022,.026)]
+verts=[]
+for z,rx,ry in profile:
+ for i in range(16):
+  a=i*math.tau/16;verts.append((-3.4+rx*math.cos(a),-.1+ry*math.sin(a)+.014*math.sin((z-2.06)*5),z))
+faces=[]
+for j in range(len(profile)-1):
+ for i in range(16):faces.append((j*16+i,j*16+(i+1)%16,(j+1)*16+(i+1)%16,(j+1)*16+i))
+faces.extend([tuple(reversed(range(16))),tuple(range((len(profile)-1)*16,len(profile)*16))]);mesh=bpy.data.meshes.new('Hammer grip');mesh.from_pydata(verts,[],faces);mesh.update();o=bpy.data.objects.new('Warm shaped hammer handle',mesh);bpy.context.collection.objects.link(o);assign(o,HANDLE)
+for f in mesh.polygons:f.use_smooth=True
+# Two tapered flat claws bend down from the head, with a real split between them.
+for x in [-3.433,-3.367]:
+ sections=[(-.025,2.57,.025,.021),(.025,2.56,.022,.016),(.075,2.53,.017,.011),(.11,2.49,.011,.004)]
+ v=[]
+ for y,z,width,thick in sections:v.extend([(x-width/2,y,z-thick/2),(x+width/2,y,z-thick/2),(x+width/2,y,z+thick/2),(x-width/2,y,z+thick/2)])
+ f=[(3,2,1,0),(12,13,14,15)]
+ for j in range(3):
+  for i in range(4):f.append((j*4+i,j*4+(i+1)%4,(j+1)*4+(i+1)%4,(j+1)*4+i))
+ mesh=bpy.data.meshes.new('Forged claw');mesh.from_pydata(v,[],f);mesh.update();o=bpy.data.objects.new('Warm tapered hammer claw',mesh);bpy.context.collection.objects.link(o);assign(o,STEEL);mod=o.modifiers.new('Soft forged edge','BEVEL');mod.width=.003;mod.segments=2
+# A faceplate and recessed red/black output sockets make the PSU read as an instrument.
+box('PSU inset front panel',(2.917,-.1,1.77),(.006,.38,.32),FORGED,.008)
+RED=material('Warm terminal red',(.35,.045,.025),rough=.6)
+for idx,yy in enumerate([0,-.2]):
+ o=bpy.data.objects.get('PSU output socket'+('' if idx==0 else '.001'))
+ if o:assign(o,RED if idx==0 else DARK)
+ bpy.ops.mesh.primitive_torus_add(major_radius=.015,minor_radius=.003,major_segments=16,minor_segments=6,location=(2.894,yy,1.605),rotation=(0,1.5708,0));assign(bpy.context.object,STEEL);bpy.context.object.name='Warm PSU terminal rim'
+ bpy.ops.mesh.primitive_cylinder_add(vertices=16,radius=.011,depth=.002,location=(2.891,yy,1.605),rotation=(0,1.5708,0));assign(bpy.context.object,DARK);bpy.context.object.name='Warm PSU terminal well'
 
+# Runtime printer assembly supplies consistent layers and a coupled XY gantry.
+for o in bpy.context.scene.objects:
+ if o.name.startswith(('Printed ribbed prototype','Visible printed layers','Printer X axis')):o.hide_render=True
 # Existing interactive anchors for the computer, CNC and printer remain fixed.
 
 assert not bpy.data.objects['Main workspace monitor active screen'].hide_render

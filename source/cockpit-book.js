@@ -61,7 +61,7 @@ export function createProjectBook(scene){
  // ---- Pages ----
  const PX=2048,PY=Math.round(2048*pageD/pageW),S=PX/1200,LH=PY/S;     // logical page is 1200 × LH
  const canvas=()=>make(PX,PY);
- const leftCanvas=canvas(),rightCanvas=canvas(),leftTexture=texture(leftCanvas),rightTexture=texture(rightCanvas);
+ const leftCanvas=make(1,1),rightCanvas=make(1,1),leftTexture=texture(leftCanvas),rightTexture=texture(rightCanvas);
  function sheet(map,parent,x,y,back=false){const o=new THREE.Mesh(new THREE.PlaneGeometry(pageW,pageD),new THREE.MeshBasicMaterial({map,color:'#e6dccb',side:THREE.FrontSide,toneMapped:false}));o.position.set(x,y,0);o.rotation.x=-Math.PI/2;if(back)o.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,0,1),Math.PI));o.receiveShadow=true;parent.add(o);return o;}
  const right=sheet(rightTexture,book,-W/2+pageW/2+.006,blockTop+.0008);
 
@@ -84,13 +84,13 @@ export function createProjectBook(scene){
  const titlePlane=new THREE.Mesh(new THREE.PlaneGeometry(W,D),titleMat);titlePlane.rotation.x=-Math.PI/2;titlePlane.position.set(W/2-.004,T+.0018,0);hinge.add(titlePlane);
  const left=sheet(leftTexture,hinge,pageW/2+.002,.0007,true);
 
- const flip=new THREE.Group();flip.position.set(-W/2+.004,blockTop+.002,0);book.add(flip);const frontC=canvas(),backC=canvas(),frontT=texture(frontC),backT=texture(backC);const frontSheet=sheet(frontT,flip,pageW/2,.0006),backSheet=sheet(backT,flip,pageW/2,-.0006,true);flip.visible=false;
+ const flip=new THREE.Group();flip.position.set(-W/2+.004,blockTop+.002,0);book.add(flip);const frontC=make(1,1),backC=make(1,1),frontT=texture(frontC),backT=texture(backC);const frontSheet=sheet(frontT,flip,pageW/2,.0006),backSheet=sheet(backT,flip,pageW/2,-.0006,true);flip.visible=false;
  frontSheet.material.side=backSheet.material.side=THREE.FrontSide;
 
  const cache=new Map();function photo(src){if(!src)return Promise.resolve(null);if(!cache.has(src))cache.set(src,new Promise(resolve=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>resolve(null);im.src=src;}));return cache.get(src);}
  (window.PROJECTS||[]).filter(p=>p.group==='wood').forEach(p=>photo(p.photos?.[0]?.src));
  let pending=false,open=false,requested=false,ready=false,serial=0,opening=Infinity,index=0,turn=null;
- const copy=(from,to,tex)=>{const c=to.getContext('2d');c.clearRect(0,0,PX,PY);c.drawImage(from,0,0);tex.needsUpdate=true;};
+ const copy=(from,to,tex)=>{if(to.width!==PX||to.height!==PY){tex.dispose();to.width=PX;to.height=PY;}const c=to.getContext('2d');c.clearRect(0,0,PX,PY);c.drawImage(from,0,0);tex.needsUpdate=true;};
  function wrap(c,text,x,y,max,size,font='Georgia,serif',lead=1.42){c.font=size+'px '+font;let line='';for(const word of String(text||'').split(/\s+/)){const next=line+word+' ';if(c.measureText(next).width>max&&line){c.fillText(line,x,y);y+=size*lead;line=word+' ';}else line=next;}c.fillText(line,x,y);return y+size*lead;}
  // Paper with fine grain and a shaded gutter toward the spine.
  function paper(c,gutterLeft){c.fillStyle='#efe4cb';c.fillRect(0,0,1200,LH);
@@ -114,7 +114,7 @@ export function createProjectBook(scene){
   b.fillStyle='#45412f';wrap(b,String(p.tech||'').replaceAll('·',' · '),110,y+90,960,28,'Georgia,serif',1.5);
   return result;}
  function setBook(value,p,n=0,total=1,animate=false){
- if(!value){pending=false;serial++;open=false;requested=false;ready=false;opening=Infinity;hinge.rotation.z=0;spine.visible=true;flip.visible=false;turn=null;return;}
+ if(!value){for(const [c,t] of [[leftCanvas,leftTexture],[rightCanvas,rightTexture],[frontC,frontT],[backC,backT]]){if(c.width>1){t.dispose();c.width=c.height=1;t.needsUpdate=true;}}pending=false;serial++;open=false;requested=false;ready=false;opening=Infinity;hinge.rotation.z=0;spine.visible=true;flip.visible=false;turn=null;return;}
  if(!p)return;const first=!open;open=true;const token=++serial;pending=true;
  draw(p,n).then(next=>{if(token!==serial)return;pending=false;if(first||!animate){copy(next[0],leftCanvas,leftTexture);copy(next[1],rightCanvas,rightTexture);index=n;ready=true;if(requested&&opening===Infinity)opening=performance.now();return;}
  const dir=n>index?1:-1;copy(dir===1?rightCanvas:leftCanvas,frontC,frontT);copy(dir===1?next[0]:next[1],backC,backT);

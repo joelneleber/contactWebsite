@@ -16,4 +16,4 @@ The original Blender file stays unchanged. The derived editable file is `source/
 
 Run `python3 source/preview.py` and open http://127.0.0.1:49312/?mode=3d#room. This local-only server reloads pages when the packaged model, bundle or CSS changes. Production HTML has no reload script.
 
-Root HTML/CSS/entry code matches the current source workshop shell. Public project data and contact assets are retained. The site has not been deployed.
+Root HTML/CSS/entry code matches the current source workshop shell. Public project data and contact assets are retained. Production is published from the master branch through GitHub Pages at https://joelneleber.com/.

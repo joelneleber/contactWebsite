@@ -1,5 +1,6 @@
 // Drawing runs independently of model parsing, texture uploads and shader compilation.
 let canvas,ctx,cache,cacheCtx,screen=[],total=0,W=0,H=0,dpr=1,copyBox=null,loadingView='room',cachedUpTo=0;
+let progress=0;
 let target=0,shown=0,last=0,calm=false,running=false,frame=0,started=0,lastReport=0,previous=null,swapStarted=0,grid=null,blend=null;
 self.onmessage=({data:d})=>{
  if(d.type==='init'){canvas=d.canvas;ctx=canvas.getContext('2d');calm=d.calm;}
@@ -21,9 +22,13 @@ function tick(now){
  const elapsed=(now-started)/1000;
  const speed=.22*Math.min(1,elapsed/.3);
  shown=calm?target:Math.min(.99,shown+speed*dt*Math.min(1,(1-shown)/.08));
+ // Limit the meter's catch-up speed rather than snapping to new download targets.
+ progress=calm?target:Math.min(target,progress+Math.min(.55,Math.max(.035,(target-progress)*3))*dt);
+ if(target===1&&1-progress<.001)progress=1;
  draw(shown);
  if(previous){const mix=Math.min(1,(now-swapStarted)/350),g=blend.getContext('2d');g.clearRect(0,0,canvas.width,canvas.height);g.drawImage(canvas,0,0);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1-mix;ctx.drawImage(previous,0,0);ctx.globalAlpha=mix;ctx.drawImage(blend,0,0);ctx.globalAlpha=1;if(mix===1){previous=null;blend=null;}}
- if(now-lastReport>=100){self.postMessage({shown});lastReport=now;}
+ paintProgress();
+ if(now-lastReport>=100){self.postMessage({shown,progress});lastReport=now;}
  frame=requestAnimationFrame(tick);
 }
 
@@ -41,3 +46,16 @@ function tick(now){
   // Draw the active stroke without a glowing dot teleporting between objects.
   const active=screen[cachedUpTo];if(active&&p<1)stroke(ctx,active,goal-active.start);
  }
+
+function paintProgress(){
+ if(!copyBox)return;
+ const {x,y,w,h}=copyBox,barW=w*.72,barH=Math.max(4,Math.min(8,h*.025));
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalAlpha=1;
+ ctx.clearRect(x+3,y+3,w-6,h-6);
+ ctx.fillStyle='#f3e6c8';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.font=`500 ${Math.max(22,Math.min(64,w*.15))}px monospace`;
+ ctx.fillText((progress*100).toFixed(1)+'%',x+w/2,y+h*.43);
+ const bx=x+(w-barW)/2,by=y+h*.61;
+ ctx.fillStyle='#e9d6a826';ctx.fillRect(bx,by,barW,barH);
+ ctx.fillStyle='#e4c68f';ctx.fillRect(bx,by,barW*progress,barH);
+}

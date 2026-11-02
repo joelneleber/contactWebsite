@@ -16,23 +16,20 @@ window.__load=(()=>{const done={};let finished=null,shown=0,stepStart=performanc
 // Blueprint: curated hand-drawn contours of the room, packed into BLUEPRINT by source/scripts/sketch-blueprint.py,
 // drawn back to front and projected with the same camera the room view uses.
 const BLUEPRINT='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';
-(()=>{const loading=document.getElementById('loading'),canvas=document.getElementById('bp-canvas'),quip=document.getElementById('load-quip'),pct=document.getElementById('load-pct');if(!loading||!canvas)return;
+(()=>{const loading=document.getElementById('loading'),canvas=document.getElementById('bp-canvas'),pct=document.getElementById('load-pct');if(!loading||!canvas)return;
  const sketchViews=Object.fromEntries(Object.entries(views).map(([key,v])=>[key,{...v,title:v.label.split('/')[0].trim()}]));
  let loadingView='room',replayProgress=null;
- function selectView(){loadingView=Object.hasOwn(sketchViews,location.hash.slice(1).split('/')[0])?location.hash.slice(1).split('/')[0]:'room';loading.dataset.view=loadingView;loadDetailedSketch(loadingView);const view=sketchViews[loadingView];loading.querySelector('.eyebrow').textContent=view?view.title:'HEY, I’M JOEY.';loading.querySelector('.about').textContent=view?'Pull up a stool. Getting this corner of the workshop ready…':'Software engineer. Tinkerer. Usually making something. Welcome to my little world—pull up a stool and have a look around.';}
+ function selectView(){loadingView=Object.hasOwn(sketchViews,location.hash.slice(1).split('/')[0])?location.hash.slice(1).split('/')[0]:'room';loading.dataset.view=loadingView;loadDetailedSketch(loadingView);}
  selectView();
  const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let sketchWorker=null;
  if(canvas.transferControlToOffscreen&&window.Worker){try{
-  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=2',import.meta.url));
+  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=3',import.meta.url));
   const offscreen=canvas.transferControlToOffscreen();sketchWorker.postMessage({type:'init',canvas:offscreen,calm:calm||new URLSearchParams(location.search).get('loader-preview')==='complete'},[offscreen]);
-  sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);};
+  sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);loading.dataset.meterProgress=data.progress.toFixed(4);if(pct)pct.textContent=(data.progress*100).toFixed(1);};
  }catch(error){sketchWorker?.terminate();sketchWorker=null;}}
  const ctx=sketchWorker?null:canvas.getContext('2d');
  loading.dataset.sketchRenderer=sketchWorker?'worker':'main';
- // Captions rotate every couple of seconds; the first is fixed, the rest shuffle without repeats.
- const lines=['Shhh. Kali is asleep under the desk…','“ajsdofhasuidgnsdlkgnasld” — a message from Mango','Kali is twitching under the desk. Big dream.','Mango is sitting on the keyboard again…','Kali’s paws are running. Winning, probably.','“jjjjjjjjjjjjjjjjjjjjjjjj” — Mango, again','Kali’s tail just thumped twice. Very good dream.','Moving Mango off the warm laptop…','Mango knocked a screw off the bench. Finding it…','Kali heard the treat bag. False alarm.','Mango would like to know if you brought snacks','“;;;;;;;;;;;;;;;;l” — Mango has notes','Kali is snoring. It’s fine. It’s cute.','Mango is supervising. Closely.','Sweeping up the sawdust…','Warming up the soldering iron…','Counting resistors (again)…'];
- const deck=[];let lastSwap=0;const nextLine=()=>{if(!deck.length)deck.push(...lines.slice(1).sort(()=>Math.random()-.5));return deck.pop();};
  let polys=null,monitorEnd=.08,screen=[],total=0,cache=null,cacheCtx=null,cachedUpTo=0,cachedLen=0,W=0,H=0,dpr=1,copyBox=null;
  function loadDetailedSketch(view){fetch('assets/cockpit/sketches/'+view+'.json?v=8').then(r=>{if(!r.ok)throw new Error('Sketch unavailable');return r.json();}).then(data=>{if(view!==loadingView||loading.hidden)return;loading.dataset.sketch='detailed';decodeBlueprint(data.packed,100);layout();draw(replayProgress??window.__load?.shown??0);}).catch(()=>{});}
  // Decode the built-in blueprint (source/scripts/sketch-blueprint.py): per stroke a point count, then
@@ -95,12 +92,12 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
   ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.drawImage(cache,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);if(copyBox)ctx.clearRect(copyBox.x+3,copyBox.y+3,copyBox.w-6,copyBox.h-6);
   // the stroke being drawn right now, with a warm pen tip
   const s=screen[cachedUpTo];if(s&&p<1){style(ctx);const tip=stroke(ctx,s,goal-s.start);ctx.globalAlpha=1;ctx.fillStyle='#f0b850';ctx.shadowColor='#f0b850';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(tip[0],tip[1],2.6,0,7);ctx.fill();ctx.shadowBlur=0;}}
- function caption(p){loading.querySelector('.loader-copy')?.classList.toggle('on',p>=Math.min(.12,monitorEnd*.6)||!polys);pct&&(pct.textContent=Math.floor(p*100));const now=performance.now();if(!lastSwap)lastSwap=now;if(quip&&!calm&&now-lastSwap>2400&&p<.99){lastSwap=now;quip.classList.add('fading');setTimeout(()=>{quip.textContent=nextLine();quip.classList.remove('fading');},300);}}
+ function caption(p){loading.querySelector('.loader-copy')?.classList.add('on');if(!sketchWorker){if(pct)pct.textContent=(p*100).toFixed(1);document.getElementById('load-progress').style.transform=`scaleX(${p})`;}}
  addEventListener('resize',()=>{if(loading.hidden)return;layout();draw(window.__load?.shown||0);});addEventListener('hashchange',()=>{if(loading.hidden)return;selectView();layout();draw(window.__load?.shown||0);});layout();
  let finishing=false;const pace={last:0,start:0,speed:0,prevF:0,recent:0};
- window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();
+ window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();sketchWorker?.postMessage({type:'progress',p:1});
   // Let the percentage and drawing finish, then fade; tell the room once the loader is gone.
-  const t0=performance.now();const wait=()=>{if(window.__load.shown>=.999||performance.now()-t0>900){loading.classList.add('done');setTimeout(()=>{loading.hidden=true;sketchWorker?.terminate();loading.classList.remove('done');window.__load._resolve?.();},calm?0:950);}else requestAnimationFrame(wait);};wait();};
+  const t0=performance.now();const wait=()=>{if((sketchWorker?Number(loading.dataset.meterProgress||0):window.__load.shown)>=.999||performance.now()-t0>2600){loading.classList.add('done');setTimeout(()=>{loading.hidden=true;sketchWorker?.terminate();loading.classList.remove('done');window.__load._resolve?.();},calm?0:950);}else requestAnimationFrame(wait);};wait();};
  let lastDrawn=-1;
  function tick(now){if(loading.hidden)return;requestAnimationFrame(tick);if(!document.body.classList.contains('workshop-started'))return;
   const L=window.__load,f=L.target(now),dt=Math.min(.1,(now-(pace.last||now))/1000);pace.last=now;pace.start||=now;let v=L.shown;
@@ -127,10 +124,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-pencil';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-meter';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-pencil');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-meter');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

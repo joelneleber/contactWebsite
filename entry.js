@@ -24,8 +24,8 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
  const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let sketchWorker=null;
  if(canvas.transferControlToOffscreen&&window.Worker){try{
-  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js',import.meta.url));
-  const offscreen=canvas.transferControlToOffscreen();sketchWorker.postMessage({type:'init',canvas:offscreen,calm},[offscreen]);
+  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=2',import.meta.url));
+  const offscreen=canvas.transferControlToOffscreen();sketchWorker.postMessage({type:'init',canvas:offscreen,calm:calm||new URLSearchParams(location.search).get('loader-preview')==='complete'},[offscreen]);
   sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);};
  }catch(error){sketchWorker?.terminate();sketchWorker=null;}}
  const ctx=sketchWorker?null:canvas.getContext('2d');
@@ -127,10 +127,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-smooth';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-pencil';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-smooth');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-pencil');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

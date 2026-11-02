@@ -34,3 +34,8 @@ html.autostart #entry{display:none!important}
 html.autostart body:not(.workshop-started)>#loading.loader{display:flex!important}
 #loading.loader .howto{margin:.2em 0 0;font:.62em/1.4 ui-monospace,monospace;color:#c9b88f;letter-spacing:.02em}
 #loading.loader .howto .narrow{display:none}@media(max-width:900px){#loading.loader .howto .wide{display:none}#loading.loader .howto .narrow{display:inline}}
+
+/* First-paint activity stays on the compositor while the scene initializes. */
+#loading.loader::after{content:"";position:absolute;left:0;top:0;width:32%;height:2px;background:linear-gradient(90deg,transparent,#ead4a1,transparent);transform:translateX(-100%);animation:loading-sweep 1.8s linear infinite;will-change:transform}
+@keyframes loading-sweep{to{transform:translateX(413%)}}
+@media(prefers-reduced-motion:reduce){#loading.loader::after{animation:none;transform:none;width:100%;opacity:.5}}

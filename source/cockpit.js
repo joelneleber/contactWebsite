@@ -241,7 +241,7 @@ $('#motion').onclick=()=>{state.motion=!state.motion;updateMotion();if(!state.mo
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>{state.motion=!e.matches;updateMotion();});updateMotion();
 let markerPose='';
 function projectMarkers(){
- if(!camera)return;const key=[state.view,state.transitioning,innerWidth,innerHeight,...camera.matrixWorld.elements,...camera.projectionMatrix.elements].join(',');if(key===markerPose)return;markerPose=key;const root=$('#markers');root.style.opacity=state.transitioning?'0':'1';root.style.pointerEvents=state.transitioning?'none':'';
+ if(!camera)return;if(state.transitioning){const root=$('#markers');root.style.opacity='0';root.style.pointerEvents='none';markerPose='';return;}const key=[state.view,state.transitioning,innerWidth,innerHeight,...camera.matrixWorld.elements,...camera.projectionMatrix.elements].join(',');if(key===markerPose)return;markerPose=key;const root=$('#markers');root.style.opacity=state.transitioning?'0':'1';root.style.pointerEvents=state.transitioning?'none':'';
  let svg=$('#marker-leaders');if(!svg){svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.id='marker-leaders';root.prepend(svg);}svg.setAttribute('viewBox',`0 0 ${innerWidth} ${innerHeight}`);let lines='';const placed=[];
  const offsets={computer:[0,-25],wood:[-25,-45],lab:[75,-65],sign:[0,75],book:[0,65],lamp:[-75,-85],cnc:[20,-70],scope:[-55,-75],printer:[85,-115],books:[0,-45]};
  $$('#markers [data-point]').forEach(b=>{const p=new THREE.Vector3(...b.dataset.point.split(',').map(Number)).project(camera);b.hidden=!(b.dataset.context||'room').split(' ').includes(state.view)||p.z>1||Math.abs(p.x)>(mobile()?4:1.15);if(b.hidden)return;
@@ -286,7 +286,7 @@ function render(t){
  }
  const monitor=screenMesh?.material.map;const bootBusy=monitor?.userData.boot?.update(t,state.motion,!!monitor.userData.exactDesktop);
  if(!transition)look.copy(baseLook);
- if(!transition)camera.lookAt(look);details?.update(t,state.motion);renderer.render(scene,camera);projectMarkers();if(state.view==='book')layoutBookUI();if(transition||bootBusy||details?.inspect().bookBusy)requestFrame();
+ if(!transition)camera.lookAt(look);details?.update(t,state.motion);renderer.render(scene,camera);projectMarkers();if(state.view==='book')layoutBookUI();if(transition||bootBusy||details?.bookBusy)requestFrame();
 }
 function desktopTexture(){
  // Capture at the monitor's widescreen aspect, independent of the browser window.
@@ -327,12 +327,22 @@ async function initRoom(){
   stage('details-start');details=addDetails(scene,model,camera);window.__load?.set('setup',.4);await breathe();
   // Wait for the pets and the sign so nothing pops in after the fade (but never forever).
   stage('pending-start');await Promise.race([Promise.all(window.__roomPending||[]),new Promise(r=>setTimeout(r,6000))]);window.__load?.set('setup',.6);await breathe();
-  // Build GPU programs with real draws behind the loader: reveal a few objects at a time and draw
-  // them, so each program is made with exactly the lights and shadows the room uses, in small steps.
-  stage('compile-start');{const all=[],reps=[],seen=new Set();scene.traverse(o=>{if(!(o.isMesh||o.isLine||o.isPoints||o.isSprite))return;all.push([o,o.visible]);const mats=Array.isArray(o.material)?o.material:o.material?[o.material]:[];if(o.visible&&mats.some(m=>!seen.has(m))){mats.forEach(m=>seen.add(m));reps.push(o);}});
-   const hideAll=()=>all.forEach(([o])=>o.visible=false);hideAll();
-   for(let i=0;i<reps.length;i+=4){for(const o of reps.slice(i,i+4)){o.visible=true;for(let p=o.parent;p&&p!==scene;p=p.parent)p.visible=p.visible;}try{renderer.render(scene,camera);}catch(e){}for(const o of reps.slice(i,i+4))o.visible=false;window.__load?.set('setup',.75+.15*Math.min(1,(i+4)/reps.length));await breathe();}
-   all.forEach(([o,v])=>o.visible=v);}
+  // Compile every material, including objects outside the initial camera frustum.
+  // Then upload every visible geometry/texture in bounded batches behind the loader.
+  // Warming one object per material misses the other objects' first-use GPU uploads.
+  stage('compile-start');await renderer.compileAsync(scene,camera);await breathe();
+  {
+   const all=[];scene.traverseVisible(o=>{if(o.isMesh||o.isLine||o.isPoints||o.isSprite)all.push([o,o.visible,o.frustumCulled]);});
+   all.forEach(([o])=>o.visible=false);
+   try{
+    for(let i=0;i<all.length;i+=8){
+     const batch=all.slice(i,i+8);batch.forEach(([o])=>{o.visible=true;o.frustumCulled=false;});
+     renderer.render(scene,camera);
+     batch.forEach(([o])=>o.visible=false);
+     window.__load?.set('setup',.65+.25*Math.min(1,(i+8)/all.length));await breathe();
+    }
+   }finally{all.forEach(([o,visible,culled])=>{o.visible=visible;o.frustumCulled=culled;});}
+  }
   window.__load?.set('setup',.9);await breathe();
   stage('compiled');state.ready=true;const initial=location.hash.slice(1).split('/')[0];if(views[initial]&&initial!==state.view)state.view=initial;go(state.view,{preserveHash:true});
   // Start already at the first view (no camera move behind the loader).
@@ -345,7 +355,7 @@ async function initRoom(){
 
  }catch(error){console.error('Command center could not load:',error);state.failed=true;$('#load-message').textContent='The 3D room could not load. Use the lightweight site below to explore every project.';$('#load-progress').style.width='100%';if(state.view==='computer'){$('#loading').hidden=true;$('#computer').hidden=false;layoutDesktop();}}
 }
-function onResize(){markerPose='';if(screenMesh){const old=screenMesh.material.map;screenMesh.material.map=desktopTexture();old?.dispose();}if(renderer){renderer.setSize(viewW(),viewH(),false);camera.aspect=viewW()/viewH();frameStation();if(state.ready){const d=destination(state.view);camera.position.copy(d.p);look.copy(d.t);baseLook.copy(d.t);camera.lookAt(look);transition=null;state.transitioning=false;$('#computer').hidden=state.view!=='computer';}}layoutDesktop();requestFrame();}
+function onResize(){markerPose='';if(renderer){renderer.setSize(viewW(),viewH(),false);camera.aspect=viewW()/viewH();frameStation();if(state.ready){const d=destination(state.view);camera.position.copy(d.p);look.copy(d.t);baseLook.copy(d.t);camera.lookAt(look);transition=null;state.transitioning=false;$('#computer').hidden=state.view!=='computer';}}layoutDesktop();requestFrame();}
 // Safari's toolbars resize the viewport while scrolling or rotating; follow every change.
 let resizeQueued=0;const queueResize=()=>{cancelAnimationFrame(resizeQueued);resizeQueued=requestAnimationFrame(onResize);};addEventListener('resize',queueResize);addEventListener('orientationchange',queueResize);visualViewport?.addEventListener('resize',queueResize);
 window.cockpit={get stages(){return stages;},get debug(){return {scene,camera,renderer,model,draw(){renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera);}};},get details(){return details?.inspect();},get cameraPose(){return camera?{position:camera.position.toArray(),target:look.toArray(),fov:camera.fov,quaternion:camera.quaternion.toArray()}:null;},get ready(){return state.ready;},get view(){return state.view;},get transitioning(){return state.transitioning;},get monitorBootDone(){return !!screenMesh?.material.map?.userData.boot?.done;},get desktopSnapshotError(){return screenMesh?.material.map?.userData.previewError||null;},get desktopSnapshotReady(){return !!screenMesh?.material.map?.userData.exactDesktop;},get programCount(){return softwareProjects.length;},get recycleCount(){return archivedIds.size;},get openPrograms(){return [...state.open.keys()];},get renderInfo(){return renderer?{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles}:null;},get failed(){return state.failed;}};
@@ -358,7 +368,7 @@ let bookPage=0;
 // swipe on touch screens, or use the arrow keys. Arrows, the "Explore" button and a page pill are
 // placed around the book on screen each frame.
 const bookEntries=()=>projects.filter(p=>p.group==='wood');
-function turnBook(dir){const n=bookEntries().length,next=bookPage+dir;if(next<0||next>=n||details?.inspect().bookBusy)return;bookPage=next;showBook(true);}
+function turnBook(dir){const n=bookEntries().length,next=bookPage+dir;if(next<0||next>=n||details?.bookBusy)return;bookPage=next;showBook(true);}
 function bookUI(){let ui=$('#book-ui');if(ui)return ui;ui=document.createElement('div');ui.id='book-ui';ui.hidden=true;
  ui.innerHTML=`<button class="book-zone prev" aria-label="Previous page"></button><button class="book-zone next" aria-label="Next page"></button>
  <button class="book-arrow prev" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>

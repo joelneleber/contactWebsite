@@ -1,6 +1,6 @@
 // Drawing runs independently of model parsing, texture uploads and shader compilation.
 let canvas,ctx,cache,cacheCtx,screen=[],total=0,W=0,H=0,dpr=1,copyBox=null,loadingView='room',cachedUpTo=0;
-let progress=0;
+let progress=0,finishStart=null,finishFrom=0;
 let target=0,shown=0,last=0,calm=false,running=false,frame=0,started=0,lastReport=0,previous=null,swapStarted=0,grid=null,blend=null;
 self.onmessage=({data:d})=>{
  if(d.type==='init'){canvas=d.canvas;ctx=canvas.getContext('2d');calm=d.calm;}
@@ -12,6 +12,7 @@ self.onmessage=({data:d})=>{
   if(previous){ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(previous,0,0);}else draw(shown);
  }
  if(d.type==='progress'){target=Math.max(target,d.p);if(!running){running=true;last=0;frame=requestAnimationFrame(tick);}}
+ if(d.type==='finish'){finishStart=performance.now();finishFrom=shown;target=1;}
  if(d.type==='stop'){running=false;cancelAnimationFrame(frame);}
 };
 function tick(now){
@@ -20,15 +21,16 @@ function tick(now){
  // Drawing is decorative, not the download meter. Keep a steady pencil speed
  // through progress jumps and main-thread stalls; readiness controls the fade.
  const elapsed=(now-started)/1000;
- const speed=.22*Math.min(1,elapsed/.3);
+ const speed=.38*Math.min(1,elapsed/.25);
  shown=calm?target:Math.min(.99,shown+speed*dt*Math.min(1,(1-shown)/.08));
+ if(finishStart!==null){const k=Math.min(1,(now-finishStart)/200);shown=finishFrom+(1-finishFrom)*k;}
  // Limit the meter's catch-up speed rather than snapping to new download targets.
  progress=calm?target:Math.min(target,progress+Math.min(.55,Math.max(.035,(target-progress)*3))*dt);
  if(target===1&&1-progress<.001)progress=1;
  draw(shown);
  if(previous){const mix=Math.min(1,(now-swapStarted)/350),g=blend.getContext('2d');g.clearRect(0,0,canvas.width,canvas.height);g.drawImage(canvas,0,0);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1-mix;ctx.drawImage(previous,0,0);ctx.globalAlpha=mix;ctx.drawImage(blend,0,0);ctx.globalAlpha=1;if(mix===1){previous=null;blend=null;}}
 
- if(now-lastReport>=100){self.postMessage({shown,progress});lastReport=now;}
+ if(now-lastReport>=100){self.postMessage({shown,progress,strokes:cachedUpTo});lastReport=now;}
  frame=requestAnimationFrame(tick);
 }
 

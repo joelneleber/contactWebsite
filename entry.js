@@ -24,9 +24,9 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
  const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let sketchWorker=null;
  if(canvas.transferControlToOffscreen&&window.Worker){try{
-  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=3',import.meta.url));
+  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=4',import.meta.url));
   const offscreen=canvas.transferControlToOffscreen();sketchWorker.postMessage({type:'init',canvas:offscreen,calm:calm||new URLSearchParams(location.search).get('loader-preview')==='complete'},[offscreen]);
-  sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);loading.dataset.meterProgress=data.progress.toFixed(4);if(pct)pct.textContent=(data.progress*100).toFixed(1);};
+  sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);loading.dataset.meterProgress=data.progress.toFixed(4);loading.querySelector('.load-track')?.setAttribute('aria-valuenow',Math.round(data.progress*100));};
  }catch(error){sketchWorker?.terminate();sketchWorker=null;}}
  const ctx=sketchWorker?null:canvas.getContext('2d');
  loading.dataset.sketchRenderer=sketchWorker?'worker':'main';
@@ -92,7 +92,7 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
   ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.drawImage(cache,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);if(copyBox)ctx.clearRect(copyBox.x+3,copyBox.y+3,copyBox.w-6,copyBox.h-6);
   // the stroke being drawn right now, with a warm pen tip
   const s=screen[cachedUpTo];if(s&&p<1){style(ctx);const tip=stroke(ctx,s,goal-s.start);ctx.globalAlpha=1;ctx.fillStyle='#f0b850';ctx.shadowColor='#f0b850';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(tip[0],tip[1],2.6,0,7);ctx.fill();ctx.shadowBlur=0;}}
- function caption(p){loading.querySelector('.loader-copy')?.classList.add('on');if(!sketchWorker){if(pct)pct.textContent=(p*100).toFixed(1);document.getElementById('load-progress').style.transform=`scaleX(${p})`;}}
+ function caption(p){loading.querySelector('.loader-copy')?.classList.add('on');if(!sketchWorker){loading.querySelector('.load-track')?.setAttribute('aria-valuenow',Math.round(p*100));document.getElementById('load-progress').style.clipPath=`inset(0 ${(1-p)*100}% 0 0)`;}}
  addEventListener('resize',()=>{if(loading.hidden)return;layout();draw(window.__load?.shown||0);});addEventListener('hashchange',()=>{if(loading.hidden)return;selectView();layout();draw(window.__load?.shown||0);});layout();
  let finishing=false;const pace={last:0,start:0,speed:0,prevF:0,recent:0};
  window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();sketchWorker?.postMessage({type:'progress',p:1});
@@ -124,10 +124,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-transitions';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-hatching';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-transitions');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-hatching');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

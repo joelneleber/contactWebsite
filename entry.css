@@ -46,3 +46,7 @@ html.autostart body:not(.workshop-started)>#loading.loader{display:flex!importan
 #loading.loader .load-track{display:block;width:100%;height:6px;background:#e9d6a826;overflow:hidden}
 #loading.loader #load-progress{display:block;width:100%;height:100%;background:#e4c68f;transform:scaleX(0);transform-origin:left;transition:transform .12s linear}
 #loading[data-sketch-renderer="worker"] .loader-copy{visibility:hidden}
+/* Fixed-size hatch strokes are revealed rather than stretched. */
+#loading.loader .load-pct{font-size:clamp(18px,3vw,42px)}
+#loading.loader .load-track{height:20px;border:1px solid #e4c68f;padding:2px}
+#loading.loader #load-progress{background:repeating-linear-gradient(135deg,transparent 0 5px,#e4c68f 5px 7px,transparent 7px 8px);transform:none;clip-path:inset(0 100% 0 0);transition:clip-path .12s linear}

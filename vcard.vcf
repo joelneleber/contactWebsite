@@ -3,6 +3,7 @@ VERSION:3.0
 PRODID:-//Apple Inc.//iPhone OS 14.6//EN
 N:Neleber;Joey;;;
 FN:Joey Neleber
+EMAIL;TYPE=INTERNET:joelneleber@gmail.com
 item1.EMAIL;type=INTERNET;type=pref:joeyneleber@gmail.com
 item1.X-ABLabel:personal
 item2.EMAIL;type=INTERNET:jan1024@wildcats.unh.edu

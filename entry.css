@@ -4,7 +4,7 @@ body:not(.workshop-started)>:not(#entry):not(script):not(noscript){display:none!
 
 /* Loading screen: a blueprint of the room, traced from the 3D model with the same camera,
    sketches itself in as the files download, then fades into the real room in the same spot. */
-#loading.loader{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:24px 24px max(56px,7vh);text-align:center;color:#f4e8cc;background:radial-gradient(ellipse at 50% 45%,#1c2b23 0%,#111b16 60%,#0b120f 100%);backdrop-filter:none;-webkit-backdrop-filter:none;font:16px/1.6 system-ui,sans-serif;transition:opacity .9s ease}
+#loading.loader{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:24px 24px max(56px,7vh);text-align:center;color:#f4e8cc;background:radial-gradient(ellipse at 50% 45%,#1c2b23 0%,#111b16 60%,#0b120f 100%);backdrop-filter:none;-webkit-backdrop-filter:none;font:16px/1.6 system-ui,sans-serif;transition:opacity .28s ease}
 #loading.loader[hidden]{display:none}
 #loading.loader.done{opacity:0;pointer-events:none}
 #bp-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -34,4 +34,3 @@ html.autostart #entry{display:none!important}
 html.autostart body:not(.workshop-started)>#loading.loader{display:flex!important}
 #loading.loader .howto{margin:.2em 0 0;font:.62em/1.4 ui-monospace,monospace;color:#c9b88f;letter-spacing:.02em}
 #loading.loader .howto .narrow{display:none}@media(max-width:900px){#loading.loader .howto .wide{display:none}#loading.loader .howto .narrow{display:inline}}
-

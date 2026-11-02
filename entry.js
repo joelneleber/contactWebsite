@@ -70,14 +70,14 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
     if(behind)rest.push(...outsidePolygon(pts,first[0].pts));else (pl.monitor?first:rest).push({pts,len});
    }}
   // Collapse nearby parallel bevels into a single contour in the actual viewport.
-  const kept=[],gap=Math.max(2.5,Math.min(5,W/350));
+  const kept=[],gap=Math.max(.8,Math.min(1.6,W/1000));
   for(const line of [...first,...rest].sort((a,b)=>b.len-a.len)){
-   const [ax,ay,bx,by]=line.pts;if(line.len<1.8||Math.max(...line.pts.filter((_,i)=>i%2===0))<0||Math.min(...line.pts.filter((_,i)=>i%2===0))>W||Math.max(...line.pts.filter((_,i)=>i%2))<0||Math.min(...line.pts.filter((_,i)=>i%2))>H)continue;
+   const [ax,ay,bx,by]=line.pts;if(line.len<1.0||Math.max(...line.pts.filter((_,i)=>i%2===0))<0||Math.min(...line.pts.filter((_,i)=>i%2===0))>W||Math.max(...line.pts.filter((_,i)=>i%2))<0||Math.min(...line.pts.filter((_,i)=>i%2))>H)continue;
    const dx=(bx-ax)/line.len,dy=(by-ay)/line.len;
    const duplicate=line.pts.length===4&&kept.some(k=>{if(k.pts.length!==4)return false;const [x,y,u,v]=k.pts,l=k.len,ex=(u-x)/l,ey=(v-y)/l;if(Math.abs(dx*ey-dy*ex)>.025)return false;
     if(Math.abs((ax-x)*ey-(ay-y)*ex)>gap||Math.abs((bx-x)*ey-(by-y)*ex)>gap)return false;
     const a=(ax-x)*ex+(ay-y)*ey,b=(bx-x)*ex+(by-y)*ey;return Math.max(0,Math.min(l,Math.max(a,b))-Math.max(0,Math.min(a,b)))>line.len*.55;
-   });if(!duplicate)kept.push(line);if(kept.length>=2800)break;
+   });if(!duplicate)kept.push(line);if(kept.length>=4500)break;
   }
   const chosen=new Set(kept);
   for(const s of [...first,...rest].filter(s=>chosen.has(s))){s.major=s.len>W*.045;s.start=total;screen.push(s);total+=s.len;}monitorEnd=(first.reduce((a,s)=>a+s.len,0)+(r?2*(r.w+r.h):0))/Math.max(1,total);
@@ -100,8 +100,9 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
  addEventListener('resize',()=>{if(loading.hidden)return;layout();draw(window.__load?.shown||0);});addEventListener('hashchange',()=>{if(loading.hidden)return;selectView();layout();draw(window.__load?.shown||0);});layout();
  let finishing=false;const pace={last:0,start:0,speed:0,prevF:0,recent:0};
  window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();sketchWorker?.postMessage({type:'progress',p:1});
-  // Let the drawing finish, then fade; tell the room once the loader is gone.
-  const t0=performance.now();const wait=()=>{if((sketchWorker?Number(loading.dataset.meterProgress||0):window.__load.shown)>=.999||performance.now()-t0>2600){loading.classList.add('done');setTimeout(()=>{loading.hidden=true;sketchWorker?.terminate();loading.classList.remove('done');window.__load._resolve?.();},calm?0:950);}else requestAnimationFrame(wait);};wait();};
+  // The scene has rendered and warmed its GPU resources; no hidden meter delay.
+  loading.classList.add('done');setTimeout(()=>{loading.hidden=true;sketchWorker?.terminate();loading.classList.remove('done');window.__load._resolve?.();},calm?0:280);};
+
  let lastDrawn=-1;
  function tick(now){if(loading.hidden)return;requestAnimationFrame(tick);if(!document.body.classList.contains('workshop-started'))return;
   const L=window.__load,f=L.target(now),dt=Math.min(.1,(now-(pace.last||now))/1000);pace.last=now;pace.start||=now;let v=L.shown;
@@ -128,10 +129,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-monitor-mask';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-sketch-detail';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-monitor-mask');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-sketch-detail');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

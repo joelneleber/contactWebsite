@@ -1,4 +1,4 @@
-import {orderSketch} from './source/sketch-order.js';
+import {orderSketch} from './source/sketch-order.js?v=descending';
 import {outsidePolygon} from './source/sketch-occlusion.js';
 import {views,viewPose} from './source/cockpit-views.js?v=back-level';
 // One progress figure for the whole load, weighted by what each step really downloads
@@ -130,10 +130,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-detail-reveal';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-descending-sketch';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-detail-reveal');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-descending-sketch');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

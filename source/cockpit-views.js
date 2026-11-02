@@ -4,14 +4,14 @@ export const views={
  scope:{p:[.7,2.05,.15],t:[3.05,1.78,-.72],label:'SIGNALS / electronics projects'},
  cnc:{p:[-.8,2.3,.35],t:[-2.72,1.55,-1.3],label:'CNC / digital fabrication'},
  book:{p:[-2.10,3.05,2.78],t:[-2.65,1.2,2.78],label:'WOODSHOP PROJECTS / turn a page'},
- room:{p:[0,2.6,5.2],t:[0,1.45,-1.2],label:'A room for all the things I make.'},
+ room:{p:[0,2.6,6.6],t:[0,1.45,-1.2],label:'A room for all the things I make.'},
  computer:{p:[0,2.02,.0],t:[0,2.02,-1.548],label:'SOFTWARE PROJECTS / open a program to explore it'},
- wood:{p:[.8,2.55,3.35],t:[-2.7,1.75,1.0],label:'WOODSHOP / CNC, craft, and things made by hand'},
- lab:{p:[-.8,2.55,3.35],t:[2.7,1.75,1.0],label:'ELECTRONICS LAB / from board to bench'},
+ wood:{p:[0,2.6,6.6],t:[-2.7,1.5,1.9],label:'WOODSHOP / CNC, craft, and things made by hand'},
+ lab:{p:[0,2.6,6.6],t:[2.7,1.5,1.9],label:'ELECTRONICS LAB / from board to bench'},
  printer:{p:[1.1,2.35,4.1],t:[3.05,1.65,3.1],label:'3D PRINTER / ideas into objects'},
  lamp:{p:[-1.7,1.95,1.7],t:[-3.13,1.4,.35],label:'THE LAMP / a wedding gift'}
 };
-export const phoneViews={room:{p:[0,2.35,3.6],t:[0,1.55,-1.2],fov:72},wood:{p:[.9,2.55,5.4],t:[-2.7,1.4,1.2],fov:72},lab:{p:[-.9,2.55,5.4],t:[2.7,1.4,1.2],fov:72}};
+export const phoneViews={room:{p:[0,2.35,5.8],t:[0,1.55,-1.2],fov:72},wood:{p:[.9,2.55,5.4],t:[-2.7,1.4,1.2],fov:72},lab:{p:[-.9,2.55,5.4],t:[2.7,1.4,1.2],fov:72}};
 export function viewPose(view,w,h){
  const aspect=w/h,mobile=w<=900,portrait=h>w,phone=mobile&&portrait,pose=views[view]||views.room,p=[...pose.p],t=[...pose.t];
  const baseFov=view==='computer'?38:43.8,widen=aspect<1.25?Math.min(2.4,1.25/aspect):Math.min(1,1.8/aspect);
@@ -26,7 +26,7 @@ export function viewPose(view,w,h){
  // Bench navigation stays at the room's eye height and never retreats behind it.
  // Framing uses the existing lens, without the old distance multiplier lifting the camera.
  if(['wood','lab'].includes(view)){
-  const room=viewPose('room',w,h);p[1]=room.p[1];p[2]=Math.min(p[2],room.p[2]);
+  const room=viewPose('room',w,h);p.splice(0,3,...room.p);
  }
  p[0]=Math.min(3.3,Math.max(-3.25,p[0]));p[2]=Math.min(p[2],7.6);p[1]=Math.min(p[1],3.6);
  const offY=phone&&!phoneViews[view]&&!['computer','book'].includes(view)?h*.26:0,offX=!mobile&&['sign','lamp','cnc','scope','printer','books'].includes(view)?w*.23:0;

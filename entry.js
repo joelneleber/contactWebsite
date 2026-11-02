@@ -24,11 +24,11 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
  function selectView(){loadingView=Object.hasOwn(sketchViews,location.hash.slice(1).split('/')[0])?location.hash.slice(1).split('/')[0]:'room';loading.dataset.view=loadingView;loadDetailedSketch(loadingView);}
  selectView();
  const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
- let sketchWorker=null;
+ let sketchWorker=null,finishDrawing=null;
  if(canvas.transferControlToOffscreen&&window.Worker){try{
-  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=6',import.meta.url));
+  sketchWorker=new Worker(new URL('./source/loading-sketch-worker.js?v=7',import.meta.url));
   const offscreen=canvas.transferControlToOffscreen();sketchWorker.postMessage({type:'init',canvas:offscreen,calm:calm||new URLSearchParams(location.search).get('loader-preview')==='complete'},[offscreen]);
-  sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);loading.dataset.drawnStrokes=String(data.strokes);loading.dataset.meterProgress=data.progress.toFixed(4);loading.querySelector('.load-track')?.setAttribute('aria-valuenow',Math.round(data.progress*100));};
+  sketchWorker.onmessage=({data})=>{loading.dataset.sketchProgress=data.shown.toFixed(4);loading.dataset.drawnStrokes=String(data.strokes);loading.dataset.meterProgress=data.progress.toFixed(4);if(data.complete)finishDrawing?.();};
  }catch(error){sketchWorker?.terminate();sketchWorker=null;}}
  const ctx=sketchWorker?null:canvas.getContext('2d');
  loading.dataset.sketchRenderer=sketchWorker?'worker':'main';
@@ -81,7 +81,7 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
    });if(!duplicate)kept.push(line);if(kept.length>=6500)break;
   }
   const chosen=new Set(kept);
-  for(const s of orderSketch([...first,...rest].filter(s=>chosen.has(s)),W)){s.major=s.len>W*.045;s.start=total;screen.push(s);total+=s.len;}monitorEnd=(first.reduce((a,s)=>a+s.len,0)+(r?2*(r.w+r.h):0))/Math.max(1,total);
+  for(const s of orderSketch([...first,...rest].filter(s=>chosen.has(s)),W)){s.major=s.len>W*.045;s.cost=Math.sqrt(s.len);s.start=total;screen.push(s);total+=s.cost;}monitorEnd=(first.reduce((a,s)=>a+s.len,0)+(r?2*(r.w+r.h):0))/Math.max(1,total);
   if(sketchWorker){sketchWorker.postMessage({type:'layout',screen,total,W,H,dpr,copyBox,loadingView});return;}
   cache=document.createElement('canvas');cache.width=canvas.width;cache.height=canvas.height;cacheCtx=cache.getContext('2d');cacheCtx.scale(dpr,dpr);style(cacheCtx);cachedUpTo=0;cachedLen=0;}
  function style(g){g.strokeStyle='#e9d6a8';g.globalAlpha=.62;g.lineWidth=.9;g.lineCap='round';g.lineJoin='round';}
@@ -94,15 +94,17 @@ const BLUEPRINT='COcCaKsCAIACANAFAAAA/wEACrsCmAGnAgC6AQD4BAAAALkBAPcEAAAEZ5gBpwI
   ctx.globalAlpha=1;ctx.strokeStyle='#e9d6a805';ctx.lineWidth=1;ctx.beginPath();for(let x=(W%48)/2;x<W;x+=48){ctx.moveTo(x,0);ctx.lineTo(x,H);}for(let y=(H%48)/2;y<H;y+=48){ctx.moveTo(0,y);ctx.lineTo(W,y);}ctx.stroke();
   if(loadingView==='computer'){ctx.save();ctx.beginPath();ctx.rect(0,0,W*Math.min(1,p*3),H*.29);ctx.clip();ctx.strokeStyle='#e9d6a8';ctx.lineWidth=.8;ctx.font=`${Math.min(72,W*.065)}px Georgia`;ctx.strokeText('Selected software.',W*.06,H*.26);ctx.restore();}
   if(!screen.length)return;const goal=p*total;
-  while(cachedUpTo<screen.length&&screen[cachedUpTo].start+screen[cachedUpTo].len<=goal){stroke(cacheCtx,screen[cachedUpTo],Infinity);cachedUpTo++;}
+  while(cachedUpTo<screen.length&&screen[cachedUpTo].start+screen[cachedUpTo].cost<=goal){stroke(cacheCtx,screen[cachedUpTo],Infinity);cachedUpTo++;}
   ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.drawImage(cache,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);if(copyBox)ctx.clearRect(copyBox.x+3,copyBox.y+3,copyBox.w-6,copyBox.h-6);
   // the stroke being drawn right now, with a warm pen tip
-  const s=screen[cachedUpTo];if(s&&p<1){style(ctx);const tip=stroke(ctx,s,goal-s.start);ctx.globalAlpha=1;ctx.fillStyle='#f0b850';ctx.shadowColor='#f0b850';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(tip[0],tip[1],2.6,0,7);ctx.fill();ctx.shadowBlur=0;}}
+  const s=screen[cachedUpTo];if(s&&p<1){style(ctx);const tip=stroke(ctx,s,s.len*(goal-s.start)/s.cost);ctx.globalAlpha=1;ctx.fillStyle='#f0b850';ctx.shadowColor='#f0b850';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(tip[0],tip[1],2.6,0,7);ctx.fill();ctx.shadowBlur=0;}}
  addEventListener('resize',()=>{if(loading.hidden)return;layout();draw(window.__load?.shown||0);});addEventListener('hashchange',()=>{if(loading.hidden)return;selectView();layout();draw(window.__load?.shown||0);});layout();
  let finishing=false;const pace={last:0,start:0,speed:0,prevF:0,recent:0};
- window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();sketchWorker?.postMessage({type:'finish'});
-  // The scene has rendered and warmed its GPU resources; no hidden meter delay.
-  loading.classList.add('done');setTimeout(()=>{loading.hidden=true;sketchWorker?.terminate();loading.classList.remove('done');window.__load._resolve?.();},calm?0:280);};
+ window.__loadDone=()=>{if(finishing)return;finishing=true;window.__load.finish();
+  let fading=false;const reveal=()=>{if(fading)return;fading=true;loading.dataset.completeBeforeFade=loading.dataset.sketchProgress;loading.classList.add('done');setTimeout(()=>{loading.hidden=true;sketchWorker?.terminate();loading.classList.remove('done');window.__load._resolve?.();},calm?0:280);};
+  if(sketchWorker){finishDrawing=reveal;sketchWorker.postMessage({type:'finish'});setTimeout(reveal,1500);}
+  else {draw(1);loading.dataset.sketchProgress='1.0000';reveal();}
+ };
 
  let lastDrawn=-1;
  function tick(now){if(loading.hidden)return;requestAnimationFrame(tick);if(!document.body.classList.contains('workshop-started'))return;
@@ -130,10 +132,10 @@ async function startWorkshop(){
  if(starting)return;starting=true;button.disabled=true;
  document.body.classList.add('workshop-started');entry.hidden=true;
  try{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-descending-sketch';document.head.append(css);
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cockpit.css?v=warm-20261102-complete-sketch';document.head.append(css);
   await new Promise((resolve,reject)=>{css.onload=resolve;css.onerror=reject;});window.__load?.set('css',1);
   {const list=['projects.js','portfolio-stories.js?v=8','deep-case-data.js?v=20'];let done=0;for(const src of list){await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.append(s);});window.__load?.set('data',++done/list.length);}}
-  await import('./cockpit.bundle.js?v=warm-20261102-descending-sketch');window.__load?.set('code',1);
+  await import('./cockpit.bundle.js?v=warm-20261102-complete-sketch');window.__load?.set('code',1);
  }catch(error){document.documentElement.classList.remove('autostart');document.body.classList.remove('workshop-started');entry.hidden=false;document.getElementById('entry-note').textContent='The workshop couldn’t load. You can still browse every project in the lightweight site.';starting=false;button.disabled=false;console.warn('Workshop unavailable',error);}
 }
 button.addEventListener('click',startWorkshop);

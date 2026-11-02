@@ -1,6 +1,6 @@
 // Drawing runs independently of model parsing, texture uploads and shader compilation.
 let canvas,ctx,cache,cacheCtx,screen=[],total=0,W=0,H=0,dpr=1,copyBox=null,loadingView='room',cachedUpTo=0;
-let progress=0,finishStart=null,finishFrom=0;
+let progress=0,finishStart=null,finishFrom=0,finishDuration=0,completionSent=false;
 let target=0,shown=0,last=0,calm=false,running=false,frame=0,started=0,lastReport=0,previous=null,swapStarted=0,grid=null,blend=null;
 self.onmessage=({data:d})=>{
  if(d.type==='init'){canvas=d.canvas;ctx=canvas.getContext('2d');calm=d.calm;}
@@ -12,7 +12,7 @@ self.onmessage=({data:d})=>{
   if(previous){ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(previous,0,0);}else draw(shown);
  }
  if(d.type==='progress'){target=Math.max(target,d.p);if(!running){running=true;last=0;frame=requestAnimationFrame(tick);}}
- if(d.type==='finish'){finishStart=performance.now();finishFrom=shown;target=1;}
+ if(d.type==='finish'){finishStart=performance.now();finishFrom=shown;finishDuration=calm?0:Math.max(200,Math.min(800,(1-shown)*1600));target=1;}
  if(d.type==='stop'){running=false;cancelAnimationFrame(frame);}
 };
 function tick(now){
@@ -23,13 +23,14 @@ function tick(now){
  const elapsed=(now-started)/1000;
  const speed=.38*Math.min(1,elapsed/.25);
  shown=calm?target:Math.min(.99,shown+speed*dt*Math.min(1,(1-shown)/.08));
- if(finishStart!==null){const k=Math.min(1,(now-finishStart)/200);shown=finishFrom+(1-finishFrom)*k;}
+ if(finishStart!==null){const k=Math.min(1,(now-finishStart)/Math.max(1,finishDuration));shown=finishFrom+(1-finishFrom)*k;}
  // Limit the meter's catch-up speed rather than snapping to new download targets.
  progress=calm?target:Math.min(target,progress+Math.min(.55,Math.max(.035,(target-progress)*3))*dt);
  if(target===1&&1-progress<.001)progress=1;
  draw(shown);
  if(previous){const mix=Math.min(1,(now-swapStarted)/350),g=blend.getContext('2d');g.clearRect(0,0,canvas.width,canvas.height);g.drawImage(canvas,0,0);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.globalAlpha=1-mix;ctx.drawImage(previous,0,0);ctx.globalAlpha=mix;ctx.drawImage(blend,0,0);ctx.globalAlpha=1;if(mix===1){previous=null;blend=null;}}
 
+ if(finishStart!==null&&shown===1&&!previous&&!completionSent){completionSent=true;self.postMessage({shown:1,progress:1,strokes:cachedUpTo,complete:true});}
  if(now-lastReport>=100){self.postMessage({shown,progress,strokes:cachedUpTo});lastReport=now;}
  frame=requestAnimationFrame(tick);
 }
@@ -43,8 +44,8 @@ function tick(now){
   ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;if(grid)ctx.drawImage(grid,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);
   if(loadingView==='computer'){ctx.save();ctx.beginPath();ctx.rect(0,0,W*Math.min(1,p*3),H*.29);ctx.clip();ctx.strokeStyle='#e9d6a8';ctx.lineWidth=.8;ctx.font=`${Math.min(72,W*.065)}px Georgia`;ctx.strokeText('Selected software.',W*.06,H*.26);ctx.restore();}
   if(!screen.length)return;const goal=p*total;
-  while(cachedUpTo<screen.length&&screen[cachedUpTo].start+screen[cachedUpTo].len<=goal){stroke(cacheCtx,screen[cachedUpTo],Infinity);cachedUpTo++;}
+  while(cachedUpTo<screen.length&&screen[cachedUpTo].start+screen[cachedUpTo].cost<=goal){stroke(cacheCtx,screen[cachedUpTo],Infinity);cachedUpTo++;}
   ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.drawImage(cache,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);if(copyBox)ctx.clearRect(copyBox.x+3,copyBox.y+3,copyBox.w-6,copyBox.h-6);
   // Draw the active stroke without a glowing dot teleporting between objects.
-  const active=screen[cachedUpTo];if(active&&p<1)stroke(ctx,active,goal-active.start);
+  const active=screen[cachedUpTo];if(active&&p<1)stroke(ctx,active,active.len*(goal-active.start)/active.cost);
  }

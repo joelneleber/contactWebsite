@@ -2,7 +2,7 @@ import * as THREE from 'three';
 // A real, inexpensive desk prop, animated by the room's existing render loop.
 export function contactCard(scene,camera,motion,draw){
  const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=600;const c=canvas.getContext('2d');
- c.fillStyle='#eee2c5';c.fillRect(0,0,1024,600);c.fillStyle='#293a30';c.font='italic 72px Georgia';c.fillText('jn',65,110);c.font='56px Georgia';c.fillText('Joey Neleber',65,270);c.font='27px sans-serif';c.fillText('Software engineer · Tinkerer · Maker',65,330);c.fillText('joelneleber@gmail.com',65,470);c.fillStyle='#9b7950';c.fillRect(65,380,894,2);
+ c.fillStyle='#eee2c5';c.fillRect(0,0,1024,600);c.fillStyle='#293a30';c.font='italic 72px Georgia';c.fillText('jn',65,110);c.font='56px Georgia';c.fillText('Joey Neleber',65,270);c.font='27px sans-serif';c.fillText('Software engineer · Tinkerer · Maker',65,330);c.fillText('joelneleber.com/contact.html',65,470);c.fillStyle='#9b7950';c.fillRect(65,380,894,2);
  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
  const card=new THREE.Group();card.name='Contact_business_card';
  const body=new THREE.Mesh(new THREE.BoxGeometry(.36,.211,.003),new THREE.MeshStandardMaterial({color:'#e3d6b7',roughness:.85}));
